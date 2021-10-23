@@ -24,6 +24,83 @@
   color: white;
 }
 
+
+.container img {
+  width: 100%;
+  height: auto;
+}
+
+/* .container {
+  position: relative;
+  width: 50%;
+} */
+
+.SignupButton {
+  position:absolute;
+  top: 4%;
+  left: 76%;
+  height: 3%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%); 
+  background-color: #555;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.LoginButton {
+  position:absolute;
+  top: 4%;
+  left: 89%;
+  height: 3%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%); 
+  background-color: #555;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.SoloplayButton {
+  position:absolute;
+  top: 20%;
+  left: 89%;
+  width: 15%;
+  height: 3%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%); 
+  color: #555;
+  background-color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.GroupplayButton {
+  position:absolute;
+  top: 25%;
+  left: 89%;
+  width: 15%;
+  height: 3%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%); 
+  color: #555;
+  background-color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .App-link {
   color: #61dafb;
 }
