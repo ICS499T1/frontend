@@ -1,0 +1,71 @@
+header{
+    color: white;
+    background: #37387a;
+    background-image: url("../images/Background.png");
+    min-height: 50vh;
+    padding-top: 20vh;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.bg-container{
+    position: fixed;
+}
+
+.typingImage{
+    /*height: auto;*/
+    /*width: 35%;*/
+    background-image: url("../images/Type.png");
+    text-align: left;
+    position: relative;
+    background-position: left; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: contain; /* Resize the background image to cover the entire container */
+}
+
+h5{
+    float: right;
+    transform: translate(-200%, 200%);
+}
+
+p{
+    float: right;
+    transform: translate(20%, 400%);
+}
+
+.soloplay{
+    transform: translate(-50%, 200%);
+    /*-ms-transform: translate(-50%, -50%);*/
+    text-decoration-style: solid;
+    display: block;
+    padding: 10px 10px;
+    border: 1mm solid #f4f4f4;
+    border-radius: 5px;
+    color: #000;
+    float: right;
+}
+
+.multiplay{
+    transform: translate(50%, 400%);
+    /*-ms-transform: translate(-50%, -50%);*/
+    text-decoration-style: solid;
+    display: block;
+    padding: 10px 10px;
+    border: 1mm solid #f4f4f4;
+    border-radius: 5px;
+    color: #000;
+    float: right;
+}
+
+/* 48em = 768px */
+@media (min-width: 48em) {
+    .header button {
+
+    }
+}
+
