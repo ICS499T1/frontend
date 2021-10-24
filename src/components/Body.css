@@ -1,11 +1,9 @@
 header{
     color: white;
-    background: #37387a;
-    background-image: url("../images/Background.png");
-    min-height: 50vh;
+    min-height: auto;
+    max-width: auto;
     text-align: center;
     position: relative;
-    margin-bottom: 100px;
     z-index: 1;
     overflow: hidden;
     background-position: center; /* Center the image */
@@ -18,8 +16,6 @@ header{
 }
 
 .container{
-    /* align-content: center;
-    align-items: center; */
     padding-left: 12%;
     padding-bottom: 12%;
     height: fit-content;
@@ -85,6 +81,9 @@ p{
     font-weight: bold;
 }
 
+.imgcontainer {
+    width: 100%;
+  }
 .multiplay{
     position:absolute;
     top: 58%;
