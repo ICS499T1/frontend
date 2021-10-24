@@ -3,9 +3,9 @@ header{
     background: #37387a;
     background-image: url("../images/Background.png");
     min-height: 50vh;
-    padding-top: 20vh;
     text-align: center;
     position: relative;
+    margin-bottom: 100px;
     z-index: 1;
     overflow: hidden;
     background-position: center; /* Center the image */
@@ -17,15 +17,19 @@ header{
     position: fixed;
 }
 
-.typingImage{
-    /*height: auto;*/
-    /*width: 35%;*/
-    background-image: url("../images/Type.png");
-    text-align: left;
-    position: relative;
-    background-position: left; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size: contain; /* Resize the background image to cover the entire container */
+.container{
+    /* align-content: center;
+    align-items: center; */
+    padding-left: 12%;
+    padding-bottom: 12%;
+    height: fit-content;
+}
+
+.box{
+    background-color: #2E2F43;
+    height: fit-content;
+    padding-bottom: 5%;
+    text-align: center;
 }
 
 h5{
@@ -33,33 +37,69 @@ h5{
     transform: translate(-200%, 200%);
 }
 
+.textBarone{
+    color:white;
+    font-size: x-large;
+}
+
+.textBartwo{
+    color:white;
+    font-size: x-large;
+    margin-right: 150px;
+}
 p{
     float: right;
     transform: translate(20%, 400%);
 }
+.startnowbutton{
+    background-color: #555;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.text{
+    /* min-width: 60%; */
+    height: auto;
+    margin-right: 150px;
+}
 
 .soloplay{
-    transform: translate(-50%, 200%);
-    /*-ms-transform: translate(-50%, -50%);*/
-    text-decoration-style: solid;
-    display: block;
-    padding: 10px 10px;
-    border: 1mm solid #f4f4f4;
+    position:absolute;
+    top: 39%;
+    left: 82%;
+    width: fit-content;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%); 
+    color: #555;
+    background-color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
     border-radius: 5px;
-    color: #000;
-    float: right;
+    font-weight: bold;
 }
 
 .multiplay{
-    transform: translate(50%, 400%);
-    /*-ms-transform: translate(-50%, -50%);*/
-    text-decoration-style: solid;
-    display: block;
-    padding: 10px 10px;
-    border: 1mm solid #f4f4f4;
+    position:absolute;
+    top: 58%;
+    left: 82%;
+    font-weight: bold;
+    width: fit-content;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%); 
+    color: #555;
+    background-color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
     border-radius: 5px;
-    color: #000;
-    float: right;
 }
 
 /* 48em = 768px */
