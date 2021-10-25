@@ -34,12 +34,13 @@ const Body = () => {
                     <Grid item xs={12} sm container>
                         <Grid item xs container direction="column">
                             <Grid item xs>
-                                <Typography gutterBottom variant="subtitle1" component="div">
+                                {/* <Typography gutterBottom variant="subtitle1" component="div"> */}
                                     <div>
-                                        <h3 class="text">WHAT IS TYPINGGAME? <br /><br />TypingGame is the most effective way to improve typing skills.</h3>
+                                        <h4 class="textone">WHAT IS TYPINGGAME?</h4>
+                                        <h3 class="text">TypingGame is the most effective way to improve typing skills.</h3>
                                         <Button class="startnowbutton">Get Started Now</Button>
                                     </div>
-                                </Typography>
+                                {/* </Typography> */}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -47,13 +48,13 @@ const Body = () => {
             </Container>
   
             <Box sx={{ flexGrow: 1 }} class="box">
-                <Grid container spacing={5} columns={16}>
+                <Grid container spacing={2} columns={16}>
                     <Grid item xs={8}>
-                        <h3 class="textBarone"> Tricky Keys Map</h3>
+                        <h3 class="textBarone">Individual and Group Stats</h3>
                     </Grid>
                     <Grid item xs container direction="column" spacing={5}>
                         <Grid item xs={8}>
-                            <h3 class="textBartwo"> Interactive Experience</h3>
+                            <h3 class="textBartwo">Interactive Experience</h3>
                         </Grid>
                     </Grid>
                 </Grid>
