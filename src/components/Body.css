@@ -61,13 +61,15 @@ p{
 .text{
     /* min-width: 60%; */
     height: auto;
-    margin-right: 150px;
+    margin-right: 270px;
+    margin-left: 10px;
 }
 
 .textone {
     color: #555;
     height: auto;
-    margin-right: 150px;
+    margin-right: 270px;
+    margin-left: 10px;
 }
 
 .soloplay{

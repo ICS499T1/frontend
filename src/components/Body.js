@@ -34,13 +34,11 @@ const Body = () => {
                     <Grid item xs={12} sm container>
                         <Grid item xs container direction="column">
                             <Grid item xs>
-                                {/* <Typography gutterBottom variant="subtitle1" component="div"> */}
                                     <div>
                                         <h4 class="textone">WHAT IS TYPINGGAME?</h4>
                                         <h3 class="text">TypingGame is the most effective way to improve typing skills.</h3>
                                         <Button class="startnowbutton">Get Started Now</Button>
                                     </div>
-                                {/* </Typography> */}
                             </Grid>
                         </Grid>
                     </Grid>
