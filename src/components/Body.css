@@ -15,38 +15,31 @@ header{
     position: fixed;
 }
 
-.container{
-    padding-left: 12%;
-    padding-bottom: 12%;
-    height: fit-content;
+.whitebox{
+    background-color: white;
+    padding: 80px;
 }
 
-.box{
+.boxone{
     background-color: #2E2F43;
-    height: fit-content;
-    padding-bottom: 5%;
-    text-align: center;
+    align-content: center;
 }
 
-h5{
-    float: right;
-    transform: translate(-200%, 200%);
+.boxtwo{
+    background-color: #F2F2F2;
+    padding: 90px;
 }
 
-.textBarone{
+.subtitle{
+    color: #555;
+}
+
+.textBar{
     color:white;
     font-size: x-large;
+    padding: 16px;
 }
 
-.textBartwo{
-    color:white;
-    font-size: x-large;
-    margin-right: 150px;
-}
-p{
-    float: right;
-    transform: translate(20%, 400%);
-}
 .startnowbutton{
     background-color: #555;
     color: white;
@@ -59,17 +52,13 @@ p{
 }
 
 .text{
-    /* min-width: 60%; */
     height: auto;
-    margin-right: 270px;
-    margin-left: 10px;
+    flex-wrap: wrap;
 }
 
 .textone {
     color: #555;
     height: auto;
-    margin-right: 270px;
-    margin-left: 10px;
 }
 
 .soloplay{
