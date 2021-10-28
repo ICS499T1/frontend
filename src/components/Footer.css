@@ -1,0 +1,57 @@
+.footer {
+    background: #2E2F43;
+    color: #fff;
+
+}
+
+.aboutUs {
+    color: #fff;
+    margin-left: 40px;
+    float: left;
+    text-align: left;
+    font-size: .8rem;
+    color: white;
+    display: inline-block;
+}
+
+.contactUs {
+    background: #2E2F43;
+    color: #fff;
+    float: contour;
+    padding: 2rem 0;
+    margin-right: 40px;
+    text-align: left;
+    font-size: .8rem;
+    color: white;
+    display: inline-block;;
+}
+
+.links {
+    margin-right: 40px;
+    float: right;
+    text-align: left;
+    font-size: .8rem;
+    display: inline-block;
+}
+
+.footer ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+/*.footer li {*/
+/*    display: inline-block;*/
+/*}*/
+
+/*.footer a {*/
+/*    display: block;*/
+/*    padding: .4rem .7rem;*/
+/*    font-size: .9rem;*/
+/*    text-decoration: none;*/
+/*    color: rgba(255, 255, 255, 1);*/
+/*}*/
+
+/*.footer a:hover {*/
+/*    color: rgb(214, 214, 214);*/
+/*}*/
