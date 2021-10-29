@@ -8,7 +8,7 @@
 .header {
     background-color: #fff;
     box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
-    /* position: fixed; */
+    position: fixed;
     width: 100%;
     z-index: 3;
 }
@@ -114,6 +114,9 @@
     top: 0;
 }
 
+
+
+
 /* 48em = 768px */
 @media (min-width: 48em) {
     .header li {
@@ -134,3 +137,5 @@
         display: none;
     }
 }
+
+
