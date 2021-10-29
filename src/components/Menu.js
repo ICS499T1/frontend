@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 
 const MenuBar = () => {
   return (
-    <nav className="header">
+    <nav>
         <ul>
           <Link to="/">
             <li class="logo">SpaceRacer</li>
