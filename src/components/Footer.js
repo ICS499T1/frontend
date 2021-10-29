@@ -9,7 +9,7 @@ const Footer = () => {
     return (
         <footer >
             <Box class="box">
-            <Grid container columnSpacing={5} rowSpacing={5} justify="flex-start">
+            <Grid container columnSpacing={10} rowSpacing={5} justify="flex-start">
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <p class="texttwo" >&copy; Typing Game - 2021.</p>
                     <p class="texttwo">Metropolitan State University,</p>

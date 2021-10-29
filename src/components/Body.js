@@ -1,6 +1,5 @@
 import React from "react";
 import "./Body.css";
-import ReactDOM from 'react-dom';
 import { styled } from "@mui/material/styles";
 import Button from "@material-ui/core/Button";
 import secondaryImage from "../images/Type.png";
@@ -45,7 +44,7 @@ const Body = () => {
               </Grid>
             </Grid>
           </Grid>
-        </Box>
+        </Box> 
 
         <Box class="boxone">
           <Grid container columnSpacing={5} justify="flex-start">
