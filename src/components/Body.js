@@ -14,14 +14,12 @@ const Img = styled("img")({
 const Body = () => {
   return (
     <React.Fragment>
-      <header>
+      <body>
         <div>
           <img class="imgcontainer" src={background} />
           <Button class="soloplay">Solo Play</Button>
           <Button class="multiplay">Multi Play</Button>
         </div>
-      </header>
-      <body>
         <Box class="whitebox">
           <Grid container columnSpacing={5} rowSpacing={5} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
