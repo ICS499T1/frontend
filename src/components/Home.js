@@ -11,7 +11,7 @@ const Img = styled("img")({
   maxWidth: "400px",
 });
 
-const Body = () => {
+const Home = () => {
   return (
     <React.Fragment>
       <header>
@@ -98,4 +98,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default Home;

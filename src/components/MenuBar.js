@@ -19,7 +19,7 @@ const MenuBar = () => {
             <a href="/">Home</a>
           </li>
           <li>
-            <a href="/sign up">Sign up</a>
+            <a href="/signUp">Sign up</a>
           </li>
           <li>
             <a href="/login">Log in</a>

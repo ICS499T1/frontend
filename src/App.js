@@ -1,33 +1,29 @@
-import "./App.css";
-import React, { Component } from "react";
-import Body from "./components/Body";
-import Footer from "./components/Footer"
-import Users from "./components/users";
-import MenuBar from "./components/Menu";
+import React from 'react'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from 'react-router-dom'
+import Layout from './components/Layout'
+import Home from './components/Home'
+// import Home from './components/Home'
+import AboutUs from './components/AboutUs'
 
-class App extends Component {
-  // state = {
-  //     users: []
-  // }
+import './App.css';
 
-  // componentDidMount() {
-  //     fetch('http://localhost:8080/user/getusers')
-  //     .then(res => res.json())
-  //     .then((data) => {
-  //     this.setState({ users: data })
-  //     })
-  //     .catch(console.log)
-  // }
-
-  render() {
+function App() {
     return (
-      <React.Fragment>
-        <MenuBar />
-        <Body />
-        <Footer />
-      </React.Fragment>
+        <div className="body-wrap">
+            <Router>
+                <Layout>
+                    <Switch>
+                        <Route path={'/aboutUs'} component={AboutUs}></Route>
+                        <Route path={'/'} component={Home}></Route>
+                    </Switch>
+                </Layout>
+            </Router>
+        </div>
     );
-  }
 }
 
 export default App;
