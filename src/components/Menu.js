@@ -5,10 +5,11 @@ import {Link} from 'react-router-dom';
 const MenuBar = () => {
   return (
     <nav className="header">
-      <div className="nav-wrapper">
         <ul>
-        <a class="logo" >SpaceRacer</a>
-        <Link to="/">
+          <Link to="/">
+            <li class="logo">SpaceRacer</li>
+          </Link>
+          <Link to="/">
             <li>Home</li>
           </Link>
           <Link to="/signin">
@@ -21,7 +22,6 @@ const MenuBar = () => {
             <li>Leaderboard</li>
           </Link>
         </ul>
-      </div>
     </nav>
 
   );
