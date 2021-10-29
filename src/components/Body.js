@@ -22,7 +22,7 @@ const Body = () => {
        <Router>
           <div>
             <img class="imgcontainer" src={background} />
-            <Button class="soloplay" href='root'>Solo Play</Button>
+            <Button class="soloplay" href='soloplay'>Solo Play</Button>
             <Button class="multiplay">Multi Play</Button>
           </div>
         </Router>
