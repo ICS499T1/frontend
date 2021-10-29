@@ -2,6 +2,7 @@ import React from "react";
 
 import Footer from "./Footer"
 import MenuBar from "./MenuBar";
+import './Layout.css'
 
 const Layout = (props) => {
     // state = {

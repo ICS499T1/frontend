@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 import './Footer.css'
 
-const Footer = () => {
+const MenuBar = () => {
     return (
         <footer >
             <div className="footer">
@@ -35,11 +35,11 @@ const Footer = () => {
 
 
                             <ul>
-                                <li><a href="/policy">Privacy Policy</a></li>
-                                <li><a href="/terms">Terms of Service</a></li>
-                                <li><a href="/tutorials">Tutorials</a></li>
-                                <li><a href="/home">Create Account</a></li>
-                                <li><a href="/aboutUs">About Us</a></li>
+                                <li><Link to="/policy">Privacy Policy</Link></li>
+                                <li><Link to="/terms">Terms of Service</Link></li>
+                                <li><Link to="/tutorials">Tutorials</Link></li>
+                                <li><Link to="/home">Create Account</Link></li>
+                                <li><Link to="/aboutUs">About Us</Link></li>
                             </ul>
 
 
@@ -69,4 +69,4 @@ const Footer = () => {
     )
 }
 
-export default Footer;
+export default MenuBar;

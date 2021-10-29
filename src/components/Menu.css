@@ -1,16 +1,16 @@
+/* header */
+/*.header {*/
+/*    color: #22234b;*/
+/*    !*box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);*!*/
+/*    !*position: fixed;*!*/
+/*    width: 100%;*/
+/*    z-index: 3;*/
+/*}*/
+
 .nav-wrapper {
     margin: auto;
     max-width: 1126px;
     padding: 10px;
-}
-
-/* header */
-.header {
-    background-color: #fff;
-    box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
-    position: fixed;
-    width: 100%;
-    z-index: 3;
 }
 
 .header ul {
@@ -21,7 +21,7 @@
     background-color: #fff;
 }
 
-.header li a {
+.header li {
     display: block;
     padding: 20px 20px;
     border-right: 1px solid #f4f4f4;
@@ -29,7 +29,7 @@
     color: #000;
 }
 
-.header li a:hover,
+.header li:hover,
 .header .menu-btn:hover {
     background-color: #f4f4f4;
 }
