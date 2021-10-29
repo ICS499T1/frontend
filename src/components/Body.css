@@ -15,6 +15,10 @@ header{
     position: fixed;
 }
 
+.imageStyle{
+    max-width: "400px",
+}
+
 .whitebox{
     background-color: white;
     padding: 80px;

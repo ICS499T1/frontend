@@ -5,8 +5,9 @@ import Footer from "./components/Footer"
 import Users from "./components/users";
 import MenuBar from "./components/Menu";
 
+
 class App extends Component {
-  // state = {
+ // state = {
   //     users: []
   // }
 
@@ -19,13 +20,16 @@ class App extends Component {
   //     .catch(console.log)
   // }
 
+
+    
+
   render() {
     return (
       <React.Fragment>
         <MenuBar />
         <Body />
         <Footer />
-      </React.Fragment>
+    </React.Fragment>
     );
   }
 }

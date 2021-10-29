@@ -1,25 +1,32 @@
 import React from "react";
 import "./Body.css";
+import ReactDOM from 'react-dom';
 import { styled } from "@mui/material/styles";
 import Button from "@material-ui/core/Button";
 import secondaryImage from "../images/Type.png";
 import background from "../images/Background.png";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import {BrowserRouter as Router, Link} from "react-router-dom";
+
 
 const Img = styled("img")({
   maxWidth: "400px",
 });
 
+
 const Body = () => {
   return (
     <React.Fragment>
-      <body>
-        <div>
-          <img class="imgcontainer" src={background} />
-          <Button class="soloplay">Solo Play</Button>
-          <Button class="multiplay">Multi Play</Button>
-        </div>
+      <header>
+       <Router>
+          <div>
+            <img class="imgcontainer" src={background} />
+            <Button class="soloplay" href='root'>Solo Play</Button>
+            <Button class="multiplay">Multi Play</Button>
+          </div>
+        </Router>
+       </header>
         <Box class="whitebox">
           <Grid container columnSpacing={5} rowSpacing={5} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -91,9 +98,9 @@ const Body = () => {
             </Grid>
           </Grid>
         </Box>
-      </body>
     </React.Fragment>
   );
 };
+
 
 export default Body;
