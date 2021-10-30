@@ -1,5 +1,5 @@
 import React from "react";
-import "./Body.css";
+import "./Home.css";
 import { styled } from "@mui/material/styles";
 import Button from "@material-ui/core/Button";
 import secondaryImage from "../images/Type.png";

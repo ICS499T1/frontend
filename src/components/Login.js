@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Button from "@mui/material/Button"
 import './Login.css';
 
+import loginImg from "../images/loginImg.png"
+
 async function loginUser(credentials) {
     return fetch('http://localhost:8080/login', {
         method: 'POST',
@@ -29,6 +31,7 @@ export default function Login({ setToken }) {
 
     return(
         <div className="login-wrapper">
+            {/*<img className="loginImg" src={loginImg}/>*/}
             <h1>Please Log In</h1>
             <form onSubmit={handleSubmit}>
                 <label>
