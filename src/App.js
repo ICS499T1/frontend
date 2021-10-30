@@ -9,6 +9,7 @@ import Leaderboard from "./components/Leaderboard";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
 import About from "./components/About";
+import UserProfile from "./components/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 
@@ -39,6 +40,7 @@ class App extends Component {
             <Route path="/termsandconditions" component={Terms} />
             <Route path="/tutorials" component={Tutorials} />
             <Route path="/aboutus" component={About} />
+            <Route path="/myprofile" component={UserProfile} />
           </Switch>
         </div>
         <Footer />
