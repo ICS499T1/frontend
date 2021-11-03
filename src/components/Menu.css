@@ -1,16 +1,11 @@
-.nav-wrapper {
-    margin: auto;
-    max-width: 1126px;
-    padding: 10px;
-}
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
 
-/* header */
-.header {
-    background-color: #fff;
-    box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
-    position: fixed;
+nav {
+    margin: auto;
     width: 100%;
-    z-index: 3;
+    padding: 0px;
+    position: relative;
+    font-family: "Montserrat", sans-serif; 
 }
 
 .header ul {
@@ -21,7 +16,7 @@
     background-color: #fff;
 }
 
-.header li a {
+.header li {
     display: block;
     padding: 20px 20px;
     border-right: 1px solid #f4f4f4;
@@ -29,7 +24,7 @@
     color: #000;
 }
 
-.header li a:hover,
+.header li:hover,
 .header .menu-btn:hover {
     background-color: #f4f4f4;
 }
@@ -37,7 +32,7 @@
 .header .logo {
     display: block;
     float: left;
-    font: normal 2em 'Cookie';
+    font-size: 2em;
     padding: 10px 20px;
     text-decoration: none;
     color: #000;
@@ -114,9 +109,6 @@
     top: 0;
 }
 
-
-
-
 /* 48em = 768px */
 @media (min-width: 48em) {
     .header li {
@@ -137,5 +129,3 @@
         display: none;
     }
 }
-
-

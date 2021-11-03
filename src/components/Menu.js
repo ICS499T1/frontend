@@ -4,22 +4,22 @@ import {Link} from 'react-router-dom';
 
 const MenuBar = () => {
   return (
-    <nav>
+    <nav className="header">
         <ul>
           <Link to="/">
-            <li class="logo">SpaceRacer</li>
+            <li className="logo"><b>SpaceRacer</b></li>
           </Link>
           <Link to="/">
-            <li>Home</li>
+            <li className="links">Home</li>
           </Link>
           <Link to="/signin">
-            <li>Sign In</li>
+            <li className="links">Sign In</li>
           </Link>
           <Link to="/signup">
-            <li>Sign Up</li>
+            <li className="links">Sign Up</li>
           </Link>
           <Link to="/leaderboard">
-            <li>Leaderboard</li>
+            <li className="links">Leaderboard</li>
           </Link>
         </ul>
     </nav>
