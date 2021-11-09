@@ -1,5 +1,5 @@
 
-
+/* 
 input {
   width: 855px;
   height: 100px;
@@ -7,16 +7,20 @@ input {
   font-size: 20px;
   border: none;
   box-sizing: border-box;
-}
+} */
 
 .simple-keyboard {
   max-width: 850px;
 }
 
+.bigbox{
+  background-color: #F2F2F2;
+}
+
 .boxkeyboard {
   width: 100%;
   height: fit-content;
-  background-color: #F2F2F2;
+  background-color: white;
   /* padding: 70px; */
 }
 
@@ -35,8 +39,7 @@ input {
 .card {
   border-radius: 25px;
   box-shadow: 2px 2px rgb(235, 233, 233);
-  background-color: #f7f5f5;
-  border: grey;
+  background-color: white;
 }
 
 .cardcontent {
@@ -71,7 +74,7 @@ input {
 .cardtwo {
   /* border-radius: 25px; */
   /* box-shadow: 2px 2px rgb(235, 233, 233); */
-  background-color: #F2F2F2;
+  background-color: white;
   /* border: grey; */
 }
 
