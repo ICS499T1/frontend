@@ -8,6 +8,7 @@ import Avatar from "../components/Avatar.js";
 import Grid from "@mui/material/Grid";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { Link } from "@mui/material";
 
 class UserProfile extends Component {
   state = {
@@ -50,6 +51,7 @@ class UserProfile extends Component {
   render() {
     return (
       <React.Fragment>
+      <Box class="bigbox">
       <div>
         <h1 class="title"> Hello, Welcome back!</h1>
       </div>
@@ -66,7 +68,7 @@ class UserProfile extends Component {
               <Grid item>
                 <div>
                   <p>Username:</p>
-                  <p>Email:</p>
+                  <Link>Edit Profile</Link>
                 </div>
               </Grid>
             </Grid>
@@ -119,6 +121,8 @@ class UserProfile extends Component {
           </Grid>
         </Box>
 
+        </Box>
+
 
       {/* Keyboard */}
       <div>
@@ -127,12 +131,12 @@ class UserProfile extends Component {
             <Card class="cardtwo">
               <CardContent class="cardcontenttwo">
                 <p class="textone">TEST YOUR KEYBOARD BEFORE PLAYING</p>
-                  <input 
+                  {/* <input 
                     value={this.state.input}
                     placeholder={"Tap on the virtual keyboard to start"}
                     onChange={this.onChangeInput}
                   
-                  />
+                  /> */}
                 
               <Keyboard
                   keyboardRef={r => (this.keyboard = r)}
