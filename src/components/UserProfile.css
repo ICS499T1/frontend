@@ -1,0 +1,81 @@
+
+
+input {
+  width: 855px;
+  height: 100px;
+  padding: 20px;
+  font-size: 20px;
+  border: none;
+  box-sizing: border-box;
+}
+
+.simple-keyboard {
+  max-width: 850px;
+}
+
+.boxkeyboard {
+  width: 100%;
+  height: fit-content;
+  background-color: #F2F2F2;
+  /* padding: 70px; */
+}
+
+.title {
+  padding-left: 65px;
+  padding-right: 65px;
+  padding-top: 60px;
+}
+
+.boxuser {
+  padding-left: 85px;
+  padding-right: 85px;
+  padding-bottom: 30px;
+}
+
+.card {
+  border-radius: 25px;
+  box-shadow: 2px 2px rgb(235, 233, 233);
+  background-color: #f7f5f5;
+  border: grey;
+}
+
+.cardcontent {
+    padding: 30px;
+}
+
+.textstats{
+  color:black;
+  font-size: x-large;
+  text-align: center;
+}
+
+.subtitles{
+  color:black;
+  font-size: large;
+  text-align: center;
+}
+
+.boxstats{
+  padding-left: 85px;
+  padding-right: 90px;
+  padding-bottom: 30px;
+  height: fit-content;
+}
+
+.textone {
+  color: #555;
+  height: auto;
+  font-size: large;
+}
+
+.cardtwo {
+  /* border-radius: 25px; */
+  /* box-shadow: 2px 2px rgb(235, 233, 233); */
+  background-color: #F2F2F2;
+  /* border: grey; */
+}
+
+.cardcontenttwo {
+    padding: 30px;
+}
+

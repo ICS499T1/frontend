@@ -9,6 +9,8 @@ import Leaderboard from "./components/Leaderboard";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
 import About from "./components/About";
+import Layout from './components/Layout'
+import UserProfile from "./components/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 
@@ -29,8 +31,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div>
-          <Menu />
+          <Layout>
           <Switch>
             <Route path="/" exact component={Body} />
             <Route path="/signin" component={Signin} />
@@ -39,9 +40,9 @@ class App extends Component {
             <Route path="/termsandconditions" component={Terms} />
             <Route path="/tutorials" component={Tutorials} />
             <Route path="/aboutus" component={About} />
+            <Route path="/myprofile" component={UserProfile} />
           </Switch>
-        </div>
-        <Footer />
+          </Layout>
       </Router>
     );
   }
