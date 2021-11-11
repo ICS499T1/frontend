@@ -1,90 +1,74 @@
-
 import React, { Component } from "react";
-import Keyboard from "react-simple-keyboard";
+import Keyboardpage from "../components/Keyboard.js";
 import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
 import Box from "@mui/material/Box";
 import Avatar from "../components/Avatar.js";
 import Grid from "@mui/material/Grid";
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import { Link } from "@mui/material";
+import BackgroundLetterAvatars from "../components/Avatar.js";
+import { useEffect, useState, useRef } from "react";
 
-class UserProfile extends React.Component {
-  state = {
-    layoutName: "default",
-    input: ""
-  };
+function UserProfile() {
+  const [user, setUser] = useState({
+    userStats: null,
+  });
 
-  onChange = input => {
-    this.setState({ input });
-    console.log("Input changed", input);
-  };
+  const [username, setUsername] = useState("");
 
-  onKeyPress = button => {
-    console.log("Button pressed", button);
+  useEffect(() => {
+    const fetchInit = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: "gibjork", password: "gina123" }),
+    };
 
-    /**
-     * to handle the shift and caps lock buttons
-     */
-    if (button === "{shift}" || button === "{lock}") this.handleShift();
-  };
+    fetch("http://localhost:8080/user/info", fetchInit)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("fetch: " + data);
+        setUsername(data.username);
+      });
+  }, []);
 
-  handleShift = () => {
-    const layoutName = this.state.layoutName;
-
-    this.setState({
-      layoutName: layoutName === "default" ? "shift" : "default"
-    });
-  };
-
-  onChangeInput = event => {
-    const input = event.target.value;
-    this.setState({ input });
-    this.keyboard.setInput(input);
-  };
-
-
-
-  
-
-  render() {
-    return (
-      <React.Fragment>
+  return (
+    <React.Fragment>
       <Box class="bigbox">
-      <div>
-        <h1 class="title"> Hello, Welcome back!</h1>
-      </div>
-      <Box class="boxuser">
-        <Card class="card">
-        <CardContent class="cardcontent">
-          <Grid container columnSpacing={5} rowSpacing={3} >
-            <Grid item>
-            <div>
-              <Avatar />
-            </div>
-            </Grid>
-            <Grid item xs={12} sm container>
-              <Grid item>
-                <div>
-                  <p>Username:</p>
-                  <Link>Edit Profile</Link>
-                </div>
+        <div>
+          <h1 class="title"> Hello, Welcome back!</h1>
+        </div>
+        <Box class="boxuser">
+          <Card class="card">
+            <CardContent class="cardcontent">
+              <Grid container columnSpacing={5} rowSpacing={3}>
+                <Grid item>
+                  <div>
+                    <Avatar />
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm container>
+                  <Grid item>
+                    <div>
+                      <p>Username: {username} </p>
+                      <Link>Edit Profile</Link>
+                    </div>
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>
-          </Grid>
-          </CardContent>
+            </CardContent>
           </Card>
-      </Box> 
+        </Box>
 
-      {/* Stats display row 1 */}
-      <Box class="boxstats" >
+        {/* Stats display row 1 */}
+        <Box class="boxstats">
           <Grid container columnSpacing={5} rowSpacing={4} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
-            <Card class="card">
+              <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Average Speed</p>
-                  <h5 class="textstats">12 sec</h5>
+                  <h5 class="textstats">12</h5>
                 </CardContent>
               </Card>
             </Grid>
@@ -99,11 +83,11 @@ class UserProfile extends React.Component {
           </Grid>
         </Box>
 
-      {/* Stats display row 2 */}
-      <Box class="boxstats" >
+        {/* Stats display row 2 */}
+        <Box class="boxstats">
           <Grid container columnSpacing={5} rowSpacing={4} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
-            <Card class="card">
+              <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Races Played</p>
                   <h5 class="textstats">3</h5>
@@ -120,39 +104,10 @@ class UserProfile extends React.Component {
             </Grid>
           </Grid>
         </Box>
-
-        </Box>
-
-
-      {/* Keyboard */}
-      <div>
-        <Box class="boxkeyboard">
-          <Box class="boxuser">
-            <Card class="cardtwo">
-              <CardContent class="cardcontenttwo">
-                <p class="textone">TEST YOUR KEYBOARD BEFORE PLAYING</p>
-                  {/* <input 
-                    value={this.state.input}
-                    placeholder={"Tap on the virtual keyboard to start"}
-                    onChange={this.onChangeInput}
-                  
-                  /> */}
-                
-              <Keyboard
-                  keyboardRef={r => (this.keyboard = r)}
-                  layoutName={this.state.layoutName}
-                  onChange={this.onChange}
-                  onKeyPress={this.onKeyPress}
-                />
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-      </div>
-      </React.Fragment>
-    );
-  }
+      </Box>
+      <Keyboardpage />
+    </React.Fragment>
+  );
 }
-
 
 export default UserProfile;
