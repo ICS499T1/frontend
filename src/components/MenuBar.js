@@ -20,7 +20,7 @@ const MenuBar = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/signUp">Sign up</Link>
+            <Link to="/signup">Sign up</Link>
           </li>
           <li>
             <Link to="/login">Log in</Link>
