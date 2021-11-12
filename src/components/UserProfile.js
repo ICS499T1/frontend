@@ -110,4 +110,8 @@ function UserProfile() {
   );
 }
 
+<<<<<<< HEAD
 export default UserProfile;
+=======
+export default UserProfile;
+>>>>>>> 78b3b38963abe77684bffce15cd509731f04d981
