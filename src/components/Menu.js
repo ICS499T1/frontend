@@ -1,54 +1,36 @@
 import React from "react";
+import { Link } from "react-router-dom"
 import "./Menu.css";
-import {Link} from 'react-router-dom';
 
-const MenuBar = () => {
+const Menu = () => {
   return (
     <nav className="header">
-        <ul>
-          <Link to="/">
-            <li className="logo"><b>SpaceRacer</b></li>
-          </Link>
-          <Link to="/">
-            <li className="links">Home</li>
-          </Link>
-          <Link to="/signin">
-            <li className="links">Sign In</li>
-          </Link>
-          <Link to="/signup">
-            <li className="links">Sign Up</li>
-          </Link>
-          <Link to="/leaderboard">
-            <li className="links">Leaderboard</li>
-          </Link>
-        </ul>
-    </nav>
 
+      <div className="nav-wrapper">
+        <a className="logo" href="/">
+          StartTyper
+        </a>
+        <input className="menu-btn" type="checkbox" id="menu-btn" />
+        <label className="menu-icon" htmlFor="menu-btn">
+          <span className="navicon"></span>
+        </label>
+
+        <ul className="menu">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/signUp">Sign up</Link>
+          </li>
+          <li>
+            <Link to="/login">Log in</Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
   );
 };
 
 
-// <nav className="header">
-//       <div className="nav-wrapper">
-//         <a className="logo" href="/">
-//           StartTyper
-//         </a>
-//         <input className="menu-btn" type="checkbox" id="menu-btn" />
-//         <label className="menu-icon" htmlFor="menu-btn">
-//           <span className="navicon"></span>
-//         </label>
+export default Menu;
 
-//         <ul className="menu">
-//           <li>
-//             <a href="/">Home</a>
-//           </li>
-//           <li>
-//             <a href="/sign up">Sign up</a>
-//           </li>
-//           <li>
-//             <a href="/login">Log in</a>
-//           </li>
-//         </ul>
-//       </div>
-//     </nav>
-export default MenuBar;

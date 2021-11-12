@@ -1,12 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
 
-nav {
-    margin: auto;
+
+/* header */
+/* .header {
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
+    position: fixed;
     width: 100%;
-    padding: 0px;
-    position: relative;
-    font-family: "Montserrat", sans-serif; 
-}
+    z-index: 3;
+} */
 
 .header ul {
     margin: 0;
