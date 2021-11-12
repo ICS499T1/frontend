@@ -5,7 +5,6 @@ import "./Menu.css";
 const Menu = () => {
   return (
     <nav className="header">
-
       <div className="nav-wrapper">
         <a className="logo" href="/">
           StartTyper
@@ -31,6 +30,4 @@ const Menu = () => {
   );
 };
 
-
 export default Menu;
-

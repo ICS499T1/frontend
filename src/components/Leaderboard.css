@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
+/* @import url("https://fonts.googleapis.com/css?family=Montserrat");
 
-body {  
+/* body {  
     font-family: "Montserrat", sans-serif; 
     background-image: url(../images/SignedInBackground.jpg);
-}
+} */
 
 span {
     min-width: 33%;
@@ -56,4 +56,4 @@ span {
 }
 .rows:last-child {
     border-radius: 0 0 5px 5px; 
-}
+} 

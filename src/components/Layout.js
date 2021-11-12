@@ -8,12 +8,14 @@ const Layout = (props) => {
         return (
             <React.Fragment>
                 <Menu />
+
                 <main className="main-content">
                     {props.children}
                 </main>
+
                 <Footer />
             </React.Fragment>
         );
 }
 
-export default Layout;
+export default Layout; 

@@ -1,0 +1,20 @@
+.login-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: #f4f4f4;
+  align-items: center;
+  overflow: hidden;
+  /* background-image: url("../images/loginImg.png"); */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.login-wrapper button{
+  margin-top: 30px;
+}
+
+.loginImg {
+  width: 100%;
+}

@@ -1,5 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
-
+.nav-wrapper {
+    margin: auto;
+    max-width: 1126px;
+    padding: 10px;
+}
 
 /* header */
 /* .header {
@@ -34,7 +37,7 @@
 .header .logo {
     display: block;
     float: left;
-    font-size: 2em;
+    font: normal 2em 'Cookie';
     padding: 10px 20px;
     text-decoration: none;
     color: #000;
@@ -110,6 +113,9 @@
 .header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
     top: 0;
 }
+
+
+
 
 /* 48em = 768px */
 @media (min-width: 48em) {
