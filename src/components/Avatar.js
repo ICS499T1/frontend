@@ -26,15 +26,19 @@ function stringAvatar(name) {
   return {
     sx: {
       bgcolor: stringToColor(name),
+      width: 32,
+      height: 32,
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    children: name.substr(0, 1).toUpperCase(),
   };
 }
 
-export default function BackgroundLetterAvatars() {
+function BackgroundLetterAvatars(username) {
   return (
     <Stack direction="row" spacing={2}>
-      <Avatar {...stringAvatar('Gina Bjork')} />
+      <Avatar {...stringAvatar(username)} />
     </Stack>
   );
 }
+
+export default BackgroundLetterAvatars;
