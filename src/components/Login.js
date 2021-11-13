@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from "@mui/material/Button"
+import Button from "@mui/material/Button";
+import axios from 'axios';
+import qs from 'qs';
 import './Login.css';
 
-async function loginUser(credentials) {
-    return fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
-}
-
-export default function Login({ setToken }) {
+export default function Login() {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
+    const data = {'username':username, 'password':password};
+
+    const options = {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        data: qs.stringify(data),
+        url: 'http://localhost:8080/login'
+      };
+
     const handleSubmit = async e => {
         e.preventDefault();
-        const token = await loginUser({
-            username,
-            password
+        axios(options).then(data => {
+            console.log(data);
+            localStorage.setItem('accesToken', data.accessToken);
         });
-        setToken(token);
+        
     }
 
     return(
@@ -40,13 +40,9 @@ export default function Login({ setToken }) {
                     <input type="password" onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div>
-                    <Button variant="contained">Submit</Button>
+                    <Button type="submit" variant="contained">Submit</Button>
                 </div>
             </form>
         </div>
     )
 }
-
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
-};

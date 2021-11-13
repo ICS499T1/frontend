@@ -3,7 +3,6 @@ import Keyboardpage from "../components/Keyboard.js";
 import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
 import Box from "@mui/material/Box";
-import Avatar from "../components/Avatar.js";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -22,7 +21,7 @@ function UserProfile() {
     const fetchInit = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: "gibjork", password: "gina123" }),
+      body: JSON.stringify({ username: "hinata", password: "sicksadworld" }),
     };
 
     fetch("http://localhost:8080/user/info", fetchInit)
