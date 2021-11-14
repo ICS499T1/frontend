@@ -21,7 +21,7 @@ const Body = () => {
       <header>
        <Router>
           <div>
-            <img class="imgcontainer" src={background} />
+            <img className="imgcontainer" alt="background" src={background} />
             <Button class="soloplay">Solo Play</Button>
             <Button class="multiplay">Multi Play</Button>
           </div>

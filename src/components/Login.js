@@ -5,13 +5,11 @@ import Button from "@mui/material/Button";
 import axios from 'axios';
 import qs from 'qs';
 import { successfulAuth } from '../services/AuthenticationService';
-import { useLocation } from 'react-router';
 import './Login.css';
 
 export default function Login() {
     let history = useHistory();
 
-    const lastLocation = useLocation();
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 

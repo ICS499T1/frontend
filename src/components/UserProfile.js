@@ -11,13 +11,13 @@ import CardContent from "@mui/material/CardContent";
 import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
-import tokenUnavailable from '../services/AuthenticationService';
+import tokenUnavailable, { tokenExpired } from '../services/AuthenticationService';
 
 function UserProfile() {
-
   localStorage.setItem('lastLocation', '/myprofile');
 
   let history = useHistory();
+  tokenExpired(history);
   tokenUnavailable(history);
 
   const [user, setUser] = useState({
@@ -39,8 +39,12 @@ function UserProfile() {
           numMultiGamesCompleted: result.userStats.numMultiGamesCompleted, bestRaceSpeed: result.userStats.bestRaceSpeed
         }
       });
+    }).catch(error => {
+      console.log("UserInfo ->", error)
     });
   }, []);
+
+  var username = user.username;
 
   return (
     <React.Fragment>
@@ -54,7 +58,7 @@ function UserProfile() {
               <Grid container columnSpacing={5} rowSpacing={3}>
                 <Grid item>
                   <div>
-                  {BackgroundLetterAvatars("Ksenia")}
+                  {BackgroundLetterAvatars(JSON.stringify(user.username))}
                   </div>
                 </Grid>
                 <Grid item xs={12} sm container>
