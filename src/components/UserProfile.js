@@ -11,36 +11,44 @@ import CardContent from "@mui/material/CardContent";
 import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
-import tokenUnavailable, { tokenExpired } from '../services/AuthenticationService';
 
 function UserProfile() {
   localStorage.setItem('lastLocation', '/myprofile');
 
   let history = useHistory();
-  tokenUnavailable(history);
+
+  const statusCode = useRef(null);
 
   const [user, setUser] = useState({
     username: null,
     userStats: {averageSpeed: null, racesWon: null, bestRaceSpeed: null, numMultiGamesCompleted: null}
   });
 
-  const options = {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
-    url: `http://localhost:8080/user/getuser?username=${localStorage.getItem('username')}`
-  };
-
   useEffect(() => {
-    axios(options).then(response => response.data).then(result => {
-      console.log(result);
+    const options = {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+      url: `http://localhost:8080/user/getuser?username=${localStorage.getItem('username')}`
+    };
+
+    axios(options).then(response => {
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        statusCode.current = response.status;
+        console.log("useEffect first then ->", statusCode.current)
+      }
+    }).then(result => {
+      if (statusCode.current === 403) {
+        console.log("useEffect second then ->", statusCode.current)
+      } else {
       setUser({username:result.username,
         userStats: {averageSpeed: result.userStats.averageSpeed, racesWon: result.userStats.racesWon, 
           numMultiGamesCompleted: result.userStats.numMultiGamesCompleted, bestRaceSpeed: result.userStats.bestRaceSpeed
         }
-      });
+      }); }
     }).catch(error => {
       console.log("UserInfo ->", error);
-      tokenExpired(history);
     });
   }, []);
 
