@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 import Button from "@mui/material/Button";
 import axios from 'axios';
 import qs from 'qs';
+import { successfulAuth } from '../services/AuthenticationService';
+import { useLocation } from 'react-router';
 import './Login.css';
 
 export default function Login() {
+    let history = useHistory();
+
+    const lastLocation = useLocation();
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -20,9 +26,13 @@ export default function Login() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        axios(options).then(data => {
-            console.log(data);
-            localStorage.setItem('accesToken', data.accessToken);
+        axios(options).then(response => {
+            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            if (response.data.accessToken) {
+                localStorage.setItem('username', jwt_decode(response.data.accessToken).sub);
+                successfulAuth(history);
+            }
         });
         
     }

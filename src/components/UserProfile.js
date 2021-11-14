@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import Keyboardpage from "../components/Keyboard.js";
 import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
@@ -9,34 +11,42 @@ import CardContent from "@mui/material/CardContent";
 import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
+import tokenUnavailable from '../services/AuthenticationService';
 
 function UserProfile() {
+
+  localStorage.setItem('lastLocation', '/myprofile');
+
+  let history = useHistory();
+  tokenUnavailable(history);
+
   const [user, setUser] = useState({
-    userStats: null,
+    username: null,
+    userStats: {averageSpeed: null, racesWon: null, bestRaceSpeed: null, numMultiGamesCompleted: null}
   });
 
-  const [username, setUsername] = useState("");
+  const options = {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+    url: `http://localhost:8080/user/getuser?username=${localStorage.getItem('username')}`
+  };
 
   useEffect(() => {
-    const fetchInit = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: "hinata", password: "sicksadworld" }),
-    };
-
-    fetch("http://localhost:8080/user/info", fetchInit)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("fetch: " + data);
-        setUsername(data.username);
+    axios(options).then(response => response.data).then(result => {
+      console.log(result);
+      setUser({username:result.username,
+        userStats: {averageSpeed: result.userStats.averageSpeed, racesWon: result.userStats.racesWon, 
+          numMultiGamesCompleted: result.userStats.numMultiGamesCompleted, bestRaceSpeed: result.userStats.bestRaceSpeed
+        }
       });
+    });
   }, []);
 
   return (
     <React.Fragment>
       <Box class="bigbox">
         <div>
-          <h1 class="title"> Hello, Welcome back!</h1>
+          <h1 class="title"> Welcome back, {user.username}!</h1>
         </div>
         <Box class="boxuser">
           <Card class="card">
@@ -44,13 +54,13 @@ function UserProfile() {
               <Grid container columnSpacing={5} rowSpacing={3}>
                 <Grid item>
                   <div>
-                  {BackgroundLetterAvatars(username)}
+                  {BackgroundLetterAvatars("Ksenia")}
                   </div>
                 </Grid>
                 <Grid item xs={12} sm container>
                   <Grid item>
                     <div>
-                      <p>Username: {username} </p>
+                      <p>Username: {user.username} </p>
                       <Link>Edit Profile</Link>
                     </div>
                   </Grid>
@@ -67,7 +77,7 @@ function UserProfile() {
               <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Average Speed</p>
-                  <h5 class="textstats">12</h5>
+                  <h5 class="textstats">{user.userStats.averageSpeed}</h5>
                 </CardContent>
               </Card>
             </Grid>
@@ -75,7 +85,7 @@ function UserProfile() {
               <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Races Won</p>
-                  <h5 class="textstats">50</h5>
+                  <h5 class="textstats">{user.userStats.racesWon}</h5>
                 </CardContent>
               </Card>
             </Grid>
@@ -89,7 +99,7 @@ function UserProfile() {
               <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Races Played</p>
-                  <h5 class="textstats">3</h5>
+                  <h5 class="textstats">{user.userStats.numMultiGamesCompleted}</h5>
                 </CardContent>
               </Card>
             </Grid>
@@ -97,7 +107,7 @@ function UserProfile() {
               <Card class="card">
                 <CardContent class="cardcontent">
                   <p class="subtitles">Highest Score</p>
-                  <h5 class="textstats">169</h5>
+                  <h5 class="textstats">{user.userStats.bestRaceSpeed}</h5>
                 </CardContent>
               </Card>
             </Grid>

@@ -15,6 +15,7 @@ const Img = styled("img")({
 
 
 const Body = () => {
+  localStorage.setItem('lastLocation', '/');
   return (
     <React.Fragment>
       <header>
@@ -49,7 +50,7 @@ const Body = () => {
         <Box class="boxone">
           <Grid container columnSpacing={5} justify="flex-start">
             <Grid item xs={12} sm={12} md={4} lg={4} textAlign="center">
-              <p class="textBar">2+ Million Users</p>
+              <p class="textBar">2+ Users</p>
             </Grid>
             <Grid
               item
