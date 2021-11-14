@@ -17,7 +17,6 @@ function UserProfile() {
   localStorage.setItem('lastLocation', '/myprofile');
 
   let history = useHistory();
-  tokenExpired(history);
   tokenUnavailable(history);
 
   const [user, setUser] = useState({
@@ -40,11 +39,10 @@ function UserProfile() {
         }
       });
     }).catch(error => {
-      console.log("UserInfo ->", error)
+      console.log("UserInfo ->", error);
+      tokenExpired(history);
     });
   }, []);
-
-  var username = user.username;
 
   return (
     <React.Fragment>
