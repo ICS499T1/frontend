@@ -18,7 +18,7 @@ import './Signup.css'
 
 export default function Signup({ setToken }) {
     let inputPassword = '';
-     let confirmPassword = '';
+    let confirmPassword = '';
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -52,7 +52,9 @@ export default function Signup({ setToken }) {
                 </label>
                 <label>
                     <p>Password</p>
-                    <input type="password" onChange={e => this.inputPassword = e.target.value}/>
+                    <input type="password" 
+                     //onChange={e => this.inputPassword = e.target.value}
+                    />
                 </label>
                 <label>
                     <p>Confirm Password</p>

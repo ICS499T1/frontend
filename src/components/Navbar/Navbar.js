@@ -1,13 +1,15 @@
-import { Box, Container, AppBar, CssBaseline, Toolbar, Typography, SvgIcon } from "@mui/material";
+import { Button, ButtonGroup, Container, AppBar, CssBaseline, Toolbar, Typography, SvgIcon } from "@mui/material";
 import React from "react";
 import { ReactComponent as Logo } from "../../images/C.B.C_Rocket.svg";
 import { Link } from "react-router-dom"
-import "./Navbar.css";
+import { useNavbarStyle } from "../../hooks/useNavbarStyle"
 
 const Navbar = () => {
+  const classes = useNavbarStyle();
+
   return (
     // <Box sx={{ flexGrow: 1}}>
-      <AppBar color="" position="static">
+      <AppBar position="static">
         <CssBaseline />
         <Toolbar>
           <SvgIcon sx={{
@@ -19,8 +21,14 @@ const Navbar = () => {
           <Typography variant="h4">
             Space Racer
           </Typography>
+          <section className={classes.rightToolbar}>
             <Container>
-              <Link to="/">
+              <ButtonGroup>
+                <Button component={Link} to="/" variant="text" color="inherit">Home</Button>
+                <Button component={Link} to="/signUp" variant="text" color="inherit">Sign Up</Button>
+                <Button component={Link} to="/login" variant="text" color="inherit">Login</Button>
+              </ButtonGroup>
+              {/* <Link to="/">
                 Home
               </Link>
               <Link to="/signUp">
@@ -31,8 +39,9 @@ const Navbar = () => {
               </Link>
               <Link to="/faq">
                 FAQ
-              </Link>
+              </Link> */}
             </Container>
+          </section>
         </Toolbar>
       </AppBar>
     // </Box>

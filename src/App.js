@@ -1,8 +1,8 @@
 import "./App.css";
 import React, { Component } from "react";
-import Login from "./components/Login.js";
-import Signup from "./components/Signup.js";
-import Body from "./components/Body.js";
+import Login from "./pages/Login.js";
+import Signup from "./pages/Signup.js";
+import Body from "./pages/Body.js";
 import Leaderboard from "./components/Leaderboard";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
