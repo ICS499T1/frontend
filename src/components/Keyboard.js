@@ -49,11 +49,11 @@ class Keyboardcomp extends Component {
 
       {/* Keyboard */}
       <div>
-        <Box class="boxkeyboard">
-          <Box class="boxuser">
-            <Card class="cardtwo">
-              <CardContent class="cardcontenttwo">
-                <p class="textone">TEST YOUR KEYBOARD BEFORE PLAYING</p>
+        <Box className="boxkeyboard">
+          <Box className="boxuser">
+            <Card className="cardtwo">
+              <CardContent className="cardcontenttwo">
+                <p className="textone">TEST YOUR KEYBOARD BEFORE PLAYING</p>
                   {/* <input 
                     value={this.state.input}
                     placeholder={"Tap on the virtual keyboard to start"}

@@ -54,13 +54,13 @@ function UserProfile() {
 
   return (
     <React.Fragment>
-      <Box class="bigbox">
+      <Box className="bigbox">
         <div>
-          <h1 class="title"> Welcome back, {user.username}!</h1>
+          <h1 className="title"> Welcome back, {user.username}!</h1>
         </div>
-        <Box class="boxuser">
-          <Card class="card">
-            <CardContent class="cardcontent">
+        <Box className="boxuser">
+          <Card className="card">
+            <CardContent className="cardcontent">
               <Grid container columnSpacing={5} rowSpacing={3}>
                 <Grid item>
                   <div>
@@ -81,21 +81,21 @@ function UserProfile() {
         </Box>
 
         {/* Stats display row 1 */}
-        <Box class="boxstats">
+        <Box className="boxstats">
           <Grid container columnSpacing={5} rowSpacing={4} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Card class="card">
-                <CardContent class="cardcontent">
-                  <p class="subtitles">Average Speed</p>
-                  <h5 class="textstats">{user.userStats.averageSpeed}</h5>
+              <Card className="card">
+                <CardContent className="cardcontent">
+                  <p className="subtitles">Average Speed</p>
+                  <h5 className="textstats">{user.userStats.averageSpeed}</h5>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Card class="card">
-                <CardContent class="cardcontent">
-                  <p class="subtitles">Races Won</p>
-                  <h5 class="textstats">{user.userStats.racesWon}</h5>
+              <Card className="card">
+                <CardContent className="cardcontent">
+                  <p className="subtitles">Races Won</p>
+                  <h5 className="textstats">{user.userStats.racesWon}</h5>
                 </CardContent>
               </Card>
             </Grid>
@@ -103,21 +103,21 @@ function UserProfile() {
         </Box>
 
         {/* Stats display row 2 */}
-        <Box class="boxstats">
+        <Box className="boxstats">
           <Grid container columnSpacing={5} rowSpacing={4} justify="flex-start">
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Card class="card">
-                <CardContent class="cardcontent">
-                  <p class="subtitles">Races Played</p>
-                  <h5 class="textstats">{user.userStats.numMultiGamesCompleted}</h5>
+              <Card className="card">
+                <CardContent className="cardcontent">
+                  <p className="subtitles">Races Played</p>
+                  <h5 className="textstats">{user.userStats.numMultiGamesCompleted}</h5>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Card class="card">
-                <CardContent class="cardcontent">
-                  <p class="subtitles">Highest Score</p>
-                  <h5 class="textstats">{user.userStats.bestRaceSpeed}</h5>
+              <Card className="card">
+                <CardContent className="cardcontent">
+                  <p className="subtitles">Highest Score</p>
+                  <h5 className="textstats">{user.userStats.bestRaceSpeed}</h5>
                 </CardContent>
               </Card>
             </Grid>

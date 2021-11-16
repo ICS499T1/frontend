@@ -5,10 +5,10 @@ const Users = ({ users }) => {
     <div>
       <center><h1>User List</h1></center>
       {users.map((user) => (
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{user.username}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{user.userID}</h6>
+        <div className="card">
+          <div className="card-body">
+            <h5 className="card-title">{user.username}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{user.userID}</h6>
           </div>
         </div>
       ))}

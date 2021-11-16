@@ -1,35 +1,55 @@
 import React from "react";
 import "./Body.css";
 import { styled } from "@mui/material/styles";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button"
 import secondaryImage from "../images/Type.png";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import Paper from '@mui/material/Paper'
 import {BrowserRouter as Router, Link} from "react-router-dom";
 import ImageBackground from "../components/ImageBackground";
-import background from "../images/Background.png";
+import background from "../images/backgroundHD.jpg";
+import { Container } from "semantic-ui-react";
+import Leaderboard from "../components/Leaderboards/Leaderboard";
 
 
 const Img = styled("img")({
   maxWidth: "400px",
 });
 
+const styles = {
+  paperContainer: {
+    height: 800,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundImage: `url(${background})`,
+    backgroundColor: '#2E2F43'
+  }
+};
 
 const Body = () => {
   return (
     <React.Fragment>
-      
-        {/* <header>
-        <Router>
-            <div>
+  
+            {/* <Box>
               <img className="imgcontainer" alt="background" src={background} />
-              <Button class="soloplay">Solo Play</Button>
-              <Button class="multiplay">Multi Play</Button>
-            </div>
-          </Router>
-        </header> */}
-        <ImageBackground image={background}/>
-          <Box class="whitebox">
+              <Button variant="contained">Solo Play</Button>
+              <Button>Multi Play</Button>
+            </Box> */}
+
+          <Paper style={styles.paperContainer}>
+            <Grid container columnSpacing={10} justifyContent="center" alignItems="flex-end">
+              <Grid item>
+                <Button variant="contained">Practice</Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained">Play With Friends</Button>
+              </Grid>
+            </Grid>
+          </Paper>
+          <Leaderboard/>
+          <Box className="whitebox">
             <Grid container columnSpacing={5} rowSpacing={5} justify="flex-start">
               <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Img src={secondaryImage} />
@@ -37,22 +57,22 @@ const Body = () => {
               <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Grid item>
                   <div>
-                    <p class="textone">WHAT IS TYPINGGAME?</p>
-                    <h3 class="text">
+                    <p className="textone">WHAT IS TYPINGGAME?</p>
+                    <h3 className="text">
                       TypingGame is the most effective way to improve typing
                       skills.
                     </h3>
-                    <Button class="startnowbutton">Get Started Now</Button>
+                    <Button className="startnowbutton">Get Started Now</Button>
                   </div>
                 </Grid>
               </Grid>
             </Grid>
           </Box> 
 
-          <Box class="boxone">
+          <Box className="boxone">
             <Grid container columnSpacing={5} justify="flex-start">
               <Grid item xs={12} sm={12} md={4} lg={4} textAlign="center">
-                <p class="textBar">2+ Users</p>
+                <p className="textBar">2+ Users</p>
               </Grid>
               <Grid
                 item
@@ -63,7 +83,7 @@ const Body = () => {
                 order={{ xs: 2, sm: 3 }}
                 textAlign="center"
               >
-                <p class="textBar">Individual and Group Races</p>
+                <p className="textBar">Individual and Group Races</p>
               </Grid>
               <Grid
                 item
@@ -74,15 +94,15 @@ const Body = () => {
                 order={{ xs: 2, sm: 3 }}
                 textAlign="center"
               >
-                <p class="textBar">Interactive Experience</p>
+                <p className="textBar">Interactive Experience</p>
               </Grid>
             </Grid>
           </Box>
 
-          <Box class="boxtwo">
+          <Box className="boxtwo">
             <Grid container columnSpacing={5} rowSpacing={5} justify="flex-start">
               <Grid item xs={12} sm={12} md={6} lg={6}>
-                <h2 class="subtitle">How do I get started?</h2>
+                <h2 className="subtitle">How do I get started?</h2>
                 <p>
                   Keep practicing until you get all five starts, it really doesn't
                   take much to learn, a few minutes a day for one or two weeks and
@@ -90,7 +110,7 @@ const Body = () => {
                 </p>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6}>
-                <h2 class="subtitle">Do I need an account?</h2>
+                <h2 className="subtitle">Do I need an account?</h2>
                 <p>
                   You don't need to create an account. You can play solo or
                   multiplayer games anonimously. However, you might consider

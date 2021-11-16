@@ -8,11 +8,7 @@ const Layout = ({ children }) => {
         return (
             <React.Fragment>
                 <Menu />
-
-                <main className="main-content">
-                    {children}
-                </main>
-
+                {children}
                 <Footer />
             </React.Fragment>
         );

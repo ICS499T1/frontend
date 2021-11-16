@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import Login from "./pages/Login.js";
 import Signup from "./pages/Signup.js";
 import Body from "./pages/Body.js";
-import Leaderboard from "./components/Leaderboard";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
 import About from "./components/About";
@@ -12,10 +11,12 @@ import UserProfile from "./components/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 
-const darkTheme = createTheme({
+const theme = createTheme({
   palette: {
-    mode: 'dark',
-  },
+    primary: {
+      main: '#2E2F43'
+    }
+  }
 });
 
 class App extends Component {
@@ -34,14 +35,13 @@ class App extends Component {
 
   render() {
     return (
-      <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={theme}>
       <Router>
           <Layout>
           <Switch>
             <Route path="/" exact component={Body} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
-            <Route path="/leaderboard" component={Leaderboard} />
             <Route path="/termsandconditions" component={Terms} />
             <Route path="/tutorials" component={Tutorials} />
             <Route path="/aboutus" component={About} />
