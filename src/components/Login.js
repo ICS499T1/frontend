@@ -29,7 +29,6 @@ export default function Login() {
             localStorage.setItem('refreshToken', response.data.refreshToken);
             if (response.data.accessToken) {
                 localStorage.setItem('username', jwt_decode(response.data.accessToken).sub);
-                successfulAuth(history);
             }
         });
         

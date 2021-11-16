@@ -1,7 +1,5 @@
 import "./App.css";
 import React, { Component } from "react";
-import Footer from "./components/Footer"
-import Menu from './components/Menu.js';
 import Login from "./components/Login.js";
 import Signup from "./components/Signup.js";
 import Body from "./components/Body.js";
@@ -12,7 +10,13 @@ import About from "./components/About";
 import Layout from './components/Layout'
 import UserProfile from "./components/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material';
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 class App extends Component {
  // state = {
@@ -30,6 +34,7 @@ class App extends Component {
 
   render() {
     return (
+      <ThemeProvider theme={darkTheme}>
       <Router>
           <Layout>
           <Switch>
@@ -44,6 +49,7 @@ class App extends Component {
           </Switch>
           </Layout>
       </Router>
+      </ThemeProvider>
     );
   }
 }

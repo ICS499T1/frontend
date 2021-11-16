@@ -15,7 +15,6 @@ const Img = styled("img")({
 
 
 const Body = () => {
-  localStorage.setItem('lastLocation', '/');
   return (
     <React.Fragment>
       <header>
