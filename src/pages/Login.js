@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import { Button, Typography} from "@mui/material";
+import { Button, Typography, TextField, Grid, InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import axios from 'axios';
 import qs from 'qs';
-import { successfulAuth } from '../services/AuthenticationService';
 import './Login.css';
 import Background from "../components/Background";
 import LoginImage from "../images/signinimage.png";
 
 export default function Login() {
-    let history = useHistory();
-
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
     const data = {'username':username, 'password':password};
 
@@ -38,24 +40,27 @@ export default function Login() {
 
     return(
         <React.Fragment>
-        <Background imgPath={LoginImage}>
-        <div className="login-wrapper">
-            <Typography variant="h4" >Please Log In</Typography>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={e => setUserName(e.target.value)} />
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={e => setPassword(e.target.value)} />
-                </label>
-                <div>
-                    <Button type="submit" variant="contained">Submit</Button>
-                </div>
-            </form>
-        </div>
-        </Background>
+            <Background imgPath={LoginImage}>
+                <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
+                    <Grid item>
+                        <Typography variant="h3" color="common.white">Please Log In</Typography>
+                    </Grid>
+                    <Grid item>
+                        <TextField label="Username" variant="filled" style={{backgroundColor: "white"}} onChange={e => setUserName(e.target.value)} />
+                    </Grid>
+                    <Grid item>
+                        <TextField type={showPassword ? "text" : "password"} label="Password" variant="filled" style={{backgroundColor: "white"}} onChange={e => setPassword(e.target.value)} 
+                            InputProps={{endAdornment: (
+                            <InputAdornment position="end">
+                            <IconButton size="small" aria-label="toggle password visibility" onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
+                            </InputAdornment>)
+                        }}/>
+                    </Grid>
+                    <Grid item>
+                        <Button type="submit" variant="contained" onSubmit={handleSubmit}>Submit</Button>
+                    </Grid>
+                </Grid>
+            </Background>
        </React.Fragment>
     )
 }

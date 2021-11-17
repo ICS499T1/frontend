@@ -1,5 +1,7 @@
 import React, {useState} from "react";
-import { Button, Typography, TextField} from "@mui/material";
+import { Button, Typography, TextField, Grid, InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import PropTypes from "prop-types";
 import './Signup.css'
 import Background from "../components/Background";
@@ -19,24 +21,20 @@ import SignupImage from "../images/signupimage.png"
 //}
 
 export default function Signup({ setToken }) {
-    let inputPassword = '';
-    let confirmPassword = '';
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassowrd, setConfirmPassword] = useState(false);
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
-    function checkPassword(inputPassword, confirmPassword){
-        if(inputPassword === confirmPassword){
-            this.setPassword(confirmPassword)
-        }
-    }
-
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = () => setShowPassword(!showPassword);
+    const handleClickShowConfirmPassword = () => setConfirmPassword(!showConfirmPassowrd);
+    const handleMouseDownConfirmPassword = () => setConfirmPassword(!showConfirmPassowrd);
     const handleSubmit = async e => {
         e.preventDefault();
         const token = await Signup({
             username,
             password,
-//            confirm password
-
         });
         setToken(token);
     }
@@ -44,29 +42,33 @@ export default function Signup({ setToken }) {
     return(
     <React.Fragment>
         <Background imgPath={SignupImage}>
-        <div className="signup-wrapper">
-            <Typography variant="h4" >Create Your Account</Typography>
-            <form onSubmit={handleSubmit}>
-            <TextField label="Outlined secondary" color="secondary" variant="filled" />
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={e => setUserName(e.target.value)} />
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" 
-                     //onChange={e => this.inputPassword = e.target.value}
-                    />
-                </label>
-                <label>
-                    <p>Confirm Password</p>
-                    <input type="text" onChange={e => confirmPassword(this.password, e.target.value)} />
-                </label>
-                <div>
-                    <Button variant="contained">Sign Up</Button>
-                </div>
-            </form>
-        </div>
+            <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
+                <Grid item>
+                    <Typography variant="h3" color="common.white">Create Your Account</Typography>
+                </Grid>
+                <Grid item>
+                    <TextField label="Username" variant="filled" style={{backgroundColor: "white"}} onChange={e => setUserName(e.target.value)} />
+                </Grid>
+                <Grid item>
+                <TextField type={showPassword ? "text" : "password"} label="Password" variant="filled" style={{backgroundColor: "white"}} onChange={e => setPassword(e.target.value)} 
+                            InputProps={{endAdornment: (
+                            <InputAdornment position="end">
+                            <IconButton size="small" aria-label="toggle password visibility" onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
+                            </InputAdornment>)
+                            }}/>
+                </Grid>
+                <Grid item>
+                <TextField type={showConfirmPassowrd ? "text" : "password"} label="Confirm Password" variant="filled" style={{backgroundColor: "white"}} onChange={e => setPassword(e.target.value)} 
+                            InputProps={{endAdornment: (
+                            <InputAdornment position="end">
+                            <IconButton size="small" aria-label="toggle password visibility" onClick={handleClickShowConfirmPassword}onMouseDown={handleMouseDownConfirmPassword}> {showConfirmPassowrd ? <Visibility /> : <VisibilityOff />}</IconButton>
+                            </InputAdornment>)
+                        }}/>
+                </Grid>
+                <Grid item>
+                    <Button type="submit" variant="contained" onSubmit={handleSubmit}>Submit</Button>
+                </Grid>
+            </Grid>
         </Background>
     </React.Fragment>
     )
@@ -75,13 +77,3 @@ export default function Signup({ setToken }) {
 Signup.propTypes = {
     setToken: PropTypes.func.isRequired
 };
-
-//function Signup() {
-//  return (
-//    <div>
-//      <h1>Sign Up Page</h1>
-//    </div>
-//  );
-//}
-//
-//export default Signup;
