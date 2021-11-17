@@ -10,7 +10,7 @@ import './Login.css';
 import Background from "../components/Background";
 import LoginImage from "../images/signinimage.png";
 
-export default function Login() {
+const Login = () => {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [showPassword, setShowPassword] = useState(false);
@@ -41,26 +41,30 @@ export default function Login() {
     return(
         <React.Fragment>
             <Background imgPath={LoginImage}>
-                <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
-                    <Grid item>
-                        <Typography variant="h3" color="common.white">Please Log In</Typography>
+                <form onSubmit={handleSubmit}>
+                    <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
+                        <Grid item>
+                            <Typography variant="h3" color="common.white">Please Log In</Typography>
+                        </Grid>
+                        <Grid item>
+                            <TextField required="true" label="Username" variant="filled" style={{backgroundColor: "white"}} onChange={e => setUserName(e.target.value)} />
+                        </Grid>
+                        <Grid item>
+                            <TextField required="true" type={showPassword ? "text" : "password"} label="Password" variant="filled" style={{backgroundColor: "white"}} onChange={e => setPassword(e.target.value)} 
+                                InputProps={{endAdornment: (
+                                <InputAdornment position="end">
+                                <IconButton size="small" onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
+                                </InputAdornment>)
+                            }}/>
+                        </Grid>
+                        <Grid item>
+                            <Button type="submit" variant="contained">Submit</Button>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <TextField label="Username" variant="filled" style={{backgroundColor: "white"}} onChange={e => setUserName(e.target.value)} />
-                    </Grid>
-                    <Grid item>
-                        <TextField type={showPassword ? "text" : "password"} label="Password" variant="filled" style={{backgroundColor: "white"}} onChange={e => setPassword(e.target.value)} 
-                            InputProps={{endAdornment: (
-                            <InputAdornment position="end">
-                            <IconButton size="small" aria-label="toggle password visibility" onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
-                            </InputAdornment>)
-                        }}/>
-                    </Grid>
-                    <Grid item>
-                        <Button type="submit" variant="contained" onSubmit={handleSubmit}>Submit</Button>
-                    </Grid>
-                </Grid>
+                </form>
             </Background>
        </React.Fragment>
     )
 }
+
+export default Login
