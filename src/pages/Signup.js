@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Button from "@mui/material/Button";
+import { Button, Typography, TextField} from "@mui/material";
 import PropTypes from "prop-types";
 import './Signup.css'
 import Background from "../components/Background";
@@ -45,9 +45,9 @@ export default function Signup({ setToken }) {
     <React.Fragment>
         <Background imgPath={SignupImage}>
         <div className="signup-wrapper">
-            {/* <img class="imgcontainer" src={background} /> */}
-            <h1>Please Sign Up</h1>
+            <Typography variant="h4" >Create Your Account</Typography>
             <form onSubmit={handleSubmit}>
+            <TextField label="Outlined secondary" color="secondary" variant="filled" />
                 <label>
                     <p>Username</p>
                     <input type="text" onChange={e => setUserName(e.target.value)} />

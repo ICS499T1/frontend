@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import Button from "@mui/material/Button";
+import { Button, Typography} from "@mui/material";
 import axios from 'axios';
 import qs from 'qs';
 import { successfulAuth } from '../services/AuthenticationService';
 import './Login.css';
 import Background from "../components/Background";
-import LoginImage from "../images/signinimage.png"
+import LoginImage from "../images/signinimage.png";
 
 export default function Login() {
     let history = useHistory();
@@ -40,7 +40,7 @@ export default function Login() {
         <React.Fragment>
         <Background imgPath={LoginImage}>
         <div className="login-wrapper">
-            <h1>Please Log In</h1>
+            <Typography variant="h4" >Please Log In</Typography>
             <form onSubmit={handleSubmit}>
                 <label>
                     <p>Username</p>
