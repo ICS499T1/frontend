@@ -34,14 +34,14 @@ const Body = () => {
                 <Button size="large" variant="contained" style={styles.createButton}>Create Game</Button>
                 <Button size="large" variant="contained" style={styles.joinButton}>Join Game</Button> */}
                 <Grid item>
-                    <Button size="large" variant="contained">Practice</Button>
+                    <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>
                 </Grid>
                 <Grid item>
-                    <Button size="large" variant="contained">Create Game</Button>
+                    <Button component={Link} to="/multiplay" size="large" variant="contained">Play with Friends</Button>
                 </Grid>
-                <Grid item>
-                    <Button size="large" variant="contained">Join Game</Button>
-                </Grid>
+                {/* <Grid item>
+                    <Button component={Link} to="/multiplay" size="large" variant="contained">Join Game</Button>
+                </Grid> */}
                 {/* <Grid item>
                   <CustomButton name="Practice" top="45%" right="0%" left="20%" bottom="0%"/>
                 </Grid>

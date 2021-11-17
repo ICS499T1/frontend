@@ -1,0 +1,76 @@
+backgroundpage {
+  color: white;
+  min-height: auto;
+  max-width: auto;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.cardtext {
+  background-color: #2E2F43;
+  opacity: 90%;
+  border-radius: 25px;
+  min-height: auto;
+  /* max-width: 900px; */
+  position: relative;
+  z-index: 1;
+  /* overflow: hidden; */
+}
+
+.cardTwo {
+  padding: 30px;
+  /* min-height: auto;
+  max-width: auto; */
+  position: relative;
+  z-index: 1;
+  /* overflow: hidden; */
+}
+
+.boxgame{
+  padding-left: 85px;
+  padding-right: 85px;
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+.boxcard{
+  padding-left: 85px;
+  padding-right: 85px;
+}
+
+.startbutton {
+    font-weight: bold;
+    font-size: xx-large;
+    width: fit-content;
+    color: #ffffff;
+    background-color: rgb(196, 85, 60);
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.paragraph {
+  color: white;
+  max-width: 800px;
+  line-height: 27px;
+}
+
+.buttoncard{
+  padding: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.countdown {
+  font-size: 150px;
+  color: rgb(196, 85, 60);
+  padding: 30px;
+  text-align: center;
+  position: relative;
+}

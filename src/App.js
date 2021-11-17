@@ -8,6 +8,8 @@ import Tutorials from "./components/Tutorial";
 import About from "./components/About";
 import Layout from './components/Layout'
 import UserProfile from "./components/UserProfile";
+import SoloPlay from "./pages/Soloplay.js";
+import MultiPlay from "./pages/Multiplay.js";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 
@@ -46,6 +48,8 @@ class App extends Component {
             <Route path="/tutorials" component={Tutorials} />
             <Route path="/aboutus" component={About} />
             <Route path="/myprofile" component={UserProfile} />
+            <Route path="/soloplay" component={SoloPlay} />
+            <Route path="/multiplay" component={MultiPlay} />
           </Switch>
           </Layout>
       </Router>
