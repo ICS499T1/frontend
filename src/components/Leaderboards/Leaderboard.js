@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import { Tab, Box, Tabs, TableCell, TableContainer, Paper, Table, TableRow, TableHead, TableBody } from '@mui/material';
+import { Tab, Box, Tabs  } from '@mui/material';
 import PropTypes from 'prop-types';
-import BackgroundLetterAvatars from '../../components/Avatar.js'
 import './Leaderboard.css';
 import LeaderboardTable from './LeaderboardTable.js';
 

@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Container, AppBar, CssBaseline, Toolbar, Typography, SvgIcon } from "@mui/material";
 import React from "react";
+import Grid from "@mui/material/Grid";
 import { ReactComponent as Logo } from "../../images/C.B.C_Rocket.svg";
 import { Link } from "react-router-dom"
 import { useNavbarStyle } from "../../hooks/useNavbarStyle"
@@ -9,6 +10,7 @@ const Navbar = () => {
 
   return (
     // <Box sx={{ flexGrow: 1}}>
+    <Grid container>
       <AppBar position="static">
         <CssBaseline />
         <Toolbar>
@@ -44,6 +46,7 @@ const Navbar = () => {
           </section>
         </Toolbar>
       </AppBar>
+    </Grid>
     // </Box>
 
 

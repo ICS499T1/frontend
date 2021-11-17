@@ -1,6 +1,5 @@
 import axios from 'axios';
 import qs from 'qs';
-import { useHistory } from 'react-router-dom';
 
 const API_URL = 'http://localhost:8080'
 

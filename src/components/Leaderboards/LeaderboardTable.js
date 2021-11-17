@@ -3,7 +3,7 @@ import { Tab, Box, Tabs, TableCell, TableContainer, Paper, Table, TableRow, Tabl
 const LeaderboardTable = ({table, comparisonType}) => {
     return (
     <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: '50%' }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Rank</TableCell>
