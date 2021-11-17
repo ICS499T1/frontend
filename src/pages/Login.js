@@ -6,6 +6,8 @@ import axios from 'axios';
 import qs from 'qs';
 import { successfulAuth } from '../services/AuthenticationService';
 import './Login.css';
+import Background from "../components/Background";
+import LoginImage from "../images/signinimage.png"
 
 export default function Login() {
     let history = useHistory();
@@ -35,6 +37,8 @@ export default function Login() {
     }
 
     return(
+        <React.Fragment>
+        <Background imgPath={LoginImage}>
         <div className="login-wrapper">
             <h1>Please Log In</h1>
             <form onSubmit={handleSubmit}>
@@ -51,5 +55,7 @@ export default function Login() {
                 </div>
             </form>
         </div>
+        </Background>
+       </React.Fragment>
     )
 }

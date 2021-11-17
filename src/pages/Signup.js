@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import PropTypes from "prop-types";
 import './Signup.css'
+import Background from "../components/Background";
+import SignupImage from "../images/signupimage.png"
 // import background from '../images/BackgroundTwo.png';
 
 
@@ -41,7 +43,7 @@ export default function Signup({ setToken }) {
 
     return(
     <React.Fragment>
-
+        <Background imgPath={SignupImage}>
         <div className="signup-wrapper">
             {/* <img class="imgcontainer" src={background} /> */}
             <h1>Please Sign Up</h1>
@@ -65,6 +67,7 @@ export default function Signup({ setToken }) {
                 </div>
             </form>
         </div>
+        </Background>
     </React.Fragment>
     )
 }
