@@ -1,5 +1,5 @@
 const styles = theme => ({
   textField: {
-    color: "white";
+    color: "white"
   }
 })

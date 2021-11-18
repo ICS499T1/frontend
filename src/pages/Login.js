@@ -6,7 +6,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import './Login.css';
 import Background from "../components/Background";
 import LoginImage from "../images/signinimage.png";
-import { useAuth } from '../hooks/useAuth';
+import { useAuthentication } from '../hooks/useAuthentication';
 
 const Login = () => {
     const [username, setUserName] = useState();
@@ -19,7 +19,7 @@ const Login = () => {
     const data = {'username':username, 'password':password};
 
 
-    const { login, authed } = useAuth();
+    const { login, authed } = useAuthentication();
 
     const history = useHistory();
 
@@ -37,7 +37,7 @@ const Login = () => {
     const handleSubmit = async e => {
         e.preventDefault();
         let returnVal = await login(username, password);
-        if (returnVal == 403) {
+        if (returnVal === 403) {
             setError(returnVal);
             return;
         };
@@ -60,8 +60,8 @@ const Login = () => {
                         <Grid item>
                             <TextField required={true} 
                                         label="Username" 
-                                        error={error == 403} 
-                                        helperText={error == 403 && "Incorrect credentials"}
+                                        error={error === 403} 
+                                        helperText={error === 403 && "Incorrect credentials"}
                                         variant="filled" 
                                         style={{backgroundColor: "white"}} 
                                         onChange={handleUsernameChange} />
@@ -69,10 +69,10 @@ const Login = () => {
                         <Grid item>
                             <TextField required={true} 
                                         type={showPassword ? "text" : "password"} 
-                                        error={error == 403} 
+                                        error={error === 403} 
                                         label="Password" variant="filled" 
                                         style={{backgroundColor: "white"}} 
-                                        helperText={error == 403 && "Incorrect credentials"}
+                                        helperText={error === 403 && "Incorrect credentials"}
                                         onChange={handlePasswordChange} 
                                         InputProps={{endAdornment: (
                                         <InputAdornment position="end">

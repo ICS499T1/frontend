@@ -1,14 +1,14 @@
 // ProtectedRoute.tsx 
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthentication } from "../../hooks/useAuthentication";
 
 // We are taking in the component that should be rendered if the user is authed
 // We are also passing the rest of the props to the <Route /> component such as
 // exact & the path
 const ProtectedRoute = ({ component: Component, ...rest }) => {
 	 // Getting the value from our cool custom hook
-   const { authed } = useAuth();
+   const { authed } = useAuthentication();
 
    return (
       <Route

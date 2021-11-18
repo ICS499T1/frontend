@@ -4,11 +4,11 @@ import Grid from "@mui/material/Grid";
 import { ReactComponent as Logo } from "../../images/C.B.C_Rocket.svg";
 import { Link } from "react-router-dom";
 import { useNavbarStyle } from "../../hooks/useNavbarStyle";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthentication } from "../../hooks/useAuthentication";
 
 const Navbar = () => {
   const classes = useNavbarStyle();
-  const { logout, authed } = useAuth();
+  const { logout, authed } = useAuthentication();
 
   return (
     // <Box sx={{ flexGrow: 1}}>

@@ -1,9 +1,8 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, createContext, useContext } from "react";
 import axios from 'axios';
 import qs from 'qs';
 
-// Create the context 
-const AuthContext = createContext(null);
+const AuthenticationContext = createContext(null);
 
 const API_URL = 'http://localhost:8080';
 
@@ -11,10 +10,8 @@ export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username';
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken';
 export const REFRESH_TOKEN_ATTRIBUTE = 'refreshToken';
 
-export const AuthProvider = ({ children }) => {
+export const AuthenticationProvider = ({ children }) => {
 
-	 // Using the useState hook to keep track of the value authed (if a 
-   // user is logged in)
    const [authed, setAuthed] = useState((localStorage.getItem('accessToken') ? true : false));
 
    const login = async (username, password) => {
@@ -41,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         };
 
         return axios(options)
-        .then(response => response.status)
+        .then(response => response)
         .catch(error => error.response.status);
     };
 
@@ -65,11 +62,11 @@ export const AuthProvider = ({ children }) => {
    return (
 			// Using the provider so that ANY component in our application can 
 			// use the values that we are sending.
-      <AuthContext.Provider value={{ authed, setAuthed, login, signup, logout }}>
+      <AuthenticationContext.Provider value={{ authed, setAuthed, login, signup, logout }}>
          {children}
-      </AuthContext.Provider>
+      </AuthenticationContext.Provider>
    );
 };
 
 // Finally creating the custom hook 
-export const useAuth = () => useContext(AuthContext);
+export const useAuthentication = () => useContext(AuthenticationContext);

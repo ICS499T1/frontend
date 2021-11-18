@@ -11,10 +11,12 @@ import CardContent from "@mui/material/CardContent";
 import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
+import { useAuthorization } from '../hooks/useAuthorization';
 
 function UserProfile() {
 
   let history = useHistory();
+  let { instance } = useAuthorization(); 
 
   const statusCode = useRef(null);
 
@@ -23,32 +25,26 @@ function UserProfile() {
     userStats: {averageSpeed: null, racesWon: null, bestRaceSpeed: null, numMultiGamesCompleted: null}
   });
 
-  useEffect(() => {
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
-      url: `http://localhost:8080/user/getuser?username=${localStorage.getItem('username')}`
-    };
+  const arrowFunction = async () => {
+    try {
+      const resp = await instance.post(`/user/getuser?username=${localStorage.getItem("username")}`).then(
+      result => result);
+      console.log("Reponse: ", resp)
+      console.log("Data: ", resp.data)
+      return resp;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
-    axios(options).then(response => {
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        statusCode.current = response.status;
-        console.log("useEffect first then ->", statusCode.current)
-      }
-    }).then(result => {
-      if (statusCode.current === 403) {
-        console.log("useEffect second then ->", statusCode.current)
-      } else {
-      setUser({username:result.username,
-        userStats: {averageSpeed: result.userStats.averageSpeed, racesWon: result.userStats.racesWon, 
-          numMultiGamesCompleted: result.userStats.numMultiGamesCompleted, bestRaceSpeed: result.userStats.bestRaceSpeed
-        }
-      }); }
-    }).catch(error => {
-      console.log("UserInfo ->", error);
-    });
+  useEffect(() => {
+    arrowFunction().then(result => result.data).then(data => 
+      setUser({username:data.username,
+          userStats: {averageSpeed: data.userStats.averageSpeed, racesWon: data.userStats.racesWon, 
+          numMultiGamesCompleted: data.userStats.numMultiGamesCompleted, bestRaceSpeed: data.userStats.bestRaceSpeed
+          }
+        })
+      ).catch(err => console.log(err));
   }, []);
 
   return (
@@ -63,7 +59,7 @@ function UserProfile() {
               <Grid container columnSpacing={5} rowSpacing={3}>
                 <Grid item>
                   <div>
-                  {BackgroundLetterAvatars(JSON.stringify(user.username))}
+                    {BackgroundLetterAvatars(JSON.stringify(user.username))}
                   </div>
                 </Grid>
                 <Grid item xs={12} sm container>

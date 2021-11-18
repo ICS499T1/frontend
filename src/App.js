@@ -12,7 +12,8 @@ import SoloPlay from "./pages/Soloplay.js";
 import MultiPlay from "./pages/Multiplay.js";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { AuthProvider } from "./hooks/useAuth";
+import { AuthenticationProvider } from "./hooks/useAuthentication";
+import { AuthorizationProvider } from "./hooks/useAuthorization";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const theme = createTheme({
@@ -41,21 +42,23 @@ class App extends Component {
     return (
       <ThemeProvider theme={theme}>
       <Router>
-        <AuthProvider>
-          <Layout>
-          <Switch>
-            <Route path="/" exact component={Body} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/termsandconditions" component={Terms} />
-            <Route path="/tutorials" component={Tutorials} />
-            <Route path="/aboutus" component={About} />
-            <ProtectedRoute path="/myprofile" component={UserProfile} />
-            <Route path="/soloplay" component={SoloPlay} />
-            <Route path="/multiplay" component={MultiPlay} />
-          </Switch>
-          </Layout>
-        </AuthProvider>
+        <AuthenticationProvider>
+          <AuthorizationProvider>
+            <Layout>
+            <Switch>
+              <Route path="/" exact component={Body} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={Signup} />
+              <Route path="/termsandconditions" component={Terms} />
+              <Route path="/tutorials" component={Tutorials} />
+              <Route path="/aboutus" component={About} />
+              <ProtectedRoute path="/myprofile" component={UserProfile} />
+              <Route path="/soloplay" component={SoloPlay} />
+              <Route path="/multiplay" component={MultiPlay} />
+            </Switch>
+            </Layout>
+          </AuthorizationProvider>
+        </AuthenticationProvider>
       </Router>
       </ThemeProvider>
     );

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import './Signup.css'
 import Background from "../components/Background";
 import SignupImage from "../images/signupimage.png";
-import { useAuth } from '../hooks/useAuth';
+import { useAuthentication } from '../hooks/useAuthentication';
 // import background from '../images/BackgroundTwo.png';
 
 
@@ -22,7 +22,7 @@ import { useAuth } from '../hooks/useAuth';
 //}
 
 const Signup = ({ setToken }) => {
-    const { signup, authed } = useAuth();
+    const { signup, authed } = useAuthentication();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [username, setUserName] = useState('');
@@ -38,16 +38,16 @@ const Signup = ({ setToken }) => {
     const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
     const handleMouseDownConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
     const handleSubmit = async e => {
-        if (password != confirmPassword) {
+        if (password !== confirmPassword) {
             e.preventDefault();
             return;
         }
         e.preventDefault();
         let returnVal = await signup(username, password);
         console.log(returnVal);
-        if (returnVal == 200) {
+        if (returnVal === 200) {
             setSuccess(true);
-        } else if (returnVal == 500) {
+        } else if (returnVal === 500) {
             setUsernameExists(true);
         }    
     };
