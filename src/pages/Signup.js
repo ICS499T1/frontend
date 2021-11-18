@@ -5,7 +5,8 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import PropTypes from "prop-types";
 import './Signup.css'
 import Background from "../components/Background";
-import SignupImage from "../images/signupimage.png"
+import SignupImage from "../images/signupimage.png";
+import { useAuth } from '../hooks/useAuth';
 // import background from '../images/BackgroundTwo.png';
 
 
@@ -21,6 +22,7 @@ import SignupImage from "../images/signupimage.png"
 //}
 
 const Signup = ({ setToken }) => {
+    const { signup, authed } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [username, setUserName] = useState('');
@@ -28,6 +30,8 @@ const Signup = ({ setToken }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('Password');
     const [confirmPasswordError, setConfirmPasswordError] = useState('Confirm Password');
+    const [success, setSuccess] = useState(false);
+    const [usernameExists, setUsernameExists] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleMouseDownPassword = () => setShowPassword(!showPassword);
@@ -39,11 +43,13 @@ const Signup = ({ setToken }) => {
             return;
         }
         e.preventDefault();
-        // const token = await Signup({
-        //     username,
-        //     password,
-        // });
-        alert("Signed up");
+        let returnVal = await signup(username, password);
+        console.log(returnVal);
+        if (returnVal == 200) {
+            setSuccess(true);
+        } else if (returnVal == 500) {
+            setUsernameExists(true);
+        }    
     };
 
     useEffect(() => {
@@ -59,6 +65,15 @@ const Signup = ({ setToken }) => {
     return(
     <React.Fragment>
         <Background imgPath={SignupImage}>
+            { success && 
+                <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
+                    <Typography variant="h3" color="common.white">Your account has been created</Typography>
+                </Grid>}
+            { authed && 
+                <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
+                    <Typography variant="h3" color="common.white">You are already Logged In</Typography>
+                </Grid>}
+            {!authed && !success && 
             <form onSubmit={handleSubmit}>
                 <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
                     <Grid item>
@@ -67,6 +82,8 @@ const Signup = ({ setToken }) => {
                     <Grid item>
                         <TextField required 
                                     label="Username" 
+                                    error={usernameExists}
+                                    helperText={usernameExists && 'This username is already taken.'}
                                     variant="filled" 
                                     style={{backgroundColor: "white"}} 
                                     onChange={e => setUserName(e.target.value)}
@@ -108,7 +125,7 @@ const Signup = ({ setToken }) => {
                         <Button type="submit" variant="contained">Submit</Button>
                     </Grid>
                 </Grid>
-            </form>
+            </form>}
         </Background>
     </React.Fragment>
     )

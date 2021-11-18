@@ -42,7 +42,6 @@ const Leaderboard = () => {
     fetch('http://localhost:8080/leaderboard', fetchInit)
       .then(response => response.json())
       .then(data => {
-        console.log("fastest users: " + JSON.stringify(data));
         setFastestUsers(data.fastestPlayers);
         setFastestRaces(data.fastestRaces);
       })

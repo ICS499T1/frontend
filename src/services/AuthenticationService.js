@@ -22,7 +22,9 @@ class AuthenticationService {
             url: `${API_URL}/login`
           };
 
-        return axios(options).then(response => this.registerSuccessfulLoginForJwt(username, response));
+        return axios(options)
+        .then(response => this.registerSuccessfulLoginForJwt(username, response))
+        .catch(error => console.log(error));
     }
 
     registerSuccessfulLoginForJwt(username, response) {

@@ -13,7 +13,6 @@ import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
 
 function UserProfile() {
-  localStorage.setItem('lastLocation', '/myprofile');
 
   let history = useHistory();
 
