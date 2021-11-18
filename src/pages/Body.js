@@ -23,34 +23,14 @@ const Img = styled("img")({
 const Body = () => {
   return (
     <React.Fragment>
-            {/* <Box>
-              <img className="imgcontainer" alt="background" src={background} />
-              <Button variant="contained">Solo Play</Button>
-              <Button>Multi Play</Button>
-            </Box> */}
           <Background imgPath={background}>
               <Grid sx={{padding: '100px'}} direction="column" rowSpacing={3} container justifyContent="flex-end" alignItems="center" >
-                {/* <Button size="large" variant="contained" style={styles.practiceButton}>Practice</Button>
-                <Button size="large" variant="contained" style={styles.createButton}>Create Game</Button>
-                <Button size="large" variant="contained" style={styles.joinButton}>Join Game</Button> */}
                 <Grid item>
                     <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>
                 </Grid>
                 <Grid item>
                     <Button component={Link} to="/multiplay" size="large" variant="contained">Play with Friends</Button>
                 </Grid>
-                {/* <Grid item>
-                    <Button component={Link} to="/multiplay" size="large" variant="contained">Join Game</Button>
-                </Grid> */}
-                {/* <Grid item>
-                  <CustomButton name="Practice" top="45%" right="0%" left="20%" bottom="0%"/>
-                </Grid>
-                <Grid item>
-                  <CustomButton name="Create Game" top="55%" right="0%" left="20%" bottom="0%"/>
-                </Grid>
-                <Grid item>
-                  <CustomButton name="Join Game" top="65%" right="0%" left="20%" bottom="0%"/>
-                </Grid> */}
               </Grid>
           </Background>
           <Leaderboard/>
@@ -96,8 +76,7 @@ const Body = () => {
                       Space Racer is a typing game where you can practice by yourself 
                       or play with friends by creating or joining a game.
                     </h3>
-                    <CustomButton name="Get Started Now" top="50%" right="10%" left="0%" bottom="0%"/>
-                    {/* <Button className="startnowbutton" variant="contained">Get Started Now</Button> */}
+                    <Button component={Link} to="/signUp" variant="contained">Get Started Now</Button>
                   </div>
                 </Grid>
               </Grid>

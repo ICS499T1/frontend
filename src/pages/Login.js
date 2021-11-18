@@ -15,10 +15,7 @@ const Login = () => {
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleMouseDownPassword = () => setShowPassword(!showPassword);
     const [error, setError] = useState(null);
-
-    const data = {'username':username, 'password':password};
-
-
+    
     const { login, authed } = useAuthentication();
 
     const history = useHistory();
