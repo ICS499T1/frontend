@@ -7,7 +7,7 @@ import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
 import About from "./components/About";
 import Layout from './components/Layout'
-import UserProfile from "./components/UserProfile";
+import UserProfile from "./pages/UserProfile";
 import SoloPlay from "./pages/Soloplay.js";
 import MultiPlay from "./pages/Multiplay.js";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';

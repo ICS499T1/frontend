@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import "./UserProfile.css";
+import "../pages/UserProfile.css";
 import Box from "@mui/material/Box";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';

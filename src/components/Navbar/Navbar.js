@@ -31,7 +31,7 @@ const Navbar = () => {
                 <Button component={Link} to="/" variant="text" color="inherit">Home</Button>
                 {!authed && <Button component={Link} to="/signUp" variant="text" color="inherit">Sign Up</Button>}
                 {!authed && <Button component={Link} to="/login" variant="text" color="inherit">Login</Button>}
-                {authed && <Button component={Link} to="/login" variant="text" color="inherit">{localStorage.getItem('username')}</Button>}
+                {authed && <Button component={Link} to="/myprofile" variant="text" color="inherit">{localStorage.getItem('username')}</Button>}
                 {authed && <Button component={Link} to="/" onClick={logout} variant="text" color="inherit">Logout</Button>}
               </ButtonGroup>
               {/* <Link to="/">

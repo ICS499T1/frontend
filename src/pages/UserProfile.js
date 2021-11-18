@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
 import Keyboardpage from "../components/Keyboard.js";
 import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
@@ -14,37 +12,36 @@ import { useEffect, useState, useRef } from "react";
 import { useAuthorization } from '../hooks/useAuthorization';
 
 function UserProfile() {
-
-  let history = useHistory();
   let { instance } = useAuthorization(); 
 
-  const statusCode = useRef(null);
-
   const [user, setUser] = useState({
-    username: null,
-    userStats: {averageSpeed: null, racesWon: null, bestRaceSpeed: null, numMultiGamesCompleted: null}
+    username: '',
+    userStats: {averageSpeed: 0, numSingleGamesCompleted: 0, numMultiGamesCompleted: 0, racesWon: 0, bestRaceSpeed: 0, lastRaceSpeed: 0, bestRaceSpeed: 0},
+    allKeys: {}
   });
 
-  const arrowFunction = async () => {
-    try {
-      const resp = await instance.post(`/user/getuser?username=${localStorage.getItem("username")}`).then(
-      result => result);
-      console.log("Reponse: ", resp)
-      console.log("Data: ", resp.data)
-      return resp;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   useEffect(() => {
-    arrowFunction().then(result => result.data).then(data => 
-      setUser({username:data.username,
-          userStats: {averageSpeed: data.userStats.averageSpeed, racesWon: data.userStats.racesWon, 
-          numMultiGamesCompleted: data.userStats.numMultiGamesCompleted, bestRaceSpeed: data.userStats.bestRaceSpeed
-          }
-        })
-      ).catch(err => console.log(err));
+    const getUser = async () => {
+        const data = await instance.post(`/user/getuser?username=${localStorage.getItem("username")}`).then(
+        result => result.data);
+        if (data) {
+          // calculate accuracy percentage and store in a dictionary, access each character's accuracy by the character itself
+          let keyDict = Object.assign({}, ...data.allKeys.map((x) => ({[x.character]: (x.numFails/x.numSuccesses * 100)})));
+          setUser({username: data.username,
+                   userStats: {
+                   averageSpeed: data.userStats.averageSpeed,
+                   numSingleGamesCompleted: data.userStats.numSingleGamesCompleted,
+                   numMultiGamesCompleted: data.userStats.numMultiGamesCompleted,
+                   racesWon: data.userStats.racesWon,
+                   bestRaceSpeed: data.userStats.bestRaceSpeed,
+                   lastRaceSpeed: data.userStats.lastRaceSpeed,
+                   bestRaceSpeed: data.userStats.bestRaceSpeed
+                 },
+                   allKeys: keyDict
+                });
+        }
+    }
+    getUser();
   }, []);
 
   return (
@@ -59,7 +56,7 @@ function UserProfile() {
               <Grid container columnSpacing={5} rowSpacing={3}>
                 <Grid item>
                   <div>
-                    {BackgroundLetterAvatars(JSON.stringify(user.username))}
+                    {BackgroundLetterAvatars(user.username)}
                   </div>
                 </Grid>
                 <Grid item xs={12} sm container>
