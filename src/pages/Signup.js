@@ -45,7 +45,7 @@ const Signup = ({ setToken }) => {
         e.preventDefault();
         let returnVal = await signup(username, password);
         console.log(returnVal);
-        if (returnVal === 200) {
+        if (returnVal.status === 200) {
             setSuccess(true);
         } else if (returnVal === 500) {
             setUsernameExists(true);

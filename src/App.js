@@ -15,6 +15,8 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { AuthenticationProvider } from "./hooks/useAuthentication";
 import { AuthorizationProvider } from "./hooks/useAuthorization";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import MultiplayerJoin from "./pages/MultiplayerJoin";
+import MultiplayerCreate from "./pages/MultiplayerCreate";
 
 const theme = createTheme({
   palette: {
@@ -51,7 +53,8 @@ class App extends Component {
               <Route path="/signup" component={Signup} />
               <Route path="/termsandconditions" component={Terms} />
               <Route path="/tutorials" component={Tutorials} />
-              <Route path="/aboutus" component={About} />
+              <ProtectedRoute path="/multiplayer/:gameId" component={MultiplayerJoin} />
+              <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
               <ProtectedRoute path="/myprofile" component={UserProfile} />
               <Route path="/soloplay" component={SoloPlay} />
               <Route path="/multiplay" component={MultiPlay} />
