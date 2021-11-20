@@ -32,7 +32,7 @@ const Body = () => {
                 { authed && 
                     <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>}
                 { !authed && 
-                <Button component={Link} to="/login" size="large" variant="contained">Practice</Button>}
+                    <Button component={Link} to="/login" size="large" variant="contained">Practice</Button>}
                 </Grid>
                 <Grid item>
                 { authed && 
