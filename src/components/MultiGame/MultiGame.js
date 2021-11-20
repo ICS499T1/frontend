@@ -9,6 +9,18 @@ import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/mat
 const socket = new SockJS('http://localhost:8080/new-player');
 const stompClient = Stomp.over(socket);
 
+const styles = {
+  blueStyle: {
+    color: "blue"
+  },
+  redStyle: {
+    color: "red"
+  },
+  blackStyle: {
+    color: "black"
+  }
+}
+
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
@@ -17,8 +29,8 @@ const MultiGame = ({ gameId, create }) => {
         players: null,
         winner: null
     });
-    const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
+    const [error, setError] = useState(false);
     const backspace = JSON.stringify('\b');
 
     const startGame = () => {
@@ -31,22 +43,30 @@ const MultiGame = ({ gameId, create }) => {
 
     const handleKeyDown = event => {
         var key = event.key;
+        var keyCode = event.keyCode;
+        var position = game.players[sessionId].position;
     
         // backspace 
-        if (event.keyCode === 8) {
-          if (game.players[sessionId].incorrectCharacters.length === 0) {
+        if (keyCode === 8) {
+          if (game.players[sessionId].incorrectCharacters.length == 0) {
             event.preventDefault();
           } else {
             stompClient.send("/app/gameplay/" + gameId, {}, backspace);
-            setTextField(textField.slice(0, -1))
+            setTextField(textField.slice(0, -1));
           }
         } else {
             event.target.selectionStart = event.target.selectionEnd = event.target.value.length;
             if (key.length === 1) {
+              stompClient.send("/app/gameplay/" + gameId, {}, JSON.stringify(key));
+              // spacebar
+              if (key == game.gameText[position] && keyCode !== 32) {
                 setTextField(textField + key);
-                stompClient.send("/app/gameplay/" + gameId, {}, JSON.stringify(key));
+              } else if (key == game.gameText[position] && keyCode === 32 && game.players[sessionId].incorrectCharacters.length == 0) {
+                setTextField('');                
+              } else {
+                setTextField(textField + key);
               }
-        //   textInput.current.selectionStart = textInput.current.selectionEnd = textInput.current.value.length;
+            }
         }
     }
 
@@ -59,7 +79,7 @@ const MultiGame = ({ gameId, create }) => {
             stompClient.subscribe('/game/join/' + gameId, (game) => {
               var result = JSON.parse(game.body);
               // console.log(result);
-              console.log(result.status);
+              // console.log(result.status);
               setGame(result);
             });
           }, (error) => console.log())
@@ -76,34 +96,53 @@ const MultiGame = ({ gameId, create }) => {
     }, [connected])
 
     useEffect(() => {
-        setGameText(game.gameText);
-    }, [game.gameText])
+      if (game.players && game.players[sessionId].incorrectCharacters.length > 5) {
+        setError(true);
+      } else {
+        setError(false);
+      }
+    }, [game])
+
+    const color = (idx) => {
+      if (idx < game.players[sessionId].position) {
+        return (styles.blueStyle)
+      } else if (idx >= game.players[sessionId].position && game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
+        return (styles.redStyle)
+      }
+      return (styles.blackStyle)
+    }
 
     return (
         <React.Fragment>
             <Grid item>
-            <Card sx={{ maxWidth: 500 }}>
-                <CardContent>
-                    {gameText && 
+            <Typography variant="h4" color="common.white">{gameId}</Typography>
+            <Card sx={{ maxWidth: 700 }}>
+                <CardContent>                    
+                    {game.gameText && 
                     <Typography>
-                        {gameText.map((char, idx) => {
-                            return char;
+                        {game.gameText.map((char, idx) => {
+                            return <span key={idx} style={color(idx)}>{char}</span>;
                         })}
                     </Typography>}
                 </CardContent>
             </Card>
             </Grid>
             <Grid item>
-            <TextField id="outlined-multiline-flexible"
-                       placeholder="Start Typing Here"
+            <TextField placeholder="Start Typing Here"
                        inputProps={{ spellCheck: 'false' }}
+                       variant="outlined"
+                       error={error}
+                       helperText={error && "Fix Typos!"}
                        style={{backgroundColor: "white"}}
-                       multiline
                        onKeyDown={handleKeyDown}
-                       value={textField}
-                       maxRows={3}/>
+                       value={textField}/>
             </Grid>
             {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
+            <Grid item>
+              <Typography variant="h4" color="common.white">
+                {game.players && game.players[sessionId].incorrectCharacters && game.players[sessionId].incorrectCharacters.map((char, idx) => char)}
+              </Typography>
+            </Grid>
         </React.Fragment>
     );
   };

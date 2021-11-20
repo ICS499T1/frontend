@@ -56,8 +56,8 @@ class App extends Component {
               <ProtectedRoute path="/multiplayer/:gameId" component={MultiplayerJoin} />
               <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
               <ProtectedRoute path="/myprofile" component={UserProfile} />
-              <Route path="/soloplay" component={SoloPlay} />
-              <Route path="/multiplay" component={MultiPlay} />
+              <ProtectedRoute path="/soloplay" component={SoloPlay} />
+              <ProtectedRoute path="/multiplay" component={MultiPlay} />
             </Switch>
             </Layout>
           </AuthorizationProvider>
