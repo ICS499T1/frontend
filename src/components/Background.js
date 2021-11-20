@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper'
 const styles = (imgPath) => {
     const styles = {
         paperContainer: {
-          height: 800,
+          height: 1100,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',

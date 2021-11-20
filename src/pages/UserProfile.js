@@ -10,6 +10,8 @@ import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState, useRef } from "react";
 import { useAuthorization } from '../hooks/useAuthorization';
+import Background from "../components/Background";
+import Backimage from "../images/astronaut-aesth2.jpeg";
 
 function UserProfile() {
   let { instance } = useAuthorization(); 
@@ -45,10 +47,8 @@ function UserProfile() {
 
   return (
     <React.Fragment>
-      <Box className="bigbox">
-        <div>
+      <Background imgPath={Backimage}>
           <h1 className="title"> Welcome back, {user.username}!</h1>
-        </div>
         <Box className="boxuser">
           <Card className="card">
             <CardContent className="cardcontent">
@@ -62,7 +62,6 @@ function UserProfile() {
                   <Grid item>
                     <div>
                       <p>Username: {user.username} </p>
-                      <Link>Edit Profile</Link>
                     </div>
                   </Grid>
                 </Grid>
@@ -113,9 +112,13 @@ function UserProfile() {
               </Card>
             </Grid>
           </Grid>
+
+          
         </Box>
-      </Box>
+      
       <Keyboardpage />
+    </Background>
+      
     </React.Fragment>
   );
 }

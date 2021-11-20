@@ -4,6 +4,7 @@ import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 
+
 const socket = new SockJS('http://localhost:8080/new-player');
 const stompClient = Stomp.over(socket);
 

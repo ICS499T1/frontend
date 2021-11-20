@@ -65,7 +65,10 @@ const MuInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+
+
 class Soloplay extends React.Component {
+  
   constructor(props) {
     super(props);
     this.state = { disabled: true };

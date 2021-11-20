@@ -48,8 +48,8 @@ class Keyboardcomp extends Component {
       <React.Fragment>
 
       {/* Keyboard */}
-      <div>
-        <Box className="boxkeyboard">
+
+        {/* <Box className="boxkeyboard"> */}
           <Box className="boxuser">
             <Card className="cardtwo">
               <CardContent className="cardcontenttwo">
@@ -70,8 +70,8 @@ class Keyboardcomp extends Component {
               </CardContent>
             </Card>
           </Box>
-        </Box>
-      </div>
+        {/* </Box> */}
+
       </React.Fragment>
     );
   }

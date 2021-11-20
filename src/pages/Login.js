@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Typography, TextField, Grid, InputAdornment, IconButton } from "@mui/material";
+import { Link } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import './Login.css';
 import Background from "../components/Background";
 import LoginImage from "../images/signinimage.png";
 import { useAuthentication } from '../hooks/useAuthentication';
+
+
 
 const Login = () => {
     const [username, setUserName] = useState();
@@ -80,8 +83,13 @@ const Login = () => {
                         <Grid item>
                             <Button type="submit" variant="contained">Submit</Button>
                         </Grid>
+                        <Grid item>
+                        <Typography variant="p" color="common.white"> Don't have an account? Please <Link to="/signUp">Sign Up</Link></Typography>
+                        </Grid>
                     </Grid>
                 </form>}
+
+                
             </Background>
        </React.Fragment>
     )

@@ -1,14 +1,4 @@
 
-/* 
-input {
-  width: 855px;
-  height: 100px;
-  padding: 20px;
-  font-size: 20px;
-  border: none;
-  box-sizing: border-box;
-} */
-
 .simple-keyboard {
   max-width: 850px;
 }
@@ -28,6 +18,8 @@ input {
   padding-left: 65px;
   padding-right: 65px;
   padding-top: 60px;
+  color: #F2F2F2;
+  margin: 0;
 }
 
 .boxuser {

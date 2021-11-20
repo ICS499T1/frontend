@@ -14,22 +14,31 @@ import { Container } from "semantic-ui-react";
 import Background from '../components/Background';
 import CustomButton from '../components/CustomButton';
 import Leaderboard from "../components/Leaderboards/Leaderboard";
+import { useAuthentication } from '../hooks/useAuthentication';
 
 
 const Img = styled("img")({
   maxWidth: "400px",
 });
 
+
 const Body = () => {
+  const { authed } = useAuthentication();
   return (
     <React.Fragment>
           <Background imgPath={background}>
               <Grid sx={{padding: '100px'}} direction="column" rowSpacing={3} container justifyContent="flex-end" alignItems="center" >
                 <Grid item>
-                    <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>
+                { authed && 
+                    <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>}
+                { !authed && 
+                <Button component={Link} to="/login" size="large" variant="contained">Practice</Button>}
                 </Grid>
                 <Grid item>
-                    <Button component={Link} to="/multiplay" size="large" variant="contained">Play with Friends</Button>
+                { authed && 
+                    <Button component={Link} to="/multiplay" size="large" variant="contained">Play with Friends</Button>}
+                { !authed && 
+                <Button component={Link} to="/login" size="large" variant="contained">Practice</Button>}
                 </Grid>
               </Grid>
           </Background>
