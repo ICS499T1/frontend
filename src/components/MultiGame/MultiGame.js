@@ -25,10 +25,10 @@ const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
     const [game, setGame] = useState({
-        gameText: '',
         players: null,
         winner: null
     });
+    const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [error, setError] = useState(false);
     const backspace = JSON.stringify('\b');
@@ -45,13 +45,20 @@ const MultiGame = ({ gameId, create }) => {
         var key = event.key;
         var keyCode = event.keyCode;
         var position = game.players[sessionId].position;
-    
+        var incorrectLength = game.players[sessionId].incorrectCharacters.length
+        
+        if (incorrectLength > 5 && keyCode !== 8) {
+          event.preventDefault();
+          setError(true);
+          return;
+        }
         // backspace 
         if (keyCode === 8) {
-          if (game.players[sessionId].incorrectCharacters.length == 0) {
+          if (incorrectLength == 0) {
             event.preventDefault();
           } else {
             stompClient.send("/app/gameplay/" + gameId, {}, backspace);
+            setError(false);
             setTextField(textField.slice(0, -1));
           }
         } else {
@@ -59,9 +66,9 @@ const MultiGame = ({ gameId, create }) => {
             if (key.length === 1) {
               stompClient.send("/app/gameplay/" + gameId, {}, JSON.stringify(key));
               // spacebar
-              if (key == game.gameText[position] && keyCode !== 32) {
+              if (key == gameText[position] && keyCode !== 32) {
                 setTextField(textField + key);
-              } else if (key == game.gameText[position] && keyCode === 32 && game.players[sessionId].incorrectCharacters.length == 0) {
+              } else if (key == gameText[position] && keyCode === 32 && incorrectLength == 0) {
                 setTextField('');                
               } else {
                 setTextField(textField + key);
@@ -82,6 +89,9 @@ const MultiGame = ({ gameId, create }) => {
               // console.log(result.status);
               setGame(result);
             });
+            stompClient.subscribe('/game/gameText/' + gameId, (action) => {
+              setGameText(JSON.parse(action.body));
+            });
           }, (error) => console.log())
         }
     }, [gameId])
@@ -95,18 +105,18 @@ const MultiGame = ({ gameId, create }) => {
         }
     }, [connected])
 
-    useEffect(() => {
-      if (game.players && game.players[sessionId].incorrectCharacters.length > 5) {
-        setError(true);
-      } else {
-        setError(false);
-      }
-    }, [game])
+    // useEffect(() => {
+    //   if (game.players && game.players[sessionId].incorrectCharacters.length > 5) {
+    //     setError(true);
+    //   } else {
+    //     setError(false);
+    //   }
+    // }, [game])
 
     const color = (idx) => {
       if (idx < game.players[sessionId].position) {
         return (styles.blueStyle)
-      } else if (idx >= game.players[sessionId].position && game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
+      } else if (idx >= game.players[sessionId].position && idx < game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
         return (styles.redStyle)
       }
       return (styles.blackStyle)
@@ -118,9 +128,9 @@ const MultiGame = ({ gameId, create }) => {
             <Typography variant="h4" color="common.white">{gameId}</Typography>
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
-                    {game.gameText && 
+                    {gameText && 
                     <Typography>
-                        {game.gameText.map((char, idx) => {
+                        {gameText.map((char, idx) => {
                             return <span key={idx} style={color(idx)}>{char}</span>;
                         })}
                     </Typography>}
