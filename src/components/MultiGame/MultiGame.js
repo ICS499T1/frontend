@@ -4,7 +4,6 @@ import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 
-
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
 const stompClient = Stomp.over(socket);
@@ -24,6 +23,9 @@ const styles = {
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
+    const [seconds, setSeconds] = React.useState(5);
+    const [isCountdown, setIsCountdown] = useState(false);
+    const [isGameStarted, setGameStarted] = useState(false);
     const [game, setGame] = useState({
         players: null,
         winner: null
@@ -38,8 +40,26 @@ const MultiGame = ({ gameId, create }) => {
           alert("Not connected yet");
           return;
         }
+        setIsCountdown(true);
+        stompClient.send("app/timer/" + gameId, {}, gameId);
+        countdown();
         stompClient.send("/app/start/" + gameId, {}, gameId);
     }
+
+    const countdown = () => {
+      let interval = setInterval(() => {
+        setSeconds((prevCountdown) => {
+          if (prevCountdown === 0) {
+            clearInterval(interval);
+            setIsCountdown(false);
+            setGameStarted(true);
+            return;
+          } else {
+            return prevCountdown - 1
+          }
+        }  )
+      } ,  1000 )
+    };
 
     const handleKeyDown = event => {
         var key = event.key;
@@ -54,7 +74,7 @@ const MultiGame = ({ gameId, create }) => {
         }
         // backspace 
         if (keyCode === 8) {
-          if (incorrectLength == 0) {
+          if (incorrectLength === 0) {
             event.preventDefault();
           } else {
             stompClient.send("/app/gameplay/" + gameId, {}, backspace);
@@ -66,9 +86,9 @@ const MultiGame = ({ gameId, create }) => {
             if (key.length === 1) {
               stompClient.send("/app/gameplay/" + gameId, {}, JSON.stringify(key));
               // spacebar
-              if (key == gameText[position] && keyCode !== 32) {
+              if (key === gameText[position] && keyCode !== 32) {
                 setTextField(textField + key);
-              } else if (key == gameText[position] && keyCode === 32 && incorrectLength == 0) {
+              } else if (key === gameText[position] && keyCode === 32 && incorrectLength === 0) {
                 setTextField('');                
               } else {
                 setTextField(textField + key);
@@ -92,6 +112,9 @@ const MultiGame = ({ gameId, create }) => {
             stompClient.subscribe('/game/gameText/' + gameId, (action) => {
               setGameText(JSON.parse(action.body));
             });
+            stompClient.subscribe('/game/startTimer/' + gameId, (message) => {
+              console.log("Message: ", JSON.parse(message.body));
+            });
           }, (error) => console.log())
         }
     }, [gameId])
@@ -104,14 +127,6 @@ const MultiGame = ({ gameId, create }) => {
             stompClient.send("/app/join/" + gameId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
         }
     }, [connected])
-
-    // useEffect(() => {
-    //   if (game.players && game.players[sessionId].incorrectCharacters.length > 5) {
-    //     setError(true);
-    //   } else {
-    //     setError(false);
-    //   }
-    // }, [game])
 
     const color = (idx) => {
       if (idx < game.players[sessionId].position) {
@@ -138,6 +153,7 @@ const MultiGame = ({ gameId, create }) => {
             </Card>
             </Grid>
             <Grid item>
+            {(isGameStarted) ? 
             <TextField placeholder="Start Typing Here"
                        inputProps={{ spellCheck: 'false' }}
                        variant="outlined"
@@ -145,9 +161,19 @@ const MultiGame = ({ gameId, create }) => {
                        helperText={error && "Fix Typos!"}
                        style={{backgroundColor: "white"}}
                        onKeyDown={handleKeyDown}
-                       value={textField}/>
+                       value={textField}/> 
+                    : <TextField placeholder="Start Typing Here"
+                      inputProps={{ spellCheck: 'false' }}
+                      variant="outlined"
+                      error={error}
+                      helperText={error && "Fix Typos!"}
+                      style={{backgroundColor: "white"}}
+                      onKeyDown={handleKeyDown}
+                      value={textField}
+                      disabled={true} />
+                      }
             </Grid>
-            {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
+              {isGameStarted ? <Grid /> : isCountdown ? <Typography variant="h4" color="common.white">{seconds}</Typography> : (create ? <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid> : <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>)}
             <Grid item>
               <Typography variant="h4" color="common.white">
                 {game.players && game.players[sessionId].incorrectCharacters && game.players[sessionId].incorrectCharacters.map((char, idx) => char)}
