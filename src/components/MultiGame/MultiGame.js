@@ -20,6 +20,21 @@ const styles = {
   }
 }
 
+const styles3 = {
+  1: {
+    borderTop: "5px solid red"
+  },
+  2: {
+    borderBottom: "5px solid blue"
+  },
+  3: {
+    borderLeft: "5px solid green"
+  },
+  4: {
+    borderRight: "5px solid brown"
+  }
+}
+
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
@@ -40,7 +55,7 @@ const MultiGame = ({ gameId, create }) => {
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [error, setError] = useState(false);
-    const [players, setPlayers] = useState([]);
+    const [players, setPlayers] = useState(null);
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
@@ -173,7 +188,7 @@ const MultiGame = ({ gameId, create }) => {
         startGame();
       }
 
-      const newPlayers = players.slice();
+      const newPlayers = [];
       Object.keys(gameStatus.players).forEach( key => {
         const index = gameStatus.players[key].playerNumber;
         var player = ['', ''];
@@ -224,13 +239,61 @@ const MultiGame = ({ gameId, create }) => {
     const color = (idx) => {
       if(gameStatus.status == "IN_PROGRESS") {
         if (idx < game.players[sessionId].position) {
-          return (styles.blueStyle)
+          return (styles.blueStyle);
         } else if (idx >= game.players[sessionId].position && idx < game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
-          return (styles.redStyle)
+          return (styles.redStyle);
         }
-        return (styles.blackStyle)
+        return (styles.blackStyle);
       }
-      return (styles.blackStyle)
+      return (styles.blackStyle);
+    }
+
+    const gameplayIndicator = (idx) => {
+      const styles2 = {
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        KhtmlUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        userSelect: 'none'
+      }
+      if (gameStatus.status != "IN_PROGRESS") {
+        return styles2;
+      }
+
+      const position = game.players[sessionId].position;
+      if (idx < position) {
+        styles2['backgroundColor'] = "#5fb6e2";
+      } else if (idx >= position && idx < position + game.players[sessionId].incorrectCharacters.length) {
+        styles2['backgroundColor'] = "#ff9a9a";
+      }
+
+      for(let i = 1; i < 5; i++){
+        if (!players[i]) {
+          continue;
+        }
+        const playerPosition = game.players[players[i][1]].position;
+        if (idx == playerPosition) {
+          Object.keys(styles3[i]).forEach( key => {
+            styles2[key] = styles3[i][key];
+          })
+        }
+      }
+      return styles2;
+    }
+
+    const playerListIndicator = (idx) => {
+      const returnVal = {};
+      if (idx == 1) {
+        returnVal['borderTop'] = "5px solid red";
+      } else if (idx == 2) {
+        returnVal['borderBottom'] = "5px solid blue"; 
+      } else if (idx == 3) {
+        returnVal['borderLeft'] = "5px solid green";
+      } else if (idx == 4) {
+        returnVal['borderRight'] = "5px solid brown";
+      }
+      return returnVal;
     }
 
     return (
@@ -242,7 +305,7 @@ const MultiGame = ({ gameId, create }) => {
                     {gameText && 
                     <Typography>
                         {gameText.map((char, idx) => {
-                            return <span key={idx} style={color(idx)}>{char}</span>;
+                            return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
                         })}
                     </Typography>}
                 </CardContent>
@@ -258,9 +321,16 @@ const MultiGame = ({ gameId, create }) => {
                         onKeyDown={handleKeyDown}
                         value={textField}/> 
             </Grid>
+            <Grid item>
               {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
               {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
               {!create && (gameStatus.status != "IN_PROGRESS") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+            </Grid>
+            {players && players.map((player, idx) => {
+              if (player) {
+                return <Grid key={idx} item><Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography></Grid>
+              }
+            })}
         </React.Fragment>
     );
   };
