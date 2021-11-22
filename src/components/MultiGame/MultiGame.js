@@ -23,49 +23,59 @@ const styles = {
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
-    const [seconds, setSeconds] = React.useState(5);
+    const [seconds, setSeconds] = useState(5);
     const [isCountdown, setIsCountdown] = useState(false);
-    const [isGameStarted, setGameStarted] = useState(false);
+    const [gameStatus, setGameStatus] = useState({
+      gameText: [],
+      status: '',
+      players: null
+    });
+    const [startClicked, setStartClicked] = useState(false);
+    const [startGameBool, setStartGameBool] = useState(false);
     const [game, setGame] = useState({
         players: null,
         winner: null
     });
+    const [playerStatus, setPlayerStatus] = useState(0);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [error, setError] = useState(false);
+    const [players, setPlayers] = useState([]);
     const backspace = JSON.stringify('\b');
+    const interval = useRef();
+    const firstRender = useRef(true);
 
     const startGame = () => {
         if (!stompClient.connected) {
           alert("Not connected yet");
           return;
         }
-        setIsCountdown(true);
-        stompClient.send("app/timer/" + gameId, {}, gameId);
-        countdown();
-        stompClient.send("/app/start/" + gameId, {}, gameId);
+        if (gameStatus.status != "READY" && gameStatus.status != "COMPLETED") {
+          alert("Game cannot be started yet.");
+        }
+        if (gameStatus.status == "COMPLETED") {
+          setStartClicked(true);
+          stompClient.send("/app/end/" + gameId, {}, gameId);
+          return;
+        }
+        stompClient.send("/app/timer/" + gameId, {}, gameId);
+
     }
 
-    const countdown = () => {
-      let interval = setInterval(() => {
-        setSeconds((prevCountdown) => {
-          if (prevCountdown === 0) {
-            clearInterval(interval);
-            setIsCountdown(false);
-            setGameStarted(true);
-            return;
-          } else {
-            return prevCountdown - 1
-          }
-        }  )
-      } ,  1000 )
-    };
-
     const handleKeyDown = event => {
+        if (gameStatus.status != "IN_PROGRESS") {
+          event.preventDefault();
+          return;
+        }
         var key = event.key;
         var keyCode = event.keyCode;
         var position = game.players[sessionId].position;
         var incorrectLength = game.players[sessionId].incorrectCharacters.length
+
+        if (playerStatus) {
+          event.preventDefault();
+          return;
+        }
         
         if (incorrectLength > 5 && keyCode !== 8) {
           event.preventDefault();
@@ -103,18 +113,34 @@ const MultiGame = ({ gameId, create }) => {
             var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
             setSessionId(sessionId);
             setConnected(stompClient.connected);
-            stompClient.subscribe('/game/join/' + gameId, (game) => {
+
+            // Subscription for game events
+            stompClient.subscribe('/game/gameplay/' + gameId, (game) => {
               var result = JSON.parse(game.body);
-              // console.log(result);
-              // console.log(result.status);
               setGame(result);
             });
-            stompClient.subscribe('/game/gameText/' + gameId, (action) => {
-              setGameText(JSON.parse(action.body));
-            });
-            stompClient.subscribe('/game/startTimer/' + gameId, (message) => {
-              console.log("Message: ", JSON.parse(message.body));
-            });
+
+            // Subscription for syncing client-side game status with server-side game status
+            stompClient.subscribe('/game/status/' + gameId, (gameStatus) => {
+              var statusResult = JSON.parse(gameStatus.body);
+              setGameStatus(statusResult);
+            })
+
+            // Subscription for keeping track of current player's status (whether they can type or not)
+            stompClient.subscribe('/game/playerStatus/' + gameId + '/' + sessionId, (playerStatus) => {
+              setPlayerStatus(JSON.parse(playerStatus.body));
+            })
+
+            // Subscription for a game text update when game is reset, created, or joined
+            // stompClient.subscribe('/game/gameText/' + gameId, (action) => {
+            //   setGameText(JSON.parse(action.body));
+            // });
+
+            // Subscription for starting timer simultaneously on all clients
+            // stompClient.subscribe('/game/startTimer/' + gameId, (message) => {
+            //   setIsCountdown(true);
+            //   setPlayerStatus(0);
+            // });
           }, (error) => console.log())
         }
     }, [gameId])
@@ -128,11 +154,81 @@ const MultiGame = ({ gameId, create }) => {
         }
     }, [connected])
 
+    useEffect(() => {
+      if (startGameBool && create) {
+        stompClient.send("/app/start/" + gameId, {}, gameId);
+        setStartGameBool(false);
+      } else if (startGameBool) {
+        setStartGameBool(false);
+      }
+    }, [startGameBool])
+
+    useEffect(() => {
+      if (firstRender.current) {
+        firstRender.current = false;
+        return;
+      }
+      if (gameStatus.status == "READY" && startClicked) {
+        setStartClicked(false);
+        startGame();
+      }
+
+      const newPlayers = players.slice();
+      Object.keys(gameStatus.players).forEach( key => {
+        const index = gameStatus.players[key].playerNumber;
+        var player = ['', ''];
+        player[0] = gameStatus.players[key].username;
+        player[1] = key;
+        newPlayers[index] = player;
+      })
+      
+      setPlayers(newPlayers);
+
+      // Used for countdown      
+      if (gameStatus.status == "COUNTDOWN") {
+        setIsCountdown(true);
+        interval.current = setInterval(() => {
+          setSeconds((prevSeconds) => {
+            if (prevSeconds === 0) {
+              clearInterval(interval.current);
+              setSeconds(5);
+              setIsCountdown(false);
+              setStartGameBool(true);
+              return;
+            } else {
+              return prevSeconds - 1
+            }
+          });
+        } ,  1000 )
+        setPlayerStatus(0);        
+      } else if (gameStatus.status != "COUNTDOWN") {
+        clearInterval(interval.current);
+        setSeconds(5);
+        setIsCountdown(false);
+      }
+      // Set game text only when status updates, and with every gameplay update
+      setGameText(gameStatus.gameText);
+    }, [gameStatus])
+
+    useEffect(() => {
+      if (playerStatus) {
+        setTextField('');
+      }
+    }, [playerStatus])
+
+    useEffect(() => {
+      const stringstuff = JSON.stringify(players);
+      console.log(players);
+    }, [players])
+
     const color = (idx) => {
-      if (idx < game.players[sessionId].position) {
-        return (styles.blueStyle)
-      } else if (idx >= game.players[sessionId].position && idx < game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
-        return (styles.redStyle)
+      if(gameStatus.status == "IN_PROGRESS") {
+        if (idx < game.players[sessionId].position) {
+          return (styles.blueStyle)
+        } else if (idx >= game.players[sessionId].position && idx < game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
+          return (styles.redStyle)
+        }
+        return (styles.blackStyle)
       }
       return (styles.blackStyle)
     }
@@ -153,32 +249,18 @@ const MultiGame = ({ gameId, create }) => {
             </Card>
             </Grid>
             <Grid item>
-            {(isGameStarted) ? 
-            <TextField placeholder="Start Typing Here"
-                       inputProps={{ spellCheck: 'false' }}
-                       variant="outlined"
-                       error={error}
-                       helperText={error && "Fix Typos!"}
-                       style={{backgroundColor: "white"}}
-                       onKeyDown={handleKeyDown}
-                       value={textField}/> 
-                    : <TextField placeholder="Start Typing Here"
-                      inputProps={{ spellCheck: 'false' }}
-                      variant="outlined"
-                      error={error}
-                      helperText={error && "Fix Typos!"}
-                      style={{backgroundColor: "white"}}
-                      onKeyDown={handleKeyDown}
-                      value={textField}
-                      disabled={true} />
-                      }
+              <TextField placeholder="Start Typing Here"
+                        inputProps={{ spellCheck: 'false' }}
+                        variant="outlined"
+                        error={error}
+                        helperText={error && "Fix Mistakes First!"}
+                        style={{backgroundColor: "white"}}
+                        onKeyDown={handleKeyDown}
+                        value={textField}/> 
             </Grid>
-              {isGameStarted ? <Grid /> : isCountdown ? <Typography variant="h4" color="common.white">{seconds}</Typography> : (create ? <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid> : <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>)}
-            <Grid item>
-              <Typography variant="h4" color="common.white">
-                {game.players && game.players[sessionId].incorrectCharacters && game.players[sessionId].incorrectCharacters.map((char, idx) => char)}
-              </Typography>
-            </Grid>
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
+              {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
+              {!create && (gameStatus.status != "IN_PROGRESS") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
         </React.Fragment>
     );
   };
