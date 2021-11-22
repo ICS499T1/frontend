@@ -2,7 +2,8 @@ import React from "react";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
-import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
+import { Grid, TextField, Button, Typography, Card, CardContent, LinearProgress } from "@mui/material";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
@@ -249,13 +250,14 @@ const MultiGame = ({ gameId, create }) => {
     }
 
     const gameplayIndicator = (idx) => {
+      // TODO uncomment to make text unselectable
       const styles2 = {
-        WebkitTouchCallout: 'none',
-        WebkitUserSelect: 'none',
-        KhtmlUserSelect: 'none',
-        MozUserSelect: 'none',
-        msUserSelect: 'none',
-        userSelect: 'none'
+        // WebkitTouchCallout: 'none',
+        // WebkitUserSelect: 'none',
+        // KhtmlUserSelect: 'none',
+        // MozUserSelect: 'none',
+        // msUserSelect: 'none',
+        // userSelect: 'none'
       }
       if (gameStatus.status != "IN_PROGRESS") {
         return styles2;
@@ -326,9 +328,21 @@ const MultiGame = ({ gameId, create }) => {
               {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
               {!create && (gameStatus.status != "IN_PROGRESS") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
+            <Grid item>
+              <LinearProgress variant="determinate" value={50} />
+            </Grid>
             {players && players.map((player, idx) => {
               if (player) {
-                return <Grid key={idx} item><Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography></Grid>
+                return (
+                <Grid key={idx} container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+                  <Grid item>
+                    <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <ProgressBar playerPosition={game.players ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
+                  </Grid>
+                </Grid>
+                )
               }
             })}
         </React.Fragment>
