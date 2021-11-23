@@ -4,10 +4,18 @@ import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent, LinearProgress } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
+import { makeStyles, lighten } from "@material-ui/core";
+import { alpha } from '@material-ui/core/styles/colorManipulator';
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
 const stompClient = Stomp.over(socket);
+const useStyles = makeStyles(theme => ({
+  color: {
+    backgroundColor: 'rgba(46, 47, 67, 0.9)',
+    borderRadius: "8px"
+    }
+}));
 
 const styles = {
   blueStyle: {
@@ -36,6 +44,8 @@ const styles3 = {
   }
 }
 
+
+
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
@@ -60,6 +70,7 @@ const MultiGame = ({ gameId, create }) => {
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
+   
 
     const startGame = () => {
         if (!stompClient.connected) {
@@ -77,6 +88,12 @@ const MultiGame = ({ gameId, create }) => {
         stompClient.send("/app/timer/" + gameId, {}, gameId);
 
     }
+    const classes = useStyles(); 
+
+
+
+  
+
 
     const handleKeyDown = event => {
         if (gameStatus.status != "IN_PROGRESS") {
@@ -263,6 +280,8 @@ const MultiGame = ({ gameId, create }) => {
         return styles2;
       }
 
+  
+
       const position = game.players[sessionId].position;
       if (idx < position) {
         styles2['backgroundColor'] = "#5fb6e2";
@@ -298,6 +317,8 @@ const MultiGame = ({ gameId, create }) => {
       return returnVal;
     }
 
+    
+    
     return (
         <React.Fragment>
             <Grid item>
@@ -334,7 +355,7 @@ const MultiGame = ({ gameId, create }) => {
             {players && players.map((player, idx) => {
               if (player) {
                 return (
-                <Grid key={idx} container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+                <Grid className={classes.color} key={idx} container sx={{padding: '5px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
                   <Grid item>
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
                   </Grid>
