@@ -2,9 +2,10 @@ import React from "react";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
-import { Grid, TextField, Button, Typography, Card, CardContent, LinearProgress } from "@mui/material";
+import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
+import CloseIcon from '@mui/icons-material/Close';
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
@@ -52,6 +53,7 @@ const MultiGame = ({ gameId, create }) => {
     const [playerStatus, setPlayerStatus] = useState(0);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
+    const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
     const [players, setPlayers] = useState(null);
     const backspace = JSON.stringify('\b');
@@ -64,19 +66,12 @@ const MultiGame = ({ gameId, create }) => {
           alert("Not connected yet");
           return;
         }
-        if (gameStatus.status != "READY") {
-          alert("Game cannot be started yet.");
-        }
-        if (gameStatus.status == "READY") {
-          // setStartClicked(true);
-          stompClient.send("/app/end/" + gameId + '/' + sessionId, {}, gameId);
-        }
-        // stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
+        stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
     }
     const classes = useStyles(); 
 
     const handleKeyDown = event => {
-        if (gameStatus.status != "IN_PROGRESS") {
+        if (gameStatus.status !== "IN_PROGRESS") {
           event.preventDefault();
           return;
         }
@@ -145,7 +140,8 @@ const MultiGame = ({ gameId, create }) => {
             })
 
             stompClient.subscribe('/game/errors/' + gameId + '/' + sessionId, (backendError) => {
-              console.log(JSON.parse(backendError.body));
+              console.log(backendError.body);
+              setServerError(backendError.body);
             })
             
             // Subscription for a game text update when game is reset, created, or joined
@@ -260,10 +256,12 @@ const MultiGame = ({ gameId, create }) => {
         // msUserSelect: 'none',
         // userSelect: 'none'
       }
-      if (gameStatus.status != "IN_PROGRESS") {
+      if (gameStatus.status !== "IN_PROGRESS") {
         return styles;
       }
-
+      // if (game.players) {
+      //   console.log(game.players);
+      // }
       const position = game.players[sessionId].position;
       if (idx < position) {
         styles['backgroundColor'] = "#5fb6e2";
@@ -301,6 +299,26 @@ const MultiGame = ({ gameId, create }) => {
     
     return (
         <React.Fragment>
+            <Grid item>
+              <Collapse in={serverError !== ''}>
+                <Alert
+                  severity="error"
+                  action={
+                  <IconButton
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setServerError('');
+                    }}
+                  >
+                  <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                  }
+                sx={{ mb: 2 }}>
+                  {serverError}
+                </Alert>
+              </Collapse>
+            </Grid>
             <Grid item>
             <Typography variant="h4" color="common.white">{gameId}</Typography>
             <Card sx={{ maxWidth: 700 }}>
