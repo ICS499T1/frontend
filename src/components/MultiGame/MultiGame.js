@@ -285,8 +285,6 @@ const MultiGame = ({ gameId, create }) => {
         return styles2;
       }
 
-  
-
       const position = game.players[sessionId].position;
       if (idx < position) {
         styles2['backgroundColor'] = "#5fb6e2";
