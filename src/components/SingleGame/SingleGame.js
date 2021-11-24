@@ -34,7 +34,7 @@ const SingleGame = ({ gameId }) => {
           alert("Not connected yet");
           return;
         }
-        if (gameStatus.status === "COMPLETED") {
+        if (gameStatus.status === "READY") {
             stompClient.send("/app/end/single/" + gameId + '/' + sessionId, {}, gameId);
         }
         setIsCountdown(true);
@@ -184,7 +184,6 @@ const SingleGame = ({ gameId }) => {
     return (
         <React.Fragment>
             <Grid item>
-            <Typography variant="h4" color="common.white">{gameId}</Typography>
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
                     {gameText && 

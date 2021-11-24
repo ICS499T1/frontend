@@ -4,8 +4,7 @@ import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent, LinearProgress } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
-import { makeStyles, lighten } from "@material-ui/core";
-import { alpha } from '@material-ui/core/styles/colorManipulator';
+import { makeStyles } from "@material-ui/core";
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
@@ -17,18 +16,6 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "8px"
     }
 }));
-
-const styles = {
-  blueStyle: {
-    color: "blue"
-  },
-  redStyle: {
-    color: "red"
-  },
-  blackStyle: {
-    color: "black"
-  }
-}
 
 const styles3 = {
   1: {
@@ -46,6 +33,7 @@ const styles3 = {
 }
 
 const MultiGame = ({ gameId, create }) => {
+    const [created, setCreated] = useState(false);
     const [sessionId, setSessionId] = useState("");
     const [connected, setConnected] = useState(false);
     const [seconds, setSeconds] = useState(5);
@@ -55,7 +43,7 @@ const MultiGame = ({ gameId, create }) => {
       status: '',
       players: null
     });
-    const [startClicked, setStartClicked] = useState(false);
+    // const [startClicked, setStartClicked] = useState(false);
     const [startGameBool, setStartGameBool] = useState(false);
     const [game, setGame] = useState({
         players: null,
@@ -76,16 +64,14 @@ const MultiGame = ({ gameId, create }) => {
           alert("Not connected yet");
           return;
         }
-        if (gameStatus.status != "READY" && gameStatus.status != "COMPLETED") {
+        if (gameStatus.status != "READY") {
           alert("Game cannot be started yet.");
         }
-        if (gameStatus.status == "COMPLETED") {
-          setStartClicked(true);
+        if (gameStatus.status == "READY") {
+          // setStartClicked(true);
           stompClient.send("/app/end/" + gameId + '/' + sessionId, {}, gameId);
-          return;
         }
-        stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
-
+        // stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
     }
     const classes = useStyles(); 
 
@@ -193,7 +179,7 @@ const MultiGame = ({ gameId, create }) => {
     }, [connected])
 
     useEffect(() => {
-      if (startGameBool && create) {
+      if (startGameBool && created) {
         stompClient.send("/app/start/" + gameId + '/' + sessionId, {}, gameId);
         setStartGameBool(false);
       } else if (startGameBool) {
@@ -206,9 +192,14 @@ const MultiGame = ({ gameId, create }) => {
         firstRender.current = false;
         return;
       }
-      if (gameStatus.status == "READY" && startClicked) {
-        setStartClicked(false);
-        startGame();
+
+      // if (gameStatus.status == "READY" && startClicked) {
+      //   setStartClicked(false);
+      //   startGame();
+      // }
+
+      if (gameStatus.players[sessionId].playerNumber === 1) {
+        setCreated(true);
       }
 
       const newPlayers = [];
@@ -244,7 +235,7 @@ const MultiGame = ({ gameId, create }) => {
         setSeconds(5);
         setIsCountdown(false);
       }
-      // Set game text only when status updates, and with every gameplay update
+      // Set game text only when status updates
       setGameText(gameStatus.gameText);
     }, [gameStatus])
 
@@ -255,25 +246,13 @@ const MultiGame = ({ gameId, create }) => {
     }, [playerStatus])
 
     useEffect(() => {
-      const stringstuff = JSON.stringify(players);
-      console.log(players);
-    }, [players])
+      setCreated(create);
+    }, [create])
 
-    const color = (idx) => {
-      if(gameStatus.status == "IN_PROGRESS") {
-        if (idx < game.players[sessionId].position) {
-          return (styles.blueStyle);
-        } else if (idx >= game.players[sessionId].position && idx < game.players[sessionId].position + game.players[sessionId].incorrectCharacters.length) {
-          return (styles.redStyle);
-        }
-        return (styles.blackStyle);
-      }
-      return (styles.blackStyle);
-    }
 
     const gameplayIndicator = (idx) => {
       // TODO uncomment to make text unselectable
-      const styles2 = {
+      const styles = {
         // WebkitTouchCallout: 'none',
         // WebkitUserSelect: 'none',
         // KhtmlUserSelect: 'none',
@@ -282,28 +261,28 @@ const MultiGame = ({ gameId, create }) => {
         // userSelect: 'none'
       }
       if (gameStatus.status != "IN_PROGRESS") {
-        return styles2;
+        return styles;
       }
 
       const position = game.players[sessionId].position;
       if (idx < position) {
-        styles2['backgroundColor'] = "#5fb6e2";
+        styles['backgroundColor'] = "#5fb6e2";
       } else if (idx >= position && idx < position + game.players[sessionId].incorrectCharacters.length) {
-        styles2['backgroundColor'] = "#ff9a9a";
+        styles['backgroundColor'] = "#ff9a9a";
       }
 
-      for(let i = 1; i < 5; i++){
-        if (!players[i]) {
-          continue;
-        }
-        const playerPosition = game.players[players[i][1]].position;
-        if (idx == playerPosition) {
-          Object.keys(styles3[i]).forEach( key => {
-            styles2[key] = styles3[i][key];
-          })
-        }
-      }
-      return styles2;
+      // for(let i = 1; i < 5; i++){
+      //   if (!players[i]) {
+      //     continue;
+      //   }
+      //   const playerPosition = game.players[players[i][1]].position;
+      //   if (idx == playerPosition) {
+      //     Object.keys(styles3[i]).forEach( key => {
+      //       styles2[key] = styles3[i][key];
+      //     })
+      //   }
+      // }
+      return styles;
     }
 
     const playerListIndicator = (idx) => {
@@ -346,9 +325,15 @@ const MultiGame = ({ gameId, create }) => {
                         value={textField}/> 
             </Grid>
             <Grid item>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
-              {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
-              {!create && (gameStatus.status != "IN_PROGRESS") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
+              {created && 
+              <Grid item>
+                <Button variant="contained" 
+                        disabled={gameStatus.status == "WAITING_FOR_ANOTHER_PLAYER" || gameStatus.status == "IN_PROGRESS" || gameStatus.status == "COUNTDOWN" || gameStatus.status == ''} 
+                        onClick={startGame}>Start Game!</Button>
+              </Grid>}
+              {gameStatus.status == "WAITING_FOR_ANOTHER_PLAYER" && <Typography variant="h4" color="common.white">Waiting for another player!</Typography>}
+              {!created && (gameStatus.status != "IN_PROGRESS" && gameStatus.status != "COUNTDOWN") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
             {players && players.map((player, idx) => {
               if (player) {
