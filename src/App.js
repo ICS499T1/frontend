@@ -17,6 +17,7 @@ import { AuthorizationProvider } from "./hooks/useAuthorization";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MultiplayerJoin from "./pages/MultiplayerJoin";
 import MultiplayerCreate from "./pages/MultiplayerCreate";
+import SinglePlayerCreate from "./pages/SinglePlayerCreate.js";
 
 const theme = createTheme({
   palette: {
@@ -55,6 +56,7 @@ class App extends Component {
               <Route path="/tutorials" component={Tutorials} />
               <ProtectedRoute path="/multiplayer/:gameId" component={MultiplayerJoin} />
               <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
+              <ProtectedRoute path="/singleplayer" component={SinglePlayerCreate} />
               <ProtectedRoute path="/myprofile" component={UserProfile} />
               <ProtectedRoute path="/soloplay" component={SoloPlay} />
               <ProtectedRoute path="/multiplay" component={MultiPlay} />

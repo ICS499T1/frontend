@@ -1,13 +1,13 @@
 import React from "react";
 import { useEffect, useState, useRef } from 'react';
 import Background from "../components/Background";
-import MultiplayImage from "../images/multiplayerbackground.png";
+import SinglePlayerImage from "../images/space.png";
 import { useParams } from "react-router";
 import { Grid } from "@mui/material";
 import { useAuthorization } from "../hooks/useAuthorization";
-import MultiGame from "../components/MultiGame/MultiGame";
+import SingleGame from "../components/SingleGame/SingleGame";
 
-const MultiplayerCreate = () => {
+const SinglePlayerCreate = () => {
     const { instance } = useAuthorization();
     const [gameId, setGameId] = useState(useParams().gameIdUrl);
 
@@ -24,13 +24,13 @@ const MultiplayerCreate = () => {
 
     return (
         <React.Fragment>
-            <Background imgPath={MultiplayImage}>
+            <Background imgPath={SinglePlayerImage}>
                 <Grid container sx={{padding: '50px'}} direction="column" rowSpacing={3} justifyContent="flex-end" alignItems="center">
-                        <MultiGame gameId={gameId} create={true} />
+                        <SingleGame gameId={gameId} />
                 </Grid>                   
             </Background>
         </React.Fragment>
     );
   };
 
-  export default MultiplayerCreate;
+  export default SinglePlayerCreate;

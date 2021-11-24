@@ -10,6 +10,7 @@ import { alpha } from '@material-ui/core/styles/colorManipulator';
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('http://localhost:8080/new-player');
 const stompClient = Stomp.over(socket);
+
 const useStyles = makeStyles(theme => ({
   color: {
     backgroundColor: 'rgba(46, 47, 67, 0.9)',
@@ -43,8 +44,6 @@ const styles3 = {
     borderRight: "5px solid brown"
   }
 }
-
-
 
 const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
@@ -82,18 +81,13 @@ const MultiGame = ({ gameId, create }) => {
         }
         if (gameStatus.status == "COMPLETED") {
           setStartClicked(true);
-          stompClient.send("/app/end/" + gameId, {}, gameId);
+          stompClient.send("/app/end/" + gameId + '/' + sessionId, {}, gameId);
           return;
         }
-        stompClient.send("/app/timer/" + gameId, {}, gameId);
+        stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
 
     }
     const classes = useStyles(); 
-
-
-
-  
-
 
     const handleKeyDown = event => {
         if (gameStatus.status != "IN_PROGRESS") {
@@ -120,14 +114,14 @@ const MultiGame = ({ gameId, create }) => {
           if (incorrectLength === 0) {
             event.preventDefault();
           } else {
-            stompClient.send("/app/gameplay/" + gameId, {}, backspace);
+            stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, backspace);
             setError(false);
             setTextField(textField.slice(0, -1));
           }
         } else {
             event.target.selectionStart = event.target.selectionEnd = event.target.value.length;
             if (key.length === 1) {
-              stompClient.send("/app/gameplay/" + gameId, {}, JSON.stringify(key));
+              stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
               // spacebar
               if (key === gameText[position] && keyCode !== 32) {
                 setTextField(textField + key);
@@ -164,6 +158,10 @@ const MultiGame = ({ gameId, create }) => {
               setPlayerStatus(JSON.parse(playerStatus.body));
             })
 
+            stompClient.subscribe('/game/errors/' + gameId + '/' + sessionId, (backendError) => {
+              console.log(JSON.parse(backendError.body));
+            })
+            
             // Subscription for a game text update when game is reset, created, or joined
             // stompClient.subscribe('/game/gameText/' + gameId, (action) => {
             //   setGameText(JSON.parse(action.body));
@@ -178,18 +176,25 @@ const MultiGame = ({ gameId, create }) => {
         }
     }, [gameId])
 
+    // Used to disconnect the client once they leave the gameplay page
+    useEffect(() => {
+      return async () => {
+        stompClient.disconnect();
+      }
+    }, [])
+
     useEffect(() => {
         if (stompClient.connected && create) {
-          stompClient.send("/app/create/" + gameId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
+          stompClient.send("/app/create/" + gameId + '/' + sessionId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
         }
         if (stompClient.connected && !create) {
-            stompClient.send("/app/join/" + gameId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
+            stompClient.send("/app/join/" + gameId + '/' + sessionId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
         }
     }, [connected])
 
     useEffect(() => {
       if (startGameBool && create) {
-        stompClient.send("/app/start/" + gameId, {}, gameId);
+        stompClient.send("/app/start/" + gameId + '/' + sessionId, {}, gameId);
         setStartGameBool(false);
       } else if (startGameBool) {
         setStartGameBool(false);
@@ -316,8 +321,6 @@ const MultiGame = ({ gameId, create }) => {
       }
       return returnVal;
     }
-
-    
     
     return (
         <React.Fragment>
@@ -349,9 +352,6 @@ const MultiGame = ({ gameId, create }) => {
               {create && <Grid item><Button variant="contained" onClick={startGame}>Start Game!</Button></Grid>}
               {!create && (gameStatus.status != "IN_PROGRESS") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
-            <Grid item>
-              <LinearProgress variant="determinate" value={50} />
-            </Grid>
             {players && players.map((player, idx) => {
               if (player) {
                 return (
@@ -360,7 +360,7 @@ const MultiGame = ({ gameId, create }) => {
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
                   </Grid>
                   <Grid item>
-                    <ProgressBar playerPosition={game.players ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
+                    <ProgressBar playerPosition={(game.players && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
                   </Grid>
                 </Grid>
                 )
