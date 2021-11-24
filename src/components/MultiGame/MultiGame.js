@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
-const socket = new SockJS('http://localhost:8080/new-player');
+const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
 const stompClient = Stomp.over(socket);
 
 const useStyles = makeStyles(theme => ({

@@ -6,7 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/mat
 import ProgressBar from "../ProgressBar/ProgressBar";
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
-const socket = new SockJS('http://localhost:8080/new-player');
+const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
 const stompClient = Stomp.over(socket);
 
 const SingleGame = ({ gameId }) => {

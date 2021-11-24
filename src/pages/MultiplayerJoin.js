@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 import { Grid } from "@mui/material";
 import MultiGame from "../components/MultiGame/MultiGame";
 
-const socket = new SockJS('http://localhost:8080/new-player');
+const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
 const stompClient = Stomp.over(socket);
 
 const MultiplayerJoin = () => {

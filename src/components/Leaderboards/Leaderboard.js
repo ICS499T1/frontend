@@ -39,7 +39,7 @@ const Leaderboard = () => {
       mode: 'cors'
     };
 
-    fetch('http://localhost:8080/leaderboard', fetchInit)
+    fetch('https://space-racer-test.herokuapp.com/leaderboard', fetchInit)
       .then(response => response.json())
       .then(data => {
         setFastestUsers(data.fastestPlayers);

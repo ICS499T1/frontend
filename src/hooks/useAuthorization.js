@@ -4,7 +4,7 @@ import { useAuthentication } from '../hooks/useAuthentication';
 
 const AuthorizationContext = createContext(null);
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://space-racer-test.herokuapp.com';
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username';
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken';
