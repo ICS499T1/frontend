@@ -7,10 +7,8 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import GLOBAL from '../../resources/Global';
 
-const socket = new SockJS(GLOBAL.API + '/new-player');
-
-const stompClient = Stomp.over(socket);
-
+var socket = new SockJS(GLOBAL.API + '/new-player');
+var stompClient = Stomp.over(socket);
 
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");
@@ -140,37 +138,46 @@ const SingleGame = ({ gameId }) => {
 
     // TODO: add logic to refresh the access token for websockets
     useEffect(() => {
-      console.log(gameId);
         if (gameId) {
-          stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
-            var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
-            setSessionId(sessionId);
-            setConnected(stompClient.connected);
-
-            // Subscription for game events
-            stompClient.subscribe('/game/single/gameplay/' + gameId, (game) => {
-              var result = JSON.parse(game.body);
-              setGame(result);
-            });
-
-            // Subscription for syncing client-side game status with server-side game status
-            stompClient.subscribe('/game/single/status/' + gameId, (gameStatus) => {
-              var statusResult = JSON.parse(gameStatus.body);
-              setGameStatus(statusResult);
-            });
-
-            // Subscription for knowing when to enable/disable text field usage
-            stompClient.subscribe('/game/single/playerStatus/' + gameId + '/' + sessionId, (playerStatus) => {
-                setPlayerStatus(JSON.parse(playerStatus.body));
-            });
-
-            // Subscription for exceptions thrown serverside
-            stompClient.subscribe('/game/single/errors/' + gameId + '/' + sessionId, (backendError) => {
-              setServerError(backendError.body);
-            });
-
-
-          }, (error) => console.log(error));
+          connectInterval.current = setInterval(() => {
+            if (!stompClient.connected) {
+              socket = new SockJS(GLOBAL.API + '/new-player');
+              stompClient = Stomp.over(socket);
+              // Disables logs from stomp.js (used only for debugging)
+              //stompClient.debug = () => {};
+              stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
+                var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
+                setSessionId(sessionId);
+                setConnected(stompClient.connected);
+    
+                // Subscription for game events
+                stompClient.subscribe('/game/single/gameplay/' + gameId, (game) => {
+                  var result = JSON.parse(game.body);
+                  setGame(result);
+                });
+    
+                // Subscription for syncing client-side game status with server-side game status
+                stompClient.subscribe('/game/single/status/' + gameId, (gameStatus) => {
+                  var statusResult = JSON.parse(gameStatus.body);
+                  setGameStatus(statusResult);
+                });
+    
+                // Subscription for knowing when to enable/disable text field usage
+                stompClient.subscribe('/game/single/playerStatus/' + gameId + '/' + sessionId, (playerStatus) => {
+                    setPlayerStatus(JSON.parse(playerStatus.body));
+                });
+    
+                // Subscription for exceptions thrown serverside
+                stompClient.subscribe('/game/single/errors/' + gameId + '/' + sessionId, (backendError) => {
+                  setServerError(backendError.body);
+                });
+    
+    
+              }, (error) => console.log(error));
+            } else {
+              clearInterval(connectInterval.current);
+            }
+          }, 1000)
         }
     }, [gameId])
 

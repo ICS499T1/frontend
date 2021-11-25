@@ -162,7 +162,7 @@ const MultiGame = ({ gameId, create }) => {
             //   setIsCountdown(true);
             //   setPlayerStatus(0);
             // });
-          }, (error) => console.log())
+          }, (error) => console.log(error))
         }
     }, [gameId])
 
