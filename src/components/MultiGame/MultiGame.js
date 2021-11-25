@@ -44,7 +44,6 @@ const MultiGame = ({ gameId, create }) => {
       status: '',
       players: null
     });
-    // const [startClicked, setStartClicked] = useState(false);
     const [startGameBool, setStartGameBool] = useState(false);
     const [game, setGame] = useState({
         players: null,
@@ -56,6 +55,8 @@ const MultiGame = ({ gameId, create }) => {
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
     const [players, setPlayers] = useState(null);
+    const [localPosition, setLocalPosition] = useState(0);
+    const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
@@ -68,51 +69,57 @@ const MultiGame = ({ gameId, create }) => {
         }
         stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
     }
-    const classes = useStyles(); 
+    const classes = useStyles();
 
     const handleKeyDown = event => {
-        if (gameStatus.status !== "IN_PROGRESS") {
-          event.preventDefault();
-          return;
-        }
-        var key = event.key;
-        var keyCode = event.keyCode;
-        var position = game.players[sessionId].position;
-        var incorrectLength = game.players[sessionId].incorrectCharacters.length
+      if (gameStatus.status !== "IN_PROGRESS") {
+        event.preventDefault();
+        return;
+      }
+      var key = event.key;
+      var keyCode = event.keyCode;
 
-        if (playerStatus) {
+      if (keyCode !== 8 && keyCode !== 32 && key.length > 1) {
+        return;
+      }
+      
+      if (playerStatus) {
           event.preventDefault();
           return;
-        }
-        
-        if (incorrectLength > 5 && keyCode !== 8) {
-          event.preventDefault();
-          setError(true);
-          return;
-        }
-        // backspace 
+      }
+
+      if (incorrectCharCount > 5 && keyCode !== 8) {
+        event.preventDefault();
+        setError(true);
+        return;
+      }
+
+      if (incorrectCharCount !== 0) {
         if (keyCode === 8) {
-          if (incorrectLength === 0) {
-            event.preventDefault();
-          } else {
-            stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, backspace);
-            setError(false);
-            setTextField(textField.slice(0, -1));
-          }
+          stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, backspace);
+          setIncorrectCharCount(incorrectCharCount - 1);
+          setTextField(textField.slice(0, -1));            
+          setError(false);
         } else {
-            event.target.selectionStart = event.target.selectionEnd = event.target.value.length;
-            if (key.length === 1) {
-              stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-              // spacebar
-              if (key === gameText[position] && keyCode !== 32) {
-                setTextField(textField + key);
-              } else if (key === gameText[position] && keyCode === 32 && incorrectLength === 0) {
-                setTextField('');                
-              } else {
-                setTextField(textField + key);
-              }
-            }
+          stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
+          setIncorrectCharCount(incorrectCharCount + 1);
+          setTextField(textField + key);
         }
+      } else if (keyCode === 8) {
+        event.preventDefault();
+      } else if (gameText[localPosition] === key) {
+        stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
+        setLocalPosition(localPosition + 1);
+        if (keyCode === 32) {
+          setTextField('');
+        } else {
+          setTextField(textField + key);
+        }
+      } else {
+        stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
+        setIncorrectCharCount(incorrectCharCount + 1);
+        setTextField(textField + key);
+      }
     }
 
     useEffect(() => {
@@ -189,10 +196,10 @@ const MultiGame = ({ gameId, create }) => {
         return;
       }
 
-      // if (gameStatus.status == "READY" && startClicked) {
-      //   setStartClicked(false);
-      //   startGame();
-      // }
+      if (gameStatus.status === "READY") {
+        setLocalPosition(0);
+        setIncorrectCharCount(0);
+      }
 
       if (gameStatus.players[sessionId].playerNumber === 1) {
         setCreated(true);
