@@ -1,7 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
-
-const API_URL = 'https://space-racer-test.herokuapp.com'
+import GLOBAL from '../resources/Global';
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username'
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken'
@@ -19,7 +18,7 @@ class AuthenticationService {
             method: 'POST',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
             data: qs.stringify(data),
-            url: `${API_URL}/login`
+            url: `${GLOBAL.API}/login`
           };
 
         return axios(options)
@@ -85,7 +84,7 @@ class AuthenticationService {
                   originalConfig._retry = true;
           
                   try {
-                    const rs = await axios.get(`${API_URL}/user/refresh`, {
+                    const rs = await axios.get(`${GLOBAL.API}/user/refresh`, {
                       refreshToken: localStorage.getItem(REFRESH_TOKEN_ATTRIBUTE),
                     });
           

@@ -3,6 +3,7 @@ import { Tab, Box, Tabs  } from '@mui/material';
 import PropTypes from 'prop-types';
 import './Leaderboard.css';
 import LeaderboardTable from './LeaderboardTable.js';
+import GLOBAL from '../../resources/Global';
 
 const TabPanel = props => {
   const { children, value, index, ...other } = props;
@@ -39,7 +40,7 @@ const Leaderboard = () => {
       mode: 'cors'
     };
 
-    fetch('https://space-racer-test.herokuapp.com/leaderboard', fetchInit)
+    fetch(GLOBAL.API + '/leaderboard', fetchInit)
       .then(response => response.json())
       .then(data => {
         setFastestUsers(data.fastestPlayers);

@@ -5,10 +5,12 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
+import GLOBAL from '../../resources/Global';
 
-// const socket = new WebSocket('ws://localhost:8080/new-player');
-const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
+const socket = new SockJS(GLOBAL.API + '/new-player');
+
 const stompClient = Stomp.over(socket);
+
 
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");
@@ -29,6 +31,7 @@ const SingleGame = ({ gameId }) => {
     const [error, setError] = useState(false);
     const backspace = JSON.stringify('\b');
     const interval = useRef();
+    const connectInterval = useRef();
     const [playerStatus, setPlayerStatus] = useState(0);
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
@@ -125,15 +128,19 @@ const SingleGame = ({ gameId }) => {
       }
     }, [startGameBool])
 
+    // Used to disconnect the client once they leave the gameplay page
     useEffect(() => {
       return async () => {
-        stompClient.disconnect();
+        if (connected) {
+          stompClient.disconnect();
+        }
       }
     }, [])
   
 
     // TODO: add logic to refresh the access token for websockets
     useEffect(() => {
+      console.log(gameId);
         if (gameId) {
           stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
             var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
@@ -158,7 +165,7 @@ const SingleGame = ({ gameId }) => {
             });
 
             // Subscription for exceptions thrown serverside
-            stompClient.subscribe('/game/errors/' + gameId + '/' + sessionId, (backendError) => {
+            stompClient.subscribe('/game/single/errors/' + gameId + '/' + sessionId, (backendError) => {
               setServerError(backendError.body);
             });
 

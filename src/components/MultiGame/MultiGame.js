@@ -6,9 +6,10 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
+import GLOBAL from '../../resources/Global';
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
-const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
+const socket = new SockJS(GLOBAL.API + '/new-player');
 const stompClient = Stomp.over(socket);
 
 const useStyles = makeStyles(theme => ({
@@ -168,7 +169,9 @@ const MultiGame = ({ gameId, create }) => {
     // Used to disconnect the client once they leave the gameplay page
     useEffect(() => {
       return async () => {
-        stompClient.disconnect();
+        if (connected) {
+          stompClient.disconnect();
+        }
       }
     }, [])
 

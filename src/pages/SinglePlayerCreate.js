@@ -20,7 +20,7 @@ const SinglePlayerCreate = () => {
             }
         }
         getGameId();
-      }, []);
+    }, []);
 
     return (
         <React.Fragment>
