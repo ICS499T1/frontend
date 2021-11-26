@@ -270,6 +270,12 @@ const SingleGame = ({ gameId }) => {
                     <Typography variant="p" color="common.white">{game.player.username}</Typography>
                 </Grid>
                 <Grid item>
+                    <Typography color="common.white"> Average Speed </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography color="common.white">Errors: {game.player && game.player.failedCharacters.length} </Typography>
+                  </Grid>
+                <Grid item>
                     <ProgressBar playerPosition={(game.player && gameStatus.status === "IN_PROGRESS") ? game.player.position : 0} lastPosition={gameStatus.gameText.length} />
                 </Grid>
             </Grid>

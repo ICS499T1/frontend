@@ -362,10 +362,10 @@ const MultiGame = ({ gameId, create }) => {
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white"> Average Speed </Typography>
+                    <Typography color="common.white">  </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white"> Errors </Typography>
+                    <Typography color="common.white">Errors: {game.players && game.players[player[1]].failedCharacters.length} </Typography>
                   </Grid>
                   <Grid item>
                     <ProgressBar playerPosition={(game.players && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
