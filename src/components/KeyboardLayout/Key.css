@@ -4,14 +4,9 @@
     --peach: #EE786E;
     --off-white: #FFFFF4;
   }
+
   
-  body {
-    background-color: #FFFFFF;
-    margin-top: 50px;
-    font-family: Arial;
-  }
-  
-  span {
+  .multikey {
     display: block;
     margin-top: -5px;
   }

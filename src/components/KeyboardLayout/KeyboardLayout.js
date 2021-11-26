@@ -1,219 +1,70 @@
 
 import React from "react";
-import './Key.css';
-import { Container } from '@mui/material';
+// import './Key.css';
+import { Container, Box } from '@mui/material';
+import MultipleSymbolKey from "./MultipleSymbolKey";
+import Backspace from "./Backspace";
+import Tab from "./Tab";
+import Key from "./Key";
+import PipeKey from "./PipeKey";
+import CapsLock from "./CapsLock";
+import ReturnKey from "./ReturnKey";
 
-const KeyboardLayout = () => {
+const KeyboardLayout = ({user}) => {
 
     return (
         <React.Fragment>
+            <Box>
             <Container className="keyboard">
-                <div className="row">
-                <div className="key key__symbols">
-                    ~ <span/> `
-                </div>
-                <div className="key key__symbols">
-                    ! <span/> 1
-                </div>
-                <div className="key key__symbols">
-                    @ <span/> 2
-                </div>
-                <div className="key key__symbols">
-                    # <span/> 3
-                </div>
-                <div className="key key__symbols">
-                    $ <span/> 4
-                </div>
-                <div className="key key__symbols">
-                    % <span/> 5
-                </div>
-                <div className="key key__symbols">
-                    ^ <span/> 6
-                </div>
-                <div className="key key__symbols">
-                    {'&'} <span/> 7
-                </div>
-                <div className="key key__symbols">
-                    * <span/> 8
-                </div>
-                <div className="key key__symbols">
-                    ( <span/> 9
-                </div>
-                <div className="key key__symbols">
-                    ) <span/> 0
-                </div>
-                <div className="key key__symbols">
-                    _ <span/> -
-                </div>
-                <div className="key key__symbols">
-                    + <span/> =
-                </div>
-                <div className="key key__delete key__icon">
-                    Backspace
-                </div>
-                </div>
-                    
-                <div className="row">
-                <div className="key key__oneandhalf">
-                    Tab
-                </div>
-                <div className="key">
-                    Q
-                </div>
-                <div className="key">
-                    W
-                </div>
-                <div className="key">
-                    E
-                </div>
-                <div className="key">
-                    R
-                </div>
-                <div className="key">
-                    T
-                </div>
-                <div className="key">
-                    Y
-                </div>
-                <div className="key">
-                    U
-                </div>
-                <div className="key">
-                    I
-                </div>
-                <div className="key">
-                    O
-                </div>
-                <div className="key">
-                    P
-                </div>
-                <div className="key key__symbols">
-                    {'{'} <span/> [
-                </div>
-                <div className="key key__symbols">
-                    {'}'} <span/> ]
-                </div>
-                <div className="key key__symbols key__oneandhalf">
-                    | <span/> \
-                </div>
-                </div>
-                    
-                <div className="row">
-                <div className="key key__caps">
-                    Caps Lock
-                </div>
-                <div className="key">
-                    A
-                </div>
-                <div className="key">
-                    S
-                </div>
-                <div className="key">
-                    D
-                </div>
-                <div className="key">
-                    F
-                </div>
-                <div className="key">
-                    G
-                </div>
-                <div className="key">
-                    H
-                </div>
-                <div className="key">
-                    J
-                </div>
-                <div className="key">
-                    K
-                </div>
-                <div className="key">
-                    L
-                </div>
-                <div className="key key__symbols">
-                    : <span/> ;
-                </div>
-                <div className="key key__symbols">
-                    " <span/> '
-                </div>
-                <div className="key key__enter">
-                    Enter
-                </div>
-                </div>
-                
-                <div className="row">
-                <div className="key key__shift-left">
-                    LShift
-                </div>
-                <div className="key">
-                    Z
-                </div>
-                <div className="key">
-                    X
-                </div>
-                <div className="key">
-                    C
-                </div>
-                <div className="key">
-                    V
-                </div>
-                <div className="key">
-                    B
-                </div>
-                <div className="key">
-                    N
-                </div>
-                <div className="key">
-                    M
-                </div>
-                <div className="key key__symbols">
-                    {'>'} <span/> .
-                </div>
-                <div className="key key__symbols">
-                    {'<'} <span/> .
-                </div>
-                <div className="key key__symbols">
-                    ? <span/> /
-                </div>
-                <div className="key">
-                    RS
-                </div>
-                <div className="key key__arrow">
-                    Up
-                </div>
-                <div className="key">
-                    CF
-                </div>
-                </div>
-                    
-                <div className="row">
-                <div className="key key__bottom-funct">
-                    Ctrl
-                </div>
-                <div className="key key__bottom-funct">
-                    WIN
-                </div>
-                <div className="key key__bottom-funct">
-                    Alt
-                </div>
-                <div className="key key__spacebar">
-                </div>
-                <div className="key">
-                    Alt
-                </div>
-                <div className="key">
-                    WIN
-                </div>
-                <div className="key key__arrow">
-                    lef
-                </div>
-                <div className="key key__arrow">
-                    dow
-                </div>
-                <div className="key key__arrow">
-                    rig
-                </div>
-                </div>
+                <Container sx={{height: 48, mt: .5}} >
+                    <MultipleSymbolKey top={'~'} bottom={'`'} user={user} />
+                    <MultipleSymbolKey top={'!'} bottom={'1'} user={user} />
+                    <MultipleSymbolKey top={'@'} bottom={'2'} user={user} />
+                    <MultipleSymbolKey top={'#'} bottom={'3'} user={user} />
+                    <MultipleSymbolKey top={'$'} bottom={'4'} user={user} />
+                    <MultipleSymbolKey top={'%'} bottom={'5'} user={user} />
+                    <MultipleSymbolKey top={'^'} bottom={'6'} user={user} />
+                    <MultipleSymbolKey top={'&'} bottom={'7'} user={user} />
+                    <MultipleSymbolKey top={'*'} bottom={'8'} user={user} />
+                    <MultipleSymbolKey top={'('} bottom={'9'} user={user} />
+                    <MultipleSymbolKey top={')'} bottom={'0'} user={user} />
+                    <MultipleSymbolKey top={'_'} bottom={'-'} user={user} />
+                    <MultipleSymbolKey top={'+'} bottom={'='} user={user} />
+                    <Backspace />
+                </Container>
+                <Container sx={{height: 48, mt: .5}} >
+                    <Tab />
+                    <Key big='Q' small='q' user={user} />
+                    <Key big='W' small='w' user={user} />
+                    <Key big='E' small='e' user={user} />
+                    <Key big='R' small='r' user={user} />
+                    <Key big='T' small='t' user={user} />
+                    <Key big='Y' small='y' user={user} />
+                    <Key big='U' small='u' user={user} />
+                    <Key big='I' small='i' user={user} />
+                    <Key big='O' small='o' user={user} />
+                    <Key big='P' small='p' user={user} />
+                    <MultipleSymbolKey top={'{'} bottom={'['} user={user} />
+                    <MultipleSymbolKey top={'}'} bottom={']'} user={user} />
+                    <PipeKey top={'|'} bottom={'\\'} user={user} />
+                </Container>
+                <Container sx={{height: 48, mt: .5}} >
+                    <CapsLock />
+                    <Key big='A' small='a' user={user} />
+                    <Key big='S' small='s' user={user} />
+                    <Key big='D' small='d' user={user} />
+                    <Key big='F' small='f' user={user} />
+                    <Key big='G' small='g' user={user} />
+                    <Key big='H' small='h' user={user} />
+                    <Key big='J' small='j' user={user} />
+                    <Key big='K' small='k' user={user} />
+                    <Key big='L' small='l' user={user} />
+                    <MultipleSymbolKey top={':'} bottom={';'} user={user} />
+                    <MultipleSymbolKey top={'"'} bottom={'\''} user={user} />
+                    <ReturnKey />
+                </Container>
             </Container>
+            </Box>
         </React.Fragment>
     );
   };

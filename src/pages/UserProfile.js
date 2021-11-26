@@ -27,7 +27,7 @@ function UserProfile() {
         result => result.data);
         if (data) {
           // calculate accuracy percentage and store in a dictionary, access each character's accuracy by the character itself
-          let keyDict = Object.assign({}, ...data.allKeys.map((x) => ({[x.character]: (x.numSuccesses/(x.numFails + x.numSuccesses) * 100)})));
+          let keyDict = Object.assign({}, ...data.allKeys.map((x) => ({[x.character]: (x.numSuccesses/(x.numFails + x.numSuccesses) * 100).toFixed(2)})));
           setUser({username: data.username,
                    userStats: {
                    averageSpeed: data.userStats.averageSpeed,
@@ -111,12 +111,9 @@ function UserProfile() {
               </Card>
             </Grid>
           </Grid>
-
-          
-        </Box>
-        
+          <KeyboardLayout user={user} />               
+        </Box>   
     </Background>
-    <KeyboardLayout />
     </React.Fragment>
   );
 }
