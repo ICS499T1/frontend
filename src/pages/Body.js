@@ -27,10 +27,10 @@ const Body = () => {
           <Background imgPath={background}>
               <Grid sx={{padding: '100px'}} direction="column" rowSpacing={3} container justifyContent="flex-end" alignItems="center" >
                 <Grid item>
-                  <Button component={Link} to="/soloplay" size="large" variant="contained">Practice</Button>
+                  <Button component={Link} to="/SinglePlayer" size="large" variant="contained">Practice</Button>
                 </Grid>
                 <Grid item>
-                  <Button component={Link} to="/multiplay" size="large" variant="contained">Play with Friends</Button>
+                  <Button component={Link} to="/multiplayer" size="large" variant="contained">Play with Friends</Button>
                 </Grid>
               </Grid>
           </Background>

@@ -6,6 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
+import { padding } from "@mui/system";
 
 // const socket = new WebSocket('ws://localhost:8080/new-player');
 const socket = new SockJS('https://space-racer-test.herokuapp.com/new-player');
@@ -283,6 +284,7 @@ const MultiGame = ({ gameId, create }) => {
       return styles;
     }
 
+
     const playerListIndicator = (idx) => {
       const returnVal = {};
       if (idx == 1) {
@@ -320,7 +322,8 @@ const MultiGame = ({ gameId, create }) => {
               </Collapse>
             </Grid>
             <Grid item>
-            <Typography variant="h4" color="common.white">{gameId}</Typography>
+            <Typography variant="p" color="common.white">Game code:</Typography>
+            <Typography variant="h5" color="common.white">{gameId}</Typography>
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
                     {gameText && 
@@ -342,7 +345,7 @@ const MultiGame = ({ gameId, create }) => {
                         onKeyDown={handleKeyDown}
                         value={textField}/> 
             </Grid>
-            <Grid item>
+            <Grid item padding='20px'>
               {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
               {created && 
               <Grid item>
@@ -350,15 +353,21 @@ const MultiGame = ({ gameId, create }) => {
                         disabled={gameStatus.status == "WAITING_FOR_ANOTHER_PLAYER" || gameStatus.status == "IN_PROGRESS" || gameStatus.status == "COUNTDOWN" || gameStatus.status == ''} 
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
-              {gameStatus.status == "WAITING_FOR_ANOTHER_PLAYER" && <Typography variant="h4" color="common.white">Waiting for another player!</Typography>}
-              {!created && (gameStatus.status != "IN_PROGRESS" && gameStatus.status != "COUNTDOWN") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+              {gameStatus.status == "WAITING_FOR_ANOTHER_PLAYER" && <Typography variant="h4"  padding='15px' color="common.white">Waiting for another player!</Typography>}
+              {!created && (gameStatus.status != "IN_PROGRESS" && gameStatus.status != "COUNTDOWN") && <Typography padding='15px' variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
             {players && players.map((player, idx) => {
               if (player) {
                 return (
-                <Grid className={classes.color} key={idx} container sx={{padding: '5px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+                <Grid className={classes.color} key={idx} container sx={{padding: '10px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
                   <Grid item>
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography color="common.white"> Average Speed </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography color="common.white"> Errors </Typography>
                   </Grid>
                   <Grid item>
                     <ProgressBar playerPosition={(game.players && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
