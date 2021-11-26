@@ -1,10 +1,10 @@
 import React, { useState, createContext, useContext } from "react";
 import axios from 'axios';
 import qs from 'qs';
+import GLOBAL from '../resources/Global';
 
 const AuthenticationContext = createContext(null);
 
-const API_URL = 'https://space-racer-test.herokuapp.com';
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username';
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken';
@@ -20,12 +20,12 @@ export const AuthenticationProvider = ({ children }) => {
             method: 'POST',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
             data: qs.stringify(data),
-            url: `${API_URL}/login`
+            url: `${GLOBAL.API}/login`
         };
 
         return axios(options)
         .then(response => successfulLogin(username, response))
-        .catch(error => error.response.status);
+        .catch(error => error);
     };
 
     const signup = async (username, password) => {
@@ -34,12 +34,12 @@ export const AuthenticationProvider = ({ children }) => {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             data: JSON.stringify(data),
-            url: `${API_URL}/user/add`
+            url: `${GLOBAL.API}/user/add`
         };
 
         return axios(options)
         .then(response => response)
-        .catch(error => error.response.status);
+        .catch(error => error);
     };
 
 

@@ -4,15 +4,10 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button"
 import secondaryImage from "../images/Type.png";
 import Grid from "@mui/material/Grid";
-
 import Box from "@mui/material/Box";
-import Paper from '@mui/material/Paper'
-import {BrowserRouter as Router, Link} from "react-router-dom";
-import ImageBackground from "../components/ImageBackground";
+import {Link} from "react-router-dom";
 import background from "../images/backgroundHD.jpg";
-import { Container } from "semantic-ui-react";
 import Background from '../components/Background';
-import CustomButton from '../components/CustomButton';
 import Leaderboard from "../components/Leaderboards/Leaderboard";
 
 
@@ -27,7 +22,7 @@ const Body = () => {
           <Background imgPath={background}>
               <Grid sx={{padding: '100px'}} direction="column" rowSpacing={3} container justifyContent="flex-end" alignItems="center" >
                 <Grid item>
-                  <Button component={Link} to="/SinglePlayer" size="large" variant="contained">Practice</Button>
+                  <Button component={Link} to="/singleplayer" size="large" variant="contained">Practice</Button>
                 </Grid>
                 <Grid item>
                   <Button component={Link} to="/multiplayer" size="large" variant="contained">Play with Friends</Button>

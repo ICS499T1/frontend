@@ -1,10 +1,9 @@
 import React, { createContext, useContext } from "react";
 import axios from 'axios';
 import { useAuthentication } from '../hooks/useAuthentication';
+import GLOBAL from '../resources/Global';
 
 const AuthorizationContext = createContext(null);
-
-const API_URL = 'https://space-racer-test.herokuapp.com';
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username';
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken';
@@ -14,7 +13,7 @@ export const AuthorizationProvider = ({ children }) => {
   const { logout } = useAuthentication();
 
   const instance = axios.create({
-      baseURL: `${API_URL}`,
+      baseURL: GLOBAL.API,
       headers: {
         "Content-Type": "application/json",
       },
@@ -47,7 +46,6 @@ export const AuthorizationProvider = ({ children }) => {
           try {
             const response = await refreshInstance.get("/user/refresh");
             const { accessToken } = response.data;
-            const { refreshToken } = response.data
             localStorage.setItem(ACCESS_TOKEN_ATTRIBUTE, accessToken);
             originalConfig.headers["Authorization"] = 'Bearer ' + accessToken;
             return instance(originalConfig);

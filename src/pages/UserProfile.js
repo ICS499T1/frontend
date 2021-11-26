@@ -1,24 +1,23 @@
-import React, { Component } from "react";
-import Keyboardpage from "../components/Keyboard.js";
+import React from "react";
 import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { Link } from "@mui/material";
 import BackgroundLetterAvatars from "../components/Avatar.js";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAuthorization } from '../hooks/useAuthorization';
 import Background from "../components/Background";
 import Backimage from "../images/astronaut-aesth2.jpeg";
+import KeyboardLayout from "../components/KeyboardLayout/KeyboardLayout";
 
 function UserProfile() {
   let { instance } = useAuthorization(); 
 
   const [user, setUser] = useState({
     username: '',
-    userStats: {averageSpeed: 0, numSingleGamesCompleted: 0, numMultiGamesCompleted: 0, racesWon: 0, bestRaceSpeed: 0, lastRaceSpeed: 0, bestRaceSpeed: 0},
+    userStats: {averageSpeed: 0, numSingleGamesCompleted: 0, numMultiGamesCompleted: 0, racesWon: 0, bestRaceSpeed: 0, lastRaceSpeed: 0},
     allKeys: {}
   });
 
@@ -28,7 +27,7 @@ function UserProfile() {
         result => result.data);
         if (data) {
           // calculate accuracy percentage and store in a dictionary, access each character's accuracy by the character itself
-          let keyDict = Object.assign({}, ...data.allKeys.map((x) => ({[x.character]: (x.numFails/x.numSuccesses * 100)})));
+          let keyDict = Object.assign({}, ...data.allKeys.map((x) => ({[x.character]: (x.numSuccesses/(x.numFails + x.numSuccesses) * 100).toFixed(2)})));
           setUser({username: data.username,
                    userStats: {
                    averageSpeed: data.userStats.averageSpeed,
@@ -43,7 +42,7 @@ function UserProfile() {
         }
     }
     getUser();
-  }, []);
+  }, [instance]);
 
   return (
     <React.Fragment>
@@ -112,13 +111,9 @@ function UserProfile() {
               </Card>
             </Grid>
           </Grid>
-
-          
-        </Box>
-      
-      <Keyboardpage />
+          <KeyboardLayout user={user} />               
+        </Box>   
     </Background>
-      
     </React.Fragment>
   );
 }
