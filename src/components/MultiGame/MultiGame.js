@@ -178,7 +178,7 @@ const MultiGame = ({ gameId, create }) => {
     }, [startGameBool, created, gameId, sessionId])
 
     useEffect(() => {
-      if (!gameStatus.players) {
+      if (gameStatus.status === '') {
         return;
       }
 
@@ -345,7 +345,7 @@ const MultiGame = ({ gameId, create }) => {
               {created && 
               <Grid item>
                 <Button variant="contained" 
-                        disabled={gameStatus.status !== "IN_PROGRESS"} 
+                        disabled={gameStatus.status !== "READY"} 
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
               {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography variant="h4" color="common.white">Waiting for another player!</Typography>}
