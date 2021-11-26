@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Background from "../components/Background";
 import SinglePlayerImage from "../images/space.png";
 import { useParams } from "react-router";
@@ -20,7 +20,7 @@ const SinglePlayerCreate = () => {
             }
         }
         getGameId();
-    }, []);
+    }, [instance]);
 
     return (
         <React.Fragment>

@@ -1,6 +1,4 @@
 import React from "react";
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import Background from "../components/Background";
 import MultiplayImage from "../images/multiplayerbackground.png";
 import { useParams } from "react-router";

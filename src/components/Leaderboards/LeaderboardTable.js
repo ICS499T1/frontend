@@ -1,4 +1,4 @@
-import { Tab, Box, Tabs, TableCell, TableContainer, Paper, Table, TableRow, TableHead, TableBody } from '@mui/material';
+import { TableCell, TableContainer, Paper, Table, TableRow, TableHead, TableBody } from '@mui/material';
 
 const LeaderboardTable = ({table, comparisonType}) => {
     return (

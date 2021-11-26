@@ -5,11 +5,9 @@ import Signup from "./pages/Signup.js";
 import Body from "./pages/Body.js";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
-import About from "./components/About";
+import About from "./pages/About";
 import Layout from './components/Layout'
 import UserProfile from "./pages/UserProfile";
-import SoloPlay from "./pages/Soloplay.js";
-import MultiPlay from "./pages/Multiplay.js";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { AuthenticationProvider } from "./hooks/useAuthentication";
@@ -18,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MultiplayerJoin from "./pages/MultiplayerJoin";
 import MultiplayerCreate from "./pages/MultiplayerCreate";
 import SinglePlayerCreate from "./pages/SinglePlayerCreate.js";
+import NotFound from "./pages/NotFound";
 
 const theme = createTheme({
   palette: {
@@ -58,8 +57,7 @@ class App extends Component {
               <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
               <ProtectedRoute path="/singleplayer" component={SinglePlayerCreate} />
               <ProtectedRoute path="/myprofile" component={UserProfile} />
-              <ProtectedRoute path="/soloplay" component={SoloPlay} />
-              <ProtectedRoute path="/multiplay" component={MultiPlay} />
+              <Route component={NotFound} />
             </Switch>
             </Layout>
           </AuthorizationProvider>

@@ -12,7 +12,6 @@ var stompClient = Stomp.over(socket);
 
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");
-    const [connected, setConnected] = useState(false);
     const [seconds, setSeconds] = useState(5);
     const [isCountdown, setIsCountdown] = useState(false);
     const [gameStatus, setGameStatus] = useState({
@@ -41,7 +40,7 @@ const SingleGame = ({ gameId }) => {
           return;
         }
         if (gameStatus.status === "READY") {
-            stompClient.send("/app/end/single/" + gameId + '/' + sessionId, {}, gameId);
+            stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
         setIsCountdown(true);
         interval.current = setInterval(() => {
@@ -124,12 +123,12 @@ const SingleGame = ({ gameId }) => {
         stompClient.send("/app/start/single/" + gameId + '/' + sessionId, {}, gameId);
         setStartGameBool(false);
       }
-    }, [startGameBool])
+    }, [startGameBool, gameId, sessionId])
 
     // Used to disconnect the client once they leave the gameplay page
     useEffect(() => {
       return async () => {
-        if (connected) {
+        if (stompClient.connected) {
           stompClient.disconnect();
         }
       }
@@ -148,7 +147,6 @@ const SingleGame = ({ gameId }) => {
               stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
                 var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
                 setSessionId(sessionId);
-                setConnected(stompClient.connected);
     
                 // Subscription for game events
                 stompClient.subscribe('/game/single/gameplay/' + gameId, (game) => {
@@ -185,7 +183,7 @@ const SingleGame = ({ gameId }) => {
         if (stompClient.connected) {
           stompClient.send("/app/create/single/" + gameId + '/' + sessionId, {}, JSON.stringify({'username': localStorage.getItem('username')}));
         }
-    }, [connected])
+    }, [gameId, sessionId])
 
     useEffect(() => {
       if (gameStatus.status === "READY") {

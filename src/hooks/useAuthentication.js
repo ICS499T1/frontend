@@ -25,7 +25,7 @@ export const AuthenticationProvider = ({ children }) => {
 
         return axios(options)
         .then(response => successfulLogin(username, response))
-        .catch(error => error.response.status);
+        .catch(error => error);
     };
 
     const signup = async (username, password) => {
@@ -39,7 +39,7 @@ export const AuthenticationProvider = ({ children }) => {
 
         return axios(options)
         .then(response => response)
-        .catch(error => error.response.status);
+        .catch(error => error);
     };
 
 

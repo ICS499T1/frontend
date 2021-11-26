@@ -46,7 +46,6 @@ export const AuthorizationProvider = ({ children }) => {
           try {
             const response = await refreshInstance.get("/user/refresh");
             const { accessToken } = response.data;
-            const { refreshToken } = response.data;
             localStorage.setItem(ACCESS_TOKEN_ATTRIBUTE, accessToken);
             originalConfig.headers["Authorization"] = 'Bearer ' + accessToken;
             return instance(originalConfig);
