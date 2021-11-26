@@ -6,6 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import GLOBAL from '../../resources/Global';
+import { useHistory } from 'react-router-dom';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
@@ -22,6 +23,7 @@ const SingleGame = ({ gameId }) => {
     const [game, setGame] = useState({
         player: null
     });
+    const [disconnectSeconds, setDisconnectSeconds] = useState(15);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
@@ -33,12 +35,14 @@ const SingleGame = ({ gameId }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [startGameBool, setStartGameBool] = useState(false);
+    const disconnectTimer = useRef();
 
     const startGame = () => {
         if (!stompClient.connected) {
           alert("Not connected yet");
           return;
         }
+        setDisconnectSeconds(15);
         if (gameStatus.status === "READY") {
             stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
@@ -56,14 +60,15 @@ const SingleGame = ({ gameId }) => {
             }
           });
         } ,  1000 )
-        setPlayerStatus(0);  
+        setPlayerStatus(0);
     }
 
     const handleKeyDown = event => {
-        if (gameStatus.status !== "IN_PROGRESS") {
+        if (gameStatus.status !== "IN_PROGRESS" || playerStatus) {
           event.preventDefault();
           return;
         }
+        setDisconnectSeconds(15);
         var key = event.key;
         var keyCode = event.keyCode;
 
@@ -71,10 +76,6 @@ const SingleGame = ({ gameId }) => {
           return;
         }
         
-        if (playerStatus) {
-            event.preventDefault();
-            return;
-        }
 
         if (incorrectCharCount > 5 && keyCode !== 8) {
           event.preventDefault();
@@ -113,9 +114,9 @@ const SingleGame = ({ gameId }) => {
     }
 
     useEffect(() => {
-        if (playerStatus) {
-          setTextField('');
-        }
+      if (playerStatus) {
+        setTextField('');
+      }
     }, [playerStatus])
 
     useEffect(() => {
@@ -124,15 +125,6 @@ const SingleGame = ({ gameId }) => {
         setStartGameBool(false);
       }
     }, [startGameBool, gameId, sessionId])
-
-    // Used to disconnect the client once they leave the gameplay page
-    useEffect(() => {
-      return async () => {
-        if (stompClient.connected) {
-          stompClient.disconnect();
-        }
-      }
-    }, [])
   
 
     // TODO: add logic to refresh the access token for websockets
@@ -177,6 +169,10 @@ const SingleGame = ({ gameId }) => {
             }
           }, 1000)
         }
+
+        return async () => {
+          clearInterval(connectInterval.current);
+        }
     }, [gameId])
 
     useEffect(() => {
@@ -192,6 +188,26 @@ const SingleGame = ({ gameId }) => {
       }
       setGameText(gameStatus.gameText);
     }, [gameStatus])
+
+    useEffect(() => {
+      disconnectTimer.current = setInterval(() => {
+        setDisconnectSeconds((prevSeconds) => {
+          if (prevSeconds <= 0) {
+            clearInterval(disconnectTimer.current);
+            stompClient.disconnect();
+          } else {
+            return prevSeconds - 1;
+          }
+        })
+      }, 1000)
+      return async () => {
+        clearInterval(disconnectTimer.current);
+        clearInterval(interval.current);
+        if (stompClient.connected) {
+          stompClient.disconnect();
+        }
+      }
+    }, [])
 
     const gameplayIndicator = (idx) => {
       // TODO uncomment to make text unselectable
@@ -239,16 +255,17 @@ const SingleGame = ({ gameId }) => {
               </Collapse>
             </Grid>
             <Grid item>
-            <Card sx={{ maxWidth: 700 }}>
-                <CardContent>                    
-                    {gameText && 
-                    <Typography>
-                        {gameText.map((char, idx) => {
-                            return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
-                        })}
-                    </Typography>}
-                </CardContent>
-            </Card>
+              {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
+              <Card sx={{ maxWidth: 700 }}>
+                  <CardContent>                    
+                      {gameText && 
+                      <Typography>
+                          {gameText.map((char, idx) => {
+                              return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
+                          })}
+                      </Typography>}
+                  </CardContent>
+              </Card>
             </Grid>
             <Grid item>
               <TextField placeholder="Start Typing Here"

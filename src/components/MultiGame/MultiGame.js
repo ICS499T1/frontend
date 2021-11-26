@@ -35,6 +35,7 @@ const MultiGame = ({ gameId, create }) => {
         players: null,
         winner: null
     });
+    const [disconnectSeconds, setDisconnectSeconds] = useState(30);
     const [playerStatus, setPlayerStatus] = useState(0);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
@@ -46,6 +47,7 @@ const MultiGame = ({ gameId, create }) => {
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
+    const disconnectTimer = useRef();
    
 
     const startGame = () => {
@@ -220,7 +222,7 @@ const MultiGame = ({ gameId, create }) => {
               setStartGameBool(true);
               return;
             } else {
-              return prevSeconds - 1
+              return prevSeconds - 1;
             }
           });
         } ,  1000 )
@@ -237,6 +239,19 @@ const MultiGame = ({ gameId, create }) => {
     useEffect(() => {
       if (playerStatus) {
         setTextField('');
+        clearInterval(disconnectTimer.current);
+        setDisconnectSeconds(30);
+      } else {
+        disconnectTimer.current = setInterval(() => {
+          setDisconnectSeconds((prevSeconds) => {
+            if (prevSeconds <= 0) {
+              clearInterval(disconnectTimer.current);
+              stompClient.disconnect();
+            } else {
+              return prevSeconds - 1;
+            }
+          })
+        }, 1000)
       }
     }, [playerStatus])
 
