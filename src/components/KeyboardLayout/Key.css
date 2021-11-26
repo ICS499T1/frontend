@@ -14,10 +14,7 @@
   .keyboard {
     width: 780px;
     height: 262px;
-    margin: 0px auto;
-    border: 3px solid #000000;
-    border-radius: 10px;
-    background: #000000;
+    margin: 10px auto;
   }
   
   .row {
@@ -63,7 +60,11 @@
   }
   
   .key__shift-left {
-    width: 100px;
+    width: 114px;
+  }
+
+  .key__shift-right {
+    width: 140px;
   }
   
   .key__spacebar {
@@ -71,13 +72,6 @@
   }
   
   .key__bottom-funct {
-    width: 70px;
+    width: 66px;
   }
   
-  .key__arrow {
-    background: var(--green);
-  }
-  
-  .feather {
-    margin-top: 10px;
-  }
