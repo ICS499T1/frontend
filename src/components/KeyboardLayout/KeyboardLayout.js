@@ -9,6 +9,10 @@ import Key from "./Key";
 import PipeKey from "./PipeKey";
 import CapsLock from "./CapsLock";
 import ReturnKey from "./ReturnKey";
+import LShift from "./LShift";
+import RShift from "./RShift";
+import BottomFunctionKey from "./BottomFunctionKey";
+import Spacebar from "./Spacebar";
 
 const KeyboardLayout = ({user}) => {
 
@@ -16,7 +20,7 @@ const KeyboardLayout = ({user}) => {
         <React.Fragment>
             <Box>
             <Container className="keyboard">
-                <Container sx={{height: 48, mt: .5}} >
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
                     <MultipleSymbolKey top={'~'} bottom={'`'} user={user} />
                     <MultipleSymbolKey top={'!'} bottom={'1'} user={user} />
                     <MultipleSymbolKey top={'@'} bottom={'2'} user={user} />
@@ -31,8 +35,8 @@ const KeyboardLayout = ({user}) => {
                     <MultipleSymbolKey top={'_'} bottom={'-'} user={user} />
                     <MultipleSymbolKey top={'+'} bottom={'='} user={user} />
                     <Backspace />
-                </Container>
-                <Container sx={{height: 48, mt: .5}} >
+                </Box>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
                     <Tab />
                     <Key big='Q' small='q' user={user} />
                     <Key big='W' small='w' user={user} />
@@ -47,8 +51,8 @@ const KeyboardLayout = ({user}) => {
                     <MultipleSymbolKey top={'{'} bottom={'['} user={user} />
                     <MultipleSymbolKey top={'}'} bottom={']'} user={user} />
                     <PipeKey top={'|'} bottom={'\\'} user={user} />
-                </Container>
-                <Container sx={{height: 48, mt: .5}} >
+                </Box>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
                     <CapsLock />
                     <Key big='A' small='a' user={user} />
                     <Key big='S' small='s' user={user} />
@@ -62,7 +66,31 @@ const KeyboardLayout = ({user}) => {
                     <MultipleSymbolKey top={':'} bottom={';'} user={user} />
                     <MultipleSymbolKey top={'"'} bottom={'\''} user={user} />
                     <ReturnKey />
-                </Container>
+                </Box>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
+                    <LShift />
+                    <Key big='Z' small='z' user={user} />
+                    <Key big='X' small='x' user={user} />
+                    <Key big='C' small='c' user={user} />
+                    <Key big='V' small='v' user={user} />
+                    <Key big='B' small='b' user={user} />
+                    <Key big='N' small='n' user={user} />
+                    <Key big='M' small='m' user={user} />
+                    <MultipleSymbolKey top={'<'} bottom={','} user={user} />
+                    <MultipleSymbolKey top={'>'} bottom={'.'} user={user} />
+                    <MultipleSymbolKey top={'?'} bottom={'/'} user={user} />
+                    <RShift />
+                </Box>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
+                    <BottomFunctionKey keyType={"CTRL"} />
+                    <BottomFunctionKey keyType={"WIN"} />
+                    <BottomFunctionKey keyType={"ALT"} />
+                    <Spacebar user={user} />
+                    <BottomFunctionKey keyType={"ALT"} />
+                    <BottomFunctionKey keyType={"WIN"} />
+                    <BottomFunctionKey keyType={"RCLCK"} />
+                    <BottomFunctionKey keyType={"CTRL"} />
+                </Box>
             </Container>
             </Box>
         </React.Fragment>

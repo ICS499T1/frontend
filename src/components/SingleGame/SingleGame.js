@@ -261,7 +261,7 @@ const SingleGame = ({ gameId }) => {
                         value={textField}/> 
             </Grid>
             <Grid item>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
               {<Grid item><Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!</Button></Grid>}
             </Grid>
             {game.player && 
