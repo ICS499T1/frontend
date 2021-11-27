@@ -6,6 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
+import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
@@ -314,24 +315,7 @@ const MultiGame = ({ gameId, create }) => {
     return (
         <React.Fragment>
             <Grid item>
-              <Collapse in={serverError !== ''}>
-                <Alert
-                  severity="error"
-                  action={
-                  <IconButton
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setServerError('');
-                    }}
-                  >
-                  <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                  }
-                sx={{ mb: 2 }}>
-                  {serverError}
-                </Alert>
-              </Collapse>
+              <CustomTextAlert inputText={serverError} severityType="error"/>
             </Grid>
             <Grid item>
               <Collapse in={linkCopied}>
@@ -354,13 +338,7 @@ const MultiGame = ({ gameId, create }) => {
               </Collapse>
             </Grid>
             <Grid item>
-              <Collapse in={disconnected}>
-                <Alert
-                  severity="error"
-                  sx={{ mb: 2 }}>
-                  {"You have been disconnected due to inactivity."}
-                </Alert>
-              </Collapse>
+            <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
             <Grid item>
             <Typography sx={{cursor: 'pointer'}} 
