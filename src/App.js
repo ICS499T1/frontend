@@ -5,7 +5,7 @@ import Signup from "./pages/Signup.js";
 import Body from "./pages/Body.js";
 import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
-import About from "./pages/About";
+import AboutUs from "./components/AboutUs";
 import Layout from './components/Layout'
 import UserProfile from "./pages/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -57,6 +57,7 @@ class App extends Component {
               <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
               <ProtectedRoute path="/singleplayer" component={SinglePlayerCreate} />
               <ProtectedRoute path="/myprofile" component={UserProfile} />
+              <Route path="/aboutus" component={AboutUs} />
               <Route component={NotFound} />
             </Switch>
             </Layout>

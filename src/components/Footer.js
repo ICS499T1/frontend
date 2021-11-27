@@ -16,20 +16,8 @@ const Footer = () => {
                     <p className="texttwo">Saint Paul</p>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6} >
-                    <p>
-                    <Button className="links" component={Link} to="/termsandconditions"> 
-                        Terms Policy
-                    </Button>
-                    </p>
-                    <p>
-                    <Button className="links" component={Link} to="/tutorials"> 
-                        Tutorials
-                    </Button>
-                    </p>
-                    <p>
-                    <Button className="links" component={Link} to="/aboutus"> 
-                        About Us
-                    </Button>
+                    <p className="texttwo">
+                    <Button component={Link} to="/aboutus" variant="text" color="inherit">About Us</Button>
                     </p>
                 </Grid>
             </Grid>
