@@ -337,8 +337,8 @@ const MultiGame = ({ gameId, create }) => {
               </Collapse>
             </Grid>
             <Grid item>
-            <Typography variant="p" color="common.white">Game code:</Typography>
             <Typography sx={{cursor: 'pointer'}} onClick={() => navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId)} variant="h5" color="common.white">Click here to copy an invitation to this game and share it with your friends!</Typography>
+            {created && gameStatus.status === "READY" && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
@@ -386,7 +386,7 @@ const MultiGame = ({ gameId, create }) => {
                     <Typography color="common.white">Errors: {game.players && game.players[player[1]] && game.players[player[1]].failedCharacters.length} </Typography>
                   </Grid>
                   <Grid item>
-                    <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
+                    <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText ? gameStatus.gameText.length : 1} />
                   </Grid>
                 </Grid>
                 )

@@ -265,6 +265,7 @@ const SingleGame = ({ gameId }) => {
               </Collapse>
             </Grid>
             <Grid item>
+              {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
               {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
               <Card sx={{ maxWidth: 700 }}>
                   <CardContent>                    
