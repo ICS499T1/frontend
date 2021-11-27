@@ -213,10 +213,13 @@ const MultiGame = ({ gameId, create }) => {
         return;
       }
 
-      if (gameStatus.status === "READY") {
+      if (gameStatus.status === "READY" || gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER") {
+        clearInterval(interval.current);
+        setSeconds(5);
+        setIsCountdown(false);
         setLocalPosition(0);
         setIncorrectCharCount(0);
-      } else if (gameStatus.status === "IN_PROGRESS") {
+      } else if (gameStatus.status === "IN_PROGRESS" && seconds !== 5) {
         setShowGo(true);
       }
 
@@ -254,10 +257,6 @@ const MultiGame = ({ gameId, create }) => {
           });
         } ,  1000 )
         setPlayerStatus(0);        
-      } else if (gameStatus.status !== "COUNTDOWN") {
-        clearInterval(interval.current);
-        setSeconds(5);
-        setIsCountdown(false);
       }
       // Set game text only when status updates
       setGameText(gameStatus.gameText);
