@@ -2,9 +2,9 @@ import React from "react";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
-import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
+import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
-import CloseIcon from '@mui/icons-material/Close';
+import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
@@ -126,8 +126,6 @@ const SingleGame = ({ gameId }) => {
       }
     }, [startGameBool, gameId, sessionId])
   
-
-    // TODO: add logic to refresh the access token for websockets
     useEffect(() => {
         if (gameId) {
           connectInterval.current = setInterval(() => {
@@ -235,34 +233,11 @@ const SingleGame = ({ gameId }) => {
 
     return (
         <React.Fragment>
-              <Grid item>
-              <Collapse in={serverError !== ''}>
-                <Alert
-                  severity="error"
-                  action={
-                  <IconButton
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setServerError('');
-                    }}
-                  >
-                  <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                  }
-                sx={{ mb: 2 }}>
-                  {serverError}
-                </Alert>
-              </Collapse>
+            <Grid item>
+              <CustomTextAlert inputText={serverError} severityType="error"/>
             </Grid>
             <Grid item>
-              <Collapse in={disconnected}>
-                <Alert
-                  severity="error"
-                  sx={{ mb: 2 }}>
-                  {"You have been disconnected due to inactivity."}
-                </Alert>
-              </Collapse>
+              <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
             <Grid item>
               {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
@@ -308,24 +283,6 @@ const SingleGame = ({ gameId }) => {
                 </Grid>
             </Grid>
             }
-            {/* <Grid container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-              <Card sx={{ maxWidth: 700 }}>
-                  <CardContent>                    
-                      <Typography>
-                        {localPosition}
-                      </Typography>
-                  </CardContent>
-              </Card>
-            </Grid>
-            <Grid container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-              <Card sx={{ maxWidth: 700 }}>
-                  <CardContent>                    
-                      <Typography>
-                        {incorrectCharCount}
-                      </Typography>
-                  </CardContent>
-              </Card>
-            </Grid> */}
         </React.Fragment>
     );
   };
