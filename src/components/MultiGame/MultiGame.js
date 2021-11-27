@@ -23,6 +23,7 @@ const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [seconds, setSeconds] = useState(5);
     const [isCountdown, setIsCountdown] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
     const connectInterval = useRef();
     const [gameStatus, setGameStatus] = useState({
       gameText: [],
@@ -328,6 +329,26 @@ const MultiGame = ({ gameId, create }) => {
               </Collapse>
             </Grid>
             <Grid item>
+              <Collapse in={linkCopied}>
+                <Alert
+                  severity="info"
+                  action={
+                  <IconButton
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setLinkCopied(false);
+                    }}
+                  >
+                  <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                  }
+                sx={{ mb: 2 }}>
+                  {"Link copied!"}
+                </Alert>
+              </Collapse>
+            </Grid>
+            <Grid item>
               <Collapse in={disconnected}>
                 <Alert
                   severity="error"
@@ -337,7 +358,16 @@ const MultiGame = ({ gameId, create }) => {
               </Collapse>
             </Grid>
             <Grid item>
-            <Typography sx={{cursor: 'pointer'}} onClick={() => navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId)} variant="h5" color="common.white">Click here to copy an invitation to this game and share it with your friends!</Typography>
+            <Typography sx={{cursor: 'pointer'}} 
+                        onClick={() => {
+                          navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
+                          setLinkCopied(true);
+                        }} 
+                        variant="h5" 
+                        color="common.white"
+            >
+              Click here to copy an invitation to this game and share it with your friends!
+            </Typography>
             {created && gameStatus.status === "READY" && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
