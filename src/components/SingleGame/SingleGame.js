@@ -6,7 +6,6 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import GLOBAL from '../../resources/Global';
-import { useHistory } from 'react-router-dom';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
@@ -23,7 +22,7 @@ const SingleGame = ({ gameId }) => {
     const [game, setGame] = useState({
         player: null
     });
-    const [disconnectSeconds, setDisconnectSeconds] = useState(15);
+    const [disconnectSeconds, setDisconnectSeconds] = useState(90);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
@@ -35,6 +34,7 @@ const SingleGame = ({ gameId }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [startGameBool, setStartGameBool] = useState(false);
+    const [disconnected, setDisconnected] = useState(false);
     const disconnectTimer = useRef();
 
     const startGame = () => {
@@ -42,7 +42,7 @@ const SingleGame = ({ gameId }) => {
           alert("Not connected yet");
           return;
         }
-        setDisconnectSeconds(15);
+        setDisconnectSeconds(90);
         if (gameStatus.status === "READY") {
             stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
@@ -68,7 +68,7 @@ const SingleGame = ({ gameId }) => {
           event.preventDefault();
           return;
         }
-        setDisconnectSeconds(15);
+        setDisconnectSeconds(90);
         var key = event.key;
         var keyCode = event.keyCode;
 
@@ -195,6 +195,7 @@ const SingleGame = ({ gameId }) => {
           if (prevSeconds <= 0) {
             clearInterval(disconnectTimer.current);
             stompClient.disconnect();
+            setDisconnected(true);
           } else {
             return prevSeconds - 1;
           }
@@ -219,7 +220,7 @@ const SingleGame = ({ gameId }) => {
         // msUserSelect: 'none',
         // userSelect: 'none'
       }
-      if (gameStatus.status !== "IN_PROGRESS") {
+      if (gameStatus.status !== "IN_PROGRESS" || !game.player) {
         return styles;
       }
 
@@ -251,6 +252,15 @@ const SingleGame = ({ gameId }) => {
                   }
                 sx={{ mb: 2 }}>
                   {serverError}
+                </Alert>
+              </Collapse>
+            </Grid>
+            <Grid item>
+              <Collapse in={disconnected}>
+                <Alert
+                  severity="error"
+                  sx={{ mb: 2 }}>
+                  {"You have been disconnected due to inactivity."}
                 </Alert>
               </Collapse>
             </Grid>
@@ -290,10 +300,10 @@ const SingleGame = ({ gameId }) => {
                     <Typography color="common.white"> Average Speed </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white">Errors: {game.player && game.player.failedCharacters.length} </Typography>
+                    <Typography color="common.white">Errors: {game.player.failedCharacters.length} </Typography>
                   </Grid>
                 <Grid item>
-                    <ProgressBar playerPosition={(game.player && gameStatus.status === "IN_PROGRESS") ? game.player.position : 0} lastPosition={gameStatus.gameText.length} />
+                    <ProgressBar playerPosition={gameStatus.status === "IN_PROGRESS" ? game.player.position : 0} lastPosition={gameStatus.gameText.length} />
                 </Grid>
             </Grid>
             }
