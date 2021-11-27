@@ -59,7 +59,7 @@ const SingleGame = ({ gameId }) => {
               setShowGo(false);
               setSeconds(5);
             } else {
-              return prevSeconds - 1
+              return prevSeconds - 1;
             }
           });
         } ,  1000 )
