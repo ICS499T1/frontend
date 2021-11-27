@@ -19,7 +19,7 @@ const Footer = () => {
                         <Button color="inherit" component={Link} to="/tutorials"> Tutorials</Button>
                     </Grid>
                     <Grid item mt={2} mb={5}>
-                        <Button color="inherit" component={Link} to="/aboutus"> About Us</Button>
+                        <Button color="inherit" component={Link} to="/about"> About Us</Button>
                     </Grid>
                 </Grid>
             </Grid>

@@ -53,6 +53,7 @@ class App extends Component {
               <Route path="/signup" component={Signup} />
               <Route path="/termsandconditions" component={Terms} />
               <Route path="/tutorials" component={Tutorials} />
+              <Route path="/about" component={About} />
               <ProtectedRoute path="/multiplayer/:gameId" component={MultiplayerJoin} />
               <ProtectedRoute path="/multiplayer" component={MultiplayerCreate} />
               <ProtectedRoute path="/singleplayer" component={SinglePlayerCreate} />
