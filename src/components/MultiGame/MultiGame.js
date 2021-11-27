@@ -37,7 +37,7 @@ const MultiGame = ({ gameId, create }) => {
         winner: null
     });
     const [disconnectSeconds, setDisconnectSeconds] = useState(90);
-    const [playerStatus, setPlayerStatus] = useState(0);
+    const [localStatus, setLocalStatus] = useState('READY');
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
@@ -63,7 +63,7 @@ const MultiGame = ({ gameId, create }) => {
     const classes = useStyles();
 
     const handleKeyDown = event => {
-      if (gameStatus.status !== "IN_PROGRESS" || playerStatus) {
+      if (localStatus !== "IN_PROGRESS" || !stompClient.connected) {
         event.preventDefault();
         return;
       }
@@ -97,6 +97,16 @@ const MultiGame = ({ gameId, create }) => {
       } else if (gameText[localPosition] === key) {
         stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
         setLocalPosition(localPosition + 1);
+
+        if (gameText.length - 1 === localPosition) {
+          setLocalStatus("READY");
+          setTextField('');
+          setLocalPosition(0);
+          setIncorrectCharCount(0);
+          return;
+        }
+
+        // Spacebar
         if (keyCode === 32) {
           setTextField('');
         } else {
@@ -132,12 +142,7 @@ const MultiGame = ({ gameId, create }) => {
                 var statusResult = JSON.parse(gameStatus.body);
                 setGameStatus(statusResult);
               });
-  
-              // Subscription for knowing when to enable/disable text field usage
-              stompClient.subscribe('/game/playerStatus/' + gameId + '/' + sessionId, (playerStatus) => {
-                  setPlayerStatus(JSON.parse(playerStatus.body));
-              });
-  
+
               // Subscription for exceptions thrown serverside
               stompClient.subscribe('/game/errors/' + gameId + '/' + sessionId, (backendError) => {
                 setServerError(backendError.body);
@@ -167,7 +172,7 @@ const MultiGame = ({ gameId, create }) => {
             clearInterval(disconnectTimer.current);
             stompClient.disconnect();
             setDisconnected(true);
-          } else if (playerStatus && gameStatus.status === "IN_PROGRESS") {
+          } else if (localStatus == "READY" && gameStatus.status === "IN_PROGRESS") {
             return 90;
           } else if (!created && gameStatus.status === "READY") {
             return 90;
@@ -176,7 +181,7 @@ const MultiGame = ({ gameId, create }) => {
           }
         })
       }, 1000)
-    }, [playerStatus, gameStatus.status, created])
+    }, [localStatus, gameStatus.status, created])
 
     useEffect(() => {
       return async () => {
@@ -221,9 +226,8 @@ const MultiGame = ({ gameId, create }) => {
         clearInterval(countdownTimer.current);
         setSeconds(5);
         setIsCountdown(false);
-      } else if (gameStatus.status === "READY") {
-        setLocalPosition(0);
-        setIncorrectCharCount(0);
+      } else if (gameStatus.status === "IN_PROGRESS") {
+        setLocalStatus("IN_PROGRESS");
       }
 
       if (gameStatus.players && gameStatus.players[sessionId] && gameStatus.players[sessionId].playerNumber === 1) {
@@ -262,16 +266,9 @@ const MultiGame = ({ gameId, create }) => {
               return prevSeconds - 1;
             }
           });
-        } ,  1000 )
-        setPlayerStatus(0);        
+        } ,  1000 );     
       }
     }, [gameStatus])
-
-    useEffect(() => {
-      if (playerStatus) {
-        setTextField('');
-      }
-    }, [playerStatus])
 
     useEffect(() => {
       setCreated(create);

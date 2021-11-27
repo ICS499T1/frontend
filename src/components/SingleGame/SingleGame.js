@@ -38,8 +38,8 @@ const SingleGame = ({ gameId }) => {
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const connectInterval = useRef();
-    const [playerStatus, setPlayerStatus] = useState(0);
     const [localPosition, setLocalPosition] = useState(0);
+    const [localStatus, setLocalStatus] = useState("READY");
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
@@ -53,7 +53,7 @@ const SingleGame = ({ gameId }) => {
           return;
         }
         setDisconnectSeconds(90);
-        if (gameStatus.status === "READY") {
+        if (localStatus === "READY") {
             stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
         setIsCountdown(true);
@@ -70,12 +70,11 @@ const SingleGame = ({ gameId }) => {
               return prevSeconds - 1;
             }
           });
-        } ,  1000 )
-        setPlayerStatus(0);
+        } ,  1000 );
     }
 
     const handleKeyDown = event => {
-        if (gameStatus.status !== "IN_PROGRESS" || playerStatus) {
+        if (localStatus === "READY" || !stompClient.connected) {
           event.preventDefault();
           return;
         }
@@ -111,6 +110,14 @@ const SingleGame = ({ gameId }) => {
         } else if (gameText[localPosition] === key) {
           stompClient.send("/app/gameplay/single/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
           setLocalPosition(localPosition + 1);
+
+          if (gameText.length - 1 === localPosition) {
+            setLocalStatus("READY");
+            setTextField('');
+            setLocalPosition(0);
+            setIncorrectCharCount(0);
+            return;
+          }
           // Spacebar
           if (keyCode === 32) {
             setTextField('');
@@ -123,12 +130,6 @@ const SingleGame = ({ gameId }) => {
           setTextField(textField + key);
         }
     }
-
-    useEffect(() => {
-      if (playerStatus) {
-        setTextField('');
-      }
-    }, [playerStatus])
 
     useEffect(() => {
       if (startGameBool) {
@@ -144,7 +145,7 @@ const SingleGame = ({ gameId }) => {
               socket = new SockJS(GLOBAL.API + '/new-player');
               stompClient = Stomp.over(socket);
               // Disables logs from stomp.js (used only for debugging)
-              //stompClient.debug = () => {};
+              stompClient.debug = () => {};
               stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
                 var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
                 setSessionId(sessionId);
@@ -159,11 +160,6 @@ const SingleGame = ({ gameId }) => {
                 stompClient.subscribe('/game/single/status/' + gameId, (gameStatus) => {
                   var statusResult = JSON.parse(gameStatus.body);
                   setGameStatus(statusResult);
-                });
-    
-                // Subscription for knowing when to enable/disable text field usage
-                stompClient.subscribe('/game/single/playerStatus/' + gameId + '/' + sessionId, (playerStatus) => {
-                    setPlayerStatus(JSON.parse(playerStatus.body));
                 });
     
                 // Subscription for exceptions thrown serverside
@@ -191,9 +187,8 @@ const SingleGame = ({ gameId }) => {
     }, [gameId, sessionId])
 
     useEffect(() => {
-      if (gameStatus.status === "READY") {
-        setLocalPosition(0);
-        setIncorrectCharCount(0);
+      if (gameStatus.status === "IN_PROGRESS") {
+        setLocalStatus("IN_PROGRESS");
       }
       setGameText(gameStatus.gameText);
     }, [gameStatus])
