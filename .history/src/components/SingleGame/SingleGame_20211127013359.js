@@ -35,7 +35,6 @@ const SingleGame = ({ gameId }) => {
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
-    const [showGo, setShowGo] = useState(false);
     const disconnectTimer = useRef();
 
     const startGame = () => {
@@ -50,14 +49,12 @@ const SingleGame = ({ gameId }) => {
         setIsCountdown(true);
         interval.current = setInterval(() => {
           setSeconds((prevSeconds) => {
-            if (prevSeconds === 1) {
+            if (prevSeconds === 0) {
+              clearInterval(interval.current);
+              setSeconds(5);
               setIsCountdown(false);
               setStartGameBool(true);
-              return prevSeconds - 1;
-            } else if (prevSeconds === 0) {
-              clearInterval(interval.current);
-              setShowGo(false);
-              setSeconds(5);
+              return;
             } else {
               return prevSeconds - 1
             }
@@ -186,8 +183,6 @@ const SingleGame = ({ gameId }) => {
       if (gameStatus.status === "READY") {
         setLocalPosition(0);
         setIncorrectCharCount(0);
-      } else if (gameStatus.status === "IN_PROGRESS") {
-        setShowGo(true);
       }
       setGameText(gameStatus.gameText);
     }, [gameStatus])
@@ -269,8 +264,7 @@ const SingleGame = ({ gameId }) => {
                         value={textField}/> 
             </Grid>
             <Grid item>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
-              {showGo && <Typography variant="h4" color="common.white">{"GO!"}</Typography>}
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
               {<Grid item><Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!</Button></Grid>}
             </Grid>
             {game.player && 

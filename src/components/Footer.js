@@ -1,28 +1,23 @@
 import React from 'react'
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import { Link } from "react-router-dom"
-import './Footer.css'
-import { Button } from '@mui/material';
+import { Button, AppBar, Grid, Typography } from '@mui/material';
 
 const Footer = () => {
     return (
-        <footer >
-            <Box className="box">
-            <Grid container columnSpacing={10} rowSpacing={5} justify="flex-start">
+        <AppBar position="relative" color="primary" sx={{ top: 'auto', bottom: 0 }}>
+            <Grid container columnSpacing={10} rowSpacing={5} color="primary" justify="flex-start">
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                    <p className="texttwo" >&copy; Typing Game - 2021.</p>
-                    <p className="texttwo">Metropolitan State University,</p>
-                    <p className="texttwo">Saint Paul</p>
+                    <Typography mt={5}>&copy; Space Racer - 2021.</Typography>
+                    <Typography mt={3}>Metropolitan State University,</Typography>
+                    <Typography mt={3} mb={5}>Saint Paul</Typography>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} >
-                    <p className="texttwo">
-                    <Button component={Link} to="/aboutus" variant="text" color="inherit">About Us</Button>
-                    </p>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <Grid item mt={2} mb={5}>
+                        <Button color="inherit" component={Link} to="/aboutus" variant="text"> About Us</Button>
+                    </Grid>
                 </Grid>
             </Grid>
-            </Box>
-        </footer>
+        </AppBar>
     )
 }
 

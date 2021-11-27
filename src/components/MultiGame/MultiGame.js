@@ -6,7 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
-import { padding } from "@mui/system";
+import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
@@ -24,6 +24,7 @@ const MultiGame = ({ gameId, create }) => {
     const [sessionId, setSessionId] = useState("");
     const [seconds, setSeconds] = useState(5);
     const [isCountdown, setIsCountdown] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
     const connectInterval = useRef();
     const [gameStatus, setGameStatus] = useState({
       gameText: [],
@@ -35,6 +36,7 @@ const MultiGame = ({ gameId, create }) => {
         players: null,
         winner: null
     });
+    const [disconnectSeconds, setDisconnectSeconds] = useState(90);
     const [playerStatus, setPlayerStatus] = useState(0);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
@@ -43,9 +45,12 @@ const MultiGame = ({ gameId, create }) => {
     const [players, setPlayers] = useState(null);
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
+    const [disconnected, setDisconnected] = useState(false);
+    const [showGo, setShowGo] = useState(false);
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
+    const disconnectTimer = useRef();
    
 
     const startGame = () => {
@@ -54,14 +59,16 @@ const MultiGame = ({ gameId, create }) => {
           return;
         }
         stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
+        setDisconnectSeconds(90);
     }
     const classes = useStyles();
 
     const handleKeyDown = event => {
-      if (gameStatus.status !== "IN_PROGRESS") {
+      if (gameStatus.status !== "IN_PROGRESS" || playerStatus) {
         event.preventDefault();
         return;
       }
+      setDisconnectSeconds(90);
       var key = event.key;
       var keyCode = event.keyCode;
 
@@ -69,11 +76,6 @@ const MultiGame = ({ gameId, create }) => {
         return;
       }
       
-      if (playerStatus) {
-          event.preventDefault();
-          return;
-      }
-
       if (incorrectCharCount > 5 && keyCode !== 8) {
         event.preventDefault();
         setError(true);
@@ -115,7 +117,7 @@ const MultiGame = ({ gameId, create }) => {
             socket = new SockJS(GLOBAL.API + '/new-player');
             stompClient = Stomp.over(socket);
             // Disables logs from stomp.js (used only for debugging)
-            //stompClient.debug = () => {};
+            // stompClient.debug = () => {};
             stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
               var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
               setSessionId(sessionId);
@@ -153,7 +155,30 @@ const MultiGame = ({ gameId, create }) => {
 
     // Used to disconnect the client once they leave the gameplay page
     useEffect(() => {
+      if (disconnectTimer.current) {
+        clearInterval(disconnectTimer.current);
+      }
+      disconnectTimer.current = setInterval(() => {
+        setDisconnectSeconds((prevSeconds) => {
+          if (prevSeconds <= 0) {
+            clearInterval(disconnectTimer.current);
+            stompClient.disconnect();
+            setDisconnected(true);
+          } else if (playerStatus && gameStatus.status === "IN_PROGRESS") {
+            return 90;
+          } else if (!created && gameStatus.status === "READY") {
+            return 90;
+          } else {
+            return prevSeconds - 1;
+          }
+        })
+      }, 1000)
+    }, [playerStatus, gameStatus.status, created])
+
+    useEffect(() => {
       return async () => {
+        clearInterval(disconnectTimer.current);
+        clearInterval(interval.current);
         if (stompClient.connected) {
           stompClient.disconnect();
         }
@@ -191,9 +216,11 @@ const MultiGame = ({ gameId, create }) => {
       if (gameStatus.status === "READY") {
         setLocalPosition(0);
         setIncorrectCharCount(0);
+      } else if (gameStatus.status === "IN_PROGRESS") {
+        setShowGo(true);
       }
 
-      if (gameStatus.players[sessionId].playerNumber === 1) {
+      if (gameStatus.players && gameStatus.players[sessionId] && gameStatus.players[sessionId].playerNumber === 1) {
         setCreated(true);
       }
 
@@ -213,14 +240,16 @@ const MultiGame = ({ gameId, create }) => {
         setIsCountdown(true);
         interval.current = setInterval(() => {
           setSeconds((prevSeconds) => {
-            if (prevSeconds === 0) {
-              clearInterval(interval.current);
-              setSeconds(5);
+            if (prevSeconds === 1) {
               setIsCountdown(false);
               setStartGameBool(true);
-              return;
+              return prevSeconds - 1;
+            } else if (prevSeconds === 0) {
+              clearInterval(interval.current);
+              setShowGo(false);
+              setSeconds(5);
             } else {
-              return prevSeconds - 1
+              return prevSeconds - 1;
             }
           });
         } ,  1000 )
@@ -255,30 +284,16 @@ const MultiGame = ({ gameId, create }) => {
         // msUserSelect: 'none',
         // userSelect: 'none'
       }
-      if (gameStatus.status !== "IN_PROGRESS") {
+      if (gameStatus.status !== "IN_PROGRESS" || !game.players || !game.players[sessionId]) {
         return styles;
       }
-      // if (game.players) {
-      //   console.log(game.players);
-      // }
+
       const position = game.players[sessionId].position;
       if (idx < position) {
         styles['backgroundColor'] = "#5fb6e2";
       } else if (idx >= position && idx < position + game.players[sessionId].incorrectCharacters.length) {
         styles['backgroundColor'] = "#ff9a9a";
       }
-
-      // for(let i = 1; i < 5; i++){
-      //   if (!players[i]) {
-      //     continue;
-      //   }
-      //   const playerPosition = game.players[players[i][1]].position;
-      //   if (idx == playerPosition) {
-      //     Object.keys(styles3[i]).forEach( key => {
-      //       styles2[key] = styles3[i][key];
-      //     })
-      //   }
-      // }
       return styles;
     }
 
@@ -300,28 +315,44 @@ const MultiGame = ({ gameId, create }) => {
     return (
         <React.Fragment>
             <Grid item>
-              <Collapse in={serverError !== ''}>
+              <CustomTextAlert inputText={serverError} severityType="error"/>
+            </Grid>
+            <Grid item>
+              <Collapse in={linkCopied}>
                 <Alert
-                  severity="error"
+                  severity="info"
                   action={
                   <IconButton
                     color="inherit"
                     size="small"
                     onClick={() => {
-                      setServerError('');
+                      setLinkCopied(false);
                     }}
                   >
                   <CloseIcon fontSize="inherit" />
                   </IconButton>
                   }
                 sx={{ mb: 2 }}>
-                  {serverError}
+                  {"Link copied!"}
                 </Alert>
               </Collapse>
             </Grid>
             <Grid item>
-            <Typography variant="p" color="common.white">Game code:</Typography>
-            <Typography variant="h5" color="common.white">{gameId}</Typography>
+            <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
+            </Grid>
+            <Grid item>
+            <Typography sx={{cursor: 'pointer'}} 
+                        onClick={() => {
+                          navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
+                          setLinkCopied(true);
+                        }} 
+                        variant="h5" 
+                        color="common.white"
+            >
+              Click here to copy an invitation to this game and share it with your friends!
+            </Typography>
+            {created && gameStatus.status === "READY" && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+            {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
                     {gameText && 
@@ -344,7 +375,8 @@ const MultiGame = ({ gameId, create }) => {
                         value={textField}/> 
             </Grid>
             <Grid item padding='20px'>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
+              {showGo && <Typography variant="h4" color="common.white">{"GO!"}</Typography>}
               {created && 
               <Grid item>
                 <Button variant="contained" 
@@ -362,13 +394,13 @@ const MultiGame = ({ gameId, create }) => {
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white"> Average Speed </Typography>
+                    <Typography color="common.white">  </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white"> Errors </Typography>
+                    <Typography color="common.white">Errors: {game.players && game.players[player[1]] && game.players[player[1]].failedCharacters.length} </Typography>
                   </Grid>
                   <Grid item>
-                    <ProgressBar playerPosition={(game.players && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText.length} />
+                    <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText ? gameStatus.gameText.length : 1} />
                   </Grid>
                 </Grid>
                 )
