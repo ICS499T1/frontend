@@ -45,6 +45,7 @@ const MultiGame = ({ gameId, create }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [disconnected, setDisconnected] = useState(false);
+    const [showGo, setShowGo] = useState(false);
     const backspace = JSON.stringify('\b');
     const interval = useRef();
     const firstRender = useRef(true);
@@ -214,6 +215,8 @@ const MultiGame = ({ gameId, create }) => {
       if (gameStatus.status === "READY") {
         setLocalPosition(0);
         setIncorrectCharCount(0);
+      } else if (gameStatus.status === "IN_PROGRESS") {
+        setShowGo(true);
       }
 
       if (gameStatus.players && gameStatus.players[sessionId] && gameStatus.players[sessionId].playerNumber === 1) {
@@ -236,12 +239,14 @@ const MultiGame = ({ gameId, create }) => {
         setIsCountdown(true);
         interval.current = setInterval(() => {
           setSeconds((prevSeconds) => {
-            if (prevSeconds === 0) {
-              clearInterval(interval.current);
-              setSeconds(5);
+            if (prevSeconds === 1) {
               setIsCountdown(false);
               setStartGameBool(true);
-              return;
+              return prevSeconds - 1;
+            } else if (prevSeconds === 0) {
+              clearInterval(interval.current);
+              setShowGo(false);
+              setSeconds(5);
             } else {
               return prevSeconds - 1;
             }
@@ -392,7 +397,8 @@ const MultiGame = ({ gameId, create }) => {
                         value={textField}/> 
             </Grid>
             <Grid item padding='20px'>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
+              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
+              {showGo && <Typography variant="h4" color="common.white">{"GO!"}</Typography>}
               {created && 
               <Grid item>
                 <Button variant="contained" 
