@@ -3,11 +3,11 @@ import React from "react";
 import Background from "../components/Background";
 import AboutImg from "../images/about10.png";
 import {Typography, Grid } from "@mui/material";
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import Box from "@mui/material/Box";
 import './AboutUs.css'
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: [
       'Chilanka',

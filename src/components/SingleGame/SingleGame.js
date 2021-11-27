@@ -6,9 +6,17 @@ import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/mat
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import GLOBAL from '../../resources/Global';
+import { makeStyles } from "@material-ui/core";
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
+
+const useStyles = makeStyles(theme => ({
+  color: {
+    backgroundColor: 'rgba(46, 47, 67, 0.9)',
+    borderRadius: "8px"
+    }
+}));
 
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");
@@ -35,8 +43,9 @@ const SingleGame = ({ gameId }) => {
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
-    const [showGo, setShowGo] = useState(false);
     const disconnectTimer = useRef();
+
+    const classes = useStyles();
 
     const startGame = () => {
         if (!stompClient.connected) {
@@ -51,12 +60,11 @@ const SingleGame = ({ gameId }) => {
         interval.current = setInterval(() => {
           setSeconds((prevSeconds) => {
             if (prevSeconds === 1) {
-              setIsCountdown(false);
               setStartGameBool(true);
               return prevSeconds - 1;
             } else if (prevSeconds === 0) {
               clearInterval(interval.current);
-              setShowGo(false);
+              setIsCountdown(false);
               setSeconds(5);
             } else {
               return prevSeconds - 1;
@@ -186,8 +194,6 @@ const SingleGame = ({ gameId }) => {
       if (gameStatus.status === "READY") {
         setLocalPosition(0);
         setIncorrectCharCount(0);
-      } else if (gameStatus.status === "IN_PROGRESS") {
-        setShowGo(true);
       }
       setGameText(gameStatus.gameText);
     }, [gameStatus])
@@ -245,8 +251,8 @@ const SingleGame = ({ gameId }) => {
               <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
             <Grid item>
-              {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
-              {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
+              {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+              {disconnectSeconds < 11 && <Typography variant="h5" className={classes.color} sx={{textAlign: 'center'}} color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
               <Card sx={{ maxWidth: 700 }}>
                   <CardContent>                    
                       {gameText && 
@@ -269,8 +275,7 @@ const SingleGame = ({ gameId }) => {
                         value={textField}/> 
             </Grid>
             <Grid item>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
-              {showGo && <Typography variant="h4" color="common.white">{"GO!"}</Typography>}
+              {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
               {<Grid item><Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!</Button></Grid>}
             </Grid>
             {game.player && 

@@ -25,7 +25,7 @@ const MultiGame = ({ gameId, create }) => {
     const [seconds, setSeconds] = useState(5);
     const [isCountdown, setIsCountdown] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
-    const connectInterval = useRef();
+    const connectTimer = useRef();
     const [gameStatus, setGameStatus] = useState({
       gameText: [],
       status: '',
@@ -46,9 +46,8 @@ const MultiGame = ({ gameId, create }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [disconnected, setDisconnected] = useState(false);
-    const [showGo, setShowGo] = useState(false);
     const backspace = JSON.stringify('\b');
-    const interval = useRef();
+    const countdownTimer = useRef();
     const firstRender = useRef(true);
     const disconnectTimer = useRef();
    
@@ -112,7 +111,7 @@ const MultiGame = ({ gameId, create }) => {
 
     useEffect(() => {
       if (gameId) {
-        connectInterval.current = setInterval(() => {
+        connectTimer.current = setInterval(() => {
           if (!stompClient.connected) {
             socket = new SockJS(GLOBAL.API + '/new-player');
             stompClient = Stomp.over(socket);
@@ -147,9 +146,13 @@ const MultiGame = ({ gameId, create }) => {
   
             }, (error) => console.log(error));
           } else {
-            clearInterval(connectInterval.current);
+            clearInterval(connectTimer.current);
           }
         }, 1000)
+      }
+
+      return async () => {
+        clearInterval(connectTimer.current);
       }
   }, [gameId])
 
@@ -178,7 +181,7 @@ const MultiGame = ({ gameId, create }) => {
     useEffect(() => {
       return async () => {
         clearInterval(disconnectTimer.current);
-        clearInterval(interval.current);
+        clearInterval(countdownTimer.current);
         if (stompClient.connected) {
           stompClient.disconnect();
         }
@@ -213,14 +216,14 @@ const MultiGame = ({ gameId, create }) => {
         return;
       }
 
-      if (gameStatus.status === "READY" || gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER") {
-        clearInterval(interval.current);
+
+      if (gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER") {
+        clearInterval(countdownTimer.current);
         setSeconds(5);
         setIsCountdown(false);
+      } else if (gameStatus.status === "READY") {
         setLocalPosition(0);
         setIncorrectCharCount(0);
-      } else if (gameStatus.status === "IN_PROGRESS" && seconds !== 5) {
-        setShowGo(true);
       }
 
       if (gameStatus.players && gameStatus.players[sessionId] && gameStatus.players[sessionId].playerNumber === 1) {
@@ -237,19 +240,23 @@ const MultiGame = ({ gameId, create }) => {
       })
       
       setPlayers(newPlayers);
+      // Set game text only when status updates
+      setGameText(gameStatus.gameText);
+    }, [gameStatus, create, gameId, sessionId, seconds])
 
+    useEffect(() => {
       // Used for countdown      
       if (gameStatus.status === "COUNTDOWN") {
+        clearInterval(countdownTimer.current);
         setIsCountdown(true);
-        interval.current = setInterval(() => {
+        countdownTimer.current = setInterval(() => {
           setSeconds((prevSeconds) => {
             if (prevSeconds === 1) {
-              setIsCountdown(false);
               setStartGameBool(true);
               return prevSeconds - 1;
             } else if (prevSeconds === 0) {
-              clearInterval(interval.current);
-              setShowGo(false);
+              clearInterval(countdownTimer.current);
+              setIsCountdown(false);
               setSeconds(5);
             } else {
               return prevSeconds - 1;
@@ -258,9 +265,7 @@ const MultiGame = ({ gameId, create }) => {
         } ,  1000 )
         setPlayerStatus(0);        
       }
-      // Set game text only when status updates
-      setGameText(gameStatus.gameText);
-    }, [gameStatus, create, gameId, sessionId])
+    }, [gameStatus])
 
     useEffect(() => {
       if (playerStatus) {
@@ -350,8 +355,8 @@ const MultiGame = ({ gameId, create }) => {
             >
               Click here to copy an invitation to this game and share it with your friends!
             </Typography>
-            {created && gameStatus.status === "READY" && <Typography variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
-            {disconnectSeconds < 11 && <Typography variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
+            {created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+            {disconnectSeconds < 11 && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
                 <CardContent>                    
                     {gameText && 
@@ -374,15 +379,14 @@ const MultiGame = ({ gameId, create }) => {
                         value={textField}/> 
             </Grid>
             <Grid item padding='20px'>
-              {isCountdown && <Typography variant="h4" color="common.white">{seconds}</Typography>}
-              {showGo && <Typography variant="h4" color="common.white">{"GO!"}</Typography>}
+              {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography></Grid>}
               {created && 
               <Grid item>
                 <Button variant="contained" 
                         disabled={gameStatus.status !== "READY"} 
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
-              {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography variant="h4" color="common.white">Waiting for another player!</Typography>}
+              {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Waiting for another player!</Typography>}
               {!created && (gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
             {players && players.map((player, idx) => {
