@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from 'react';
 import Background from "../components/Background";
-import MultiplayImage from "../images/multiplayerbackground.png";
+import MultiplayImage from "../images/rocket.jpeg";
 import { useParams } from "react-router";
 import { Grid } from "@mui/material";
 import { useAuthorization } from "../hooks/useAuthorization";

@@ -6,7 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { reinitializeConnection, handleKey } from '../GameCommons';
+import { reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
 import GLOBAL from '../../resources/Global';
 
@@ -16,21 +16,22 @@ var stompClient = Stomp.over(socket);
 const MultiGame = ({ gameId, create }) => {
     const [created, setCreated] = useState(false);
     const [sessionId, setSessionId] = useState("");
-    const [seconds, setSeconds] = useState(5);
+    const [countdownSeconds, setCountdownSeconds] = useState(GLOBAL.COUNTDOWN_SECONDS);
     const [isCountdown, setIsCountdown] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
     const connectTimer = useRef();
     const [gameStatus, setGameStatus] = useState({
       gameText: [],
       status: '',
-      players: null
+      players: null,
     });
     const [startGameBool, setStartGameBool] = useState(false);
     const [game, setGame] = useState({
         players: null,
-        winner: null
+        winner: null,
+        startTime: 0,
     });
-    const [disconnectSeconds, setDisconnectSeconds] = useState(90);
+    const [disconnectSeconds, setDisconnectSeconds] = useState(GLOBAL.DISCONNECT_SECONDS);
     const [localStatus, setLocalStatus] = useState('READY');
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
@@ -40,7 +41,6 @@ const MultiGame = ({ gameId, create }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [disconnected, setDisconnected] = useState(false);
-    const backspace = JSON.stringify('\b');
     const countdownTimer = useRef();
     const disconnectTimer = useRef();
    
@@ -49,7 +49,7 @@ const MultiGame = ({ gameId, create }) => {
         return;
       }
       stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
-      setDisconnectSeconds(90);
+      setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
     }
     const classes = useStyles();
 
@@ -59,7 +59,7 @@ const MultiGame = ({ gameId, create }) => {
         event.preventDefault();
         return;
       }
-      handleKey({event, link, backspace, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
+      handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
     }
 
     useEffect(() => {
@@ -93,9 +93,9 @@ const MultiGame = ({ gameId, create }) => {
             stompClient.disconnect();
             setDisconnected(true);
           } else if (localStatus === "READY" && gameStatus.status === "IN_PROGRESS") {
-            return 90;
+            return GLOBAL.DISCONNECT_SECONDS;
           } else if (!created && gameStatus.status === "READY") {
-            return 90;
+            return GLOBAL.DISCONNECT_SECONDS;
           } else {
             return prevSeconds - 1;
           }
@@ -135,10 +135,10 @@ const MultiGame = ({ gameId, create }) => {
       if (gameStatus.status === '') {
         return;
       }
-
+      
       if (gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER") {
         clearInterval(countdownTimer.current);
-        setSeconds(5);
+        setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
         setIsCountdown(false);
       } else if (gameStatus.status === "IN_PROGRESS") {
         setLocalStatus("IN_PROGRESS");
@@ -160,7 +160,7 @@ const MultiGame = ({ gameId, create }) => {
       setPlayers(newPlayers);
       // Set game text only when status updates
       setGameText(gameStatus.gameText);
-    }, [gameStatus, create, gameId, sessionId, seconds])
+    }, [gameStatus, create, gameId, sessionId, countdownSeconds])
 
     useEffect(() => {
       // Used for countdown      
@@ -168,14 +168,14 @@ const MultiGame = ({ gameId, create }) => {
         clearInterval(countdownTimer.current);
         setIsCountdown(true);
         countdownTimer.current = setInterval(() => {
-          setSeconds((prevSeconds) => {
+          setCountdownSeconds((prevSeconds) => {
             if (prevSeconds === 1) {
               setStartGameBool(true);
               return prevSeconds - 1;
             } else if (prevSeconds === 0) {
               clearInterval(countdownTimer.current);
               setIsCountdown(false);
-              setSeconds(5);
+              setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
             } else {
               return prevSeconds - 1;
             }
@@ -184,31 +184,35 @@ const MultiGame = ({ gameId, create }) => {
       }
     }, [gameStatus])
 
+    // useEffect(() => {
+    //   if (gameStatus.status === "READY" && gameStatus.winner) {
+
+    //   }
+    // }, [])
+
     useEffect(() => {
       setCreated(create);
     }, [create])
 
     const gameplayIndicator = (idx) => {
       // TODO uncomment to make text unselectable
-      const styles = {
-        // WebkitTouchCallout: 'none',
-        // WebkitUserSelect: 'none',
-        // KhtmlUserSelect: 'none',
-        // MozUserSelect: 'none',
-        // msUserSelect: 'none',
-        // userSelect: 'none'
+      if (game.players) {
+        var player = game.players[sessionId];
+        return positionIndicator({idx, gameStatus, player});
       }
-      if (gameStatus.status !== "IN_PROGRESS" || !game.players || !game.players[sessionId]) {
-        return styles;
-      }
+    }
 
-      const position = game.players[sessionId].position;
-      if (idx < position) {
-        styles['backgroundColor'] = "#5fb6e2";
-      } else if (idx >= position && idx < position + game.players[sessionId].incorrectCharacters.length) {
-        styles['backgroundColor'] = "#ff9a9a";
-      }
-      return styles;
+    const calculateSpeed = (endTime, startTime, currentPosition) => {
+      var totalTime = (endTime - startTime) / 60000;
+      var lastWord = currentPosition % 5 > 0 ? 1 : 0;
+      var words = (currentPosition / 5) + lastWord;
+      var currentRaceSpeed = (words / totalTime).toFixed(2);
+      return currentRaceSpeed;
+    }
+
+    const calculateAccuracy = (failedChars, currentPosition) => {
+      var successRate = (((currentPosition - failedChars)/ currentPosition) * 100).toFixed(2);
+      return successRate;
     }
 
     const playerListIndicator = (idx) => {
@@ -233,7 +237,7 @@ const MultiGame = ({ gameId, create }) => {
             <Grid item>
               <Collapse in={linkCopied}>
                 <Alert
-                  severity="info"
+                  severity="success"
                   action={
                   <IconButton
                     color="inherit"
@@ -254,17 +258,19 @@ const MultiGame = ({ gameId, create }) => {
             <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
             <Grid item>
-            {(gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") &&
-            <Button sx={{cursor: 'pointer'}} 
-                        onClick={() => {
-                          navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
-                          setLinkCopied(true);
-                        }} 
-                        variant="contained" 
-                        size="large"
-            >
-              Copy invitation
-            </Button>}
+              {(gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") &&
+              <Button sx={{cursor: 'pointer'}} 
+                          onClick={() => {
+                            navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
+                            setLinkCopied(true);
+                          }} 
+                          variant="contained" 
+                          size="large"
+              >
+                Click to copy invitation
+              </Button>}
+            </Grid>
+            <Grid item>
             {created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
@@ -289,7 +295,7 @@ const MultiGame = ({ gameId, create }) => {
                         value={textField}/> 
             </Grid>
             <Grid item padding='20px'>
-              {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography></Grid>}
+              {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography></Grid>}
               {created && stompClient.connected &&
               <Grid item>
                 <Button variant="contained" 
@@ -297,9 +303,9 @@ const MultiGame = ({ gameId, create }) => {
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
               {!stompClient.connected &&
-              <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
+              <CustomTextAlert inputText={"Not connected"} severityType="info"/>}
               {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Waiting for another player!</Typography>}
-              {!created && gameStatus.status === "READY" && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+              {!created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
             {players && players.map((player, idx) => {
               if (player) {
@@ -326,6 +332,14 @@ const MultiGame = ({ gameId, create }) => {
               </Grid>
               )
             })}
+            <Card>
+              {game.winner && 
+              <Grid item className={classes.color}>
+                <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">{"Winner: " + game.winner.username}</Typography>
+                <Typography sx={{textAlign: 'center'}} variant="p" color="common.white">{"Speed: " + calculateSpeed(game.winner.endTime, game.startTime, game.winner.position)} </Typography>
+                <Typography sx={{textAlign: 'center'}} variant="p" color="common.white">{"Accuracy: " + calculateAccuracy(game.winner.failedCharacters.length, game.winner.position)}</Typography>
+              </Grid>}
+            </Card>
         </React.Fragment>
     );
   };

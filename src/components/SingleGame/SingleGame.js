@@ -5,18 +5,16 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import PopUpAlert from '../Alerts/PopUpAlert';
-import { reinitializeConnection, handleKey } from '../GameCommons';
+import { reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
 import { useStyles } from '../../hooks/useGameStyles'
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
 
-
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");
-    const [seconds, setSeconds] = useState(5);
+    const [countdownSeconds, setCountdownSeconds] = useState(GLOBAL.COUNTDOWN_SECONDS);
     const [isCountdown, setIsCountdown] = useState(false);
     const [gameStatus, setGameStatus] = useState({
       gameText: [],
@@ -26,12 +24,11 @@ const SingleGame = ({ gameId }) => {
     const [game, setGame] = useState({
         player: null
     });
-    const [disconnectSeconds, setDisconnectSeconds] = useState(90);
+    const [disconnectSeconds, setDisconnectSeconds] = useState(GLOBAL.DISCONNECT_SECONDS);
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
-    const backspace = JSON.stringify('\b');
     const interval = useRef();
     const connectInterval = useRef();
     const [localPosition, setLocalPosition] = useState(0);
@@ -44,23 +41,22 @@ const SingleGame = ({ gameId }) => {
 
     const startGame = () => {
         if (!stompClient.connected) {
-          PopUpAlert();
           return;
         }
-        setDisconnectSeconds(90);
+        setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
         if (localStatus === "READY") {
             stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
         setIsCountdown(true);
         interval.current = setInterval(() => {
-          setSeconds((prevSeconds) => {
+          setCountdownSeconds((prevSeconds) => {
             if (prevSeconds === 1) {
               setStartGameBool(true);
               return prevSeconds - 1;
             } else if (prevSeconds === 0) {
               clearInterval(interval.current);
               setIsCountdown(false);
-              setSeconds(5);
+              setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
             } else {
               return prevSeconds - 1;
             }
@@ -74,7 +70,7 @@ const SingleGame = ({ gameId }) => {
           event.preventDefault();
           return;
         }
-        handleKey({event, link, backspace, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
+        handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
     }
 
     useEffect(() => {
@@ -137,28 +133,10 @@ const SingleGame = ({ gameId }) => {
       }
     }, [])
 
+
     const gameplayIndicator = (idx) => {
-      // TODO uncomment to make text unselectable
-      const styles = {
-        // WebkitTouchCallout: 'none',
-        // WebkitUserSelect: 'none',
-        // KhtmlUserSelect: 'none',
-        // MozUserSelect: 'none',
-        // msUserSelect: 'none',
-        // userSelect: 'none'
-      }
-      if (gameStatus.status !== "IN_PROGRESS" || !game.player) {
-        return styles;
-      }
-
-      const position = game.player.position;
-
-      if (idx < position) {
-        styles['backgroundColor'] = "#5fb6e2";
-      } else if (idx >= position && idx < position + game.player.incorrectCharacters.length) {
-        styles['backgroundColor'] = "#ff9a9a";
-      }
-      return styles;
+      var player = game.player;
+      return positionIndicator({idx, gameStatus, player});
     }
 
     return (
@@ -194,7 +172,7 @@ const SingleGame = ({ gameId }) => {
                         value={textField}/> 
             </Grid>
             <Grid item>
-              {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
+              {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
               {stompClient.connected ? 
                 <Grid item>
                   <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!

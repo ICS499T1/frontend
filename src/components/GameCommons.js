@@ -1,4 +1,16 @@
-
+/**
+ * Initializes connection with the backend server using websocket. 
+ * 
+ * @param {object} props - Component props
+ * @param {string} props.gameId - game id
+ * @param {string} props.link - the link used to send data to the backend (varies depending on the type of the game)
+ * @param {object} props.stompClient - communicates with a stomp server using wss
+ * @param {object} props.socket - websocket object
+ * @param {function} props.setSessionId - sets session id for the player after it is recieved
+ * @param {function} props.setGame - sets game after it is recieved
+ * @param {function} props.setGameStatus - sets game status after it is recieved
+ * @param {function} props.setServerError - sets server error if it is recieved
+ */
 export const reinitializeConnection = ({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError}) => {
     // Disables logs from stomp.js (used only for debugging)
     // stompClient.debug = () => {};
@@ -26,7 +38,29 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
     }, (error) => console.log(error));
 }
 
-export const handleKey = ({event, link, backspace, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus}) => {
+
+/**
+ * Processes each key typed by the player.  
+ * 
+ * @param {object} props - Component props
+ * @param {object} props.event - key pressed event
+ * @param {string} props.link - the link used to send data to the backend (varies depending on the type of the game)
+ * @param {object} props.stompClient - communicates with a stomp server using wss
+ * @param {array} props.gameText - an array containing characters of the game text
+ * @param {string} props.localPosition - player's position client-side
+ * @param {string} props.gameId - game id
+ * @param {string} props.sessionId - player's session id
+ * @param {string} props.textField - text field
+ * @param {function} props.setDisconnectSeconds - set disconnect timer
+ * @param {function} props.setError - sets the error
+ * @param {function} props.setIncorrectCharCount - sets incorrect character count
+ * @param {function} props.setTextField - sets text field
+ * @param {function} props.setError - sets the error
+ * @param {function} props.setLocalPosition - sets local position
+ * @param {function} props.setLocalStatus - sets text field
+ */
+export const handleKey = ({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus}) => {
+  const backspace = JSON.stringify('\b');
   setDisconnectSeconds(90);
   var key = event.key;
   var keyCode = event.keyCode;
@@ -77,4 +111,34 @@ export const handleKey = ({event, link, backspace, incorrectCharCount, stompClie
     setIncorrectCharCount(incorrectCharCount + 1);
     setTextField(textField + key);
   }
+}
+
+/**
+ * Highlights each character based on whether it has already been successfully typed or whether it has been typed incorrectly. 
+ * 
+ * @param {object} props - Component props
+ * @param {integer} props.idx - player's position
+ * @param {object} props.gameStatus - stores game information and is updated only when game status is updated
+ * @param {object} props.player - player
+ */
+export const positionIndicator = ({idx, gameStatus, player}) => {
+  const styles = {
+    WebkitTouchCallout: 'none',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    msUserSelect: 'none',
+    userSelect: 'none'
+  }
+  if (gameStatus.status !== "IN_PROGRESS" || !player) {
+    return styles;
+  }
+
+  const position = player.position;
+  if (idx < position) {
+    styles['backgroundColor'] = "#5fb6e2";
+  } else if (idx >= position && idx < position + player.incorrectCharacters.length) {
+    styles['backgroundColor'] = "#ff9a9a";
+  }
+  return styles;
 }

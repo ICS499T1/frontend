@@ -13,7 +13,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Link } from "react-router-dom";
 import Background from "../components/Background";
-import SignupImage from "../images/signupimage.png";
+import SignupImage from "../images/astronauts.jpeg";
 import { useAuthentication } from "../hooks/useAuthentication";
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -216,7 +216,7 @@ const Signup = () => {
                 />
               </Grid>
               <Grid item>
-                <Button type="submit" variant="contained">
+                <Button size="large" type="submit" variant="contained">
                   Submit
                 </Button>
               </Grid>
