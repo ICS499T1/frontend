@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
+import { reinitializeConnection } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
 import { makeStyles } from "@material-ui/core";
 
@@ -144,31 +145,8 @@ const SingleGame = ({ gameId }) => {
             if (!stompClient.connected) {
               socket = new SockJS(GLOBAL.API + '/new-player');
               stompClient = Stomp.over(socket);
-              // Disables logs from stomp.js (used only for debugging)
-              stompClient.debug = () => {};
-              stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
-                var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
-                setSessionId(sessionId);
-    
-                // Subscription for game events
-                stompClient.subscribe('/game/single/gameplay/' + gameId, (game) => {
-                  var result = JSON.parse(game.body);
-                  setGame(result);
-                });
-    
-                // Subscription for syncing client-side game status with server-side game status
-                stompClient.subscribe('/game/single/status/' + gameId, (gameStatus) => {
-                  var statusResult = JSON.parse(gameStatus.body);
-                  setGameStatus(statusResult);
-                });
-    
-                // Subscription for exceptions thrown serverside
-                stompClient.subscribe('/game/single/errors/' + gameId + '/' + sessionId, (backendError) => {
-                  setServerError(backendError.body);
-                });
-    
-    
-              }, (error) => console.log(error));
+              var link = GLOBAL.SINGLE;
+              reinitializeConnection({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError});
             } else {
               clearInterval(connectInterval.current);
             }
