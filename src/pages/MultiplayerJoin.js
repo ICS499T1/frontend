@@ -12,11 +12,11 @@ const MultiplayerJoin = () => {
 
     const { instance } = useAuthorization();
 
-    // This axios instance will refresh the token if it has expired
+    // This axios instance will refresh the token if it has expired, the if statement is to suppress a warning
     useEffect(() => {
         const getGameId = async () => {
-            const data = await instance.get(`/get-game-id`).then(
-            result => result.data);
+            await instance.get(`/get-game-id`).then(
+            result => result.data);      
         }
         getGameId();
     }, [instance]);
