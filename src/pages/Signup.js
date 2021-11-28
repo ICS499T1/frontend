@@ -29,8 +29,9 @@ const Signup = () => {
     useState("Confirm Password");
   const [success, setSuccess] = useState(false);
   const [usernameExists, setUsernameExists] = useState(false);
+  const [invalidUsernameChars, setInvalidUsernameChars] = useState(false);
+  const [invalidUsernameLength, setInvalidUsernameLength] = useState(false);
   const [serverDown, setServerDown] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () =>
@@ -42,11 +43,21 @@ const Signup = () => {
       e.preventDefault();
       return;
     }
+    if (!/^([A-Za-z0-9]{1,})$/.test(username)) {
+      e.preventDefault();
+      setInvalidUsernameChars(true);
+      return;
+    }
+    if (username.length < 4 || username.length > 16) {
+      e.preventDefault();
+      setInvalidUsernameLength(true);
+      return;
+    }
     e.preventDefault();
     let returnVal = await signup(username, password);
     if (returnVal.status === 200) {
       setSuccess(true);
-    } else if (returnVal === 500) {
+    } else if (returnVal.message === 'Request failed with status code 500') {
       setUsernameExists(true);
     } else {
       setServerDown(true);
@@ -62,6 +73,13 @@ const Signup = () => {
     setPasswordError("Error");
     setConfirmPasswordError("Error");
   }, [password, confirmPassword]);
+
+  const handleUsername = (username) => {
+    setUserName(username);
+    setInvalidUsernameChars(false);
+    setInvalidUsernameLength(false);
+    setUsernameExists(false);
+  }
 
   return (
     <React.Fragment>
@@ -143,13 +161,15 @@ const Signup = () => {
                 <TextField
                   required
                   label="Username"
-                  error={usernameExists}
+                  error={usernameExists || invalidUsernameChars || invalidUsernameLength}
                   helperText={
-                    usernameExists && "This username is already taken."
+                    (usernameExists && "Username is already taken.") || 
+                    (invalidUsernameChars && "Username can only contain letters and numbers.") ||
+                    (invalidUsernameLength && "Username must contain 4-16 characters.")
                   }
                   variant="filled"
                   style={{ backgroundColor: "white" }}
-                  onChange={(e) => setUserName(e.target.value)}
+                  onChange={(e) => handleUsername(e.target.value)}
                   value={username}
                 />
               </Grid>
