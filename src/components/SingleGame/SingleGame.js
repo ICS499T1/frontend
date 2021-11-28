@@ -7,17 +7,11 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import { reinitializeConnection } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
-import { makeStyles } from "@material-ui/core";
+import { useStyles } from '../../hooks/useGameStyles'
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
 
-const useStyles = makeStyles(theme => ({
-  color: {
-    backgroundColor: 'rgba(46, 47, 67, 0.9)',
-    borderRadius: "8px"
-    }
-}));
 
 const SingleGame = ({ gameId }) => {
     const [sessionId, setSessionId] = useState("");

@@ -8,17 +8,12 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import { reinitializeConnection } from '../GameCommons';
+import { useStyles } from '../../hooks/useGameStyles'
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
 
-const useStyles = makeStyles(theme => ({
-  color: {
-    backgroundColor: 'rgba(46, 47, 67, 0.9)',
-    borderRadius: "8px"
-    }
-}));
 
 const MultiGame = ({ gameId, create }) => {
     const [created, setCreated] = useState(false);
