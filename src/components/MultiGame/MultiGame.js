@@ -7,6 +7,7 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
+import { reinitializeConnection } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
@@ -124,31 +125,8 @@ const MultiGame = ({ gameId, create }) => {
           if (!stompClient.connected) {
             socket = new SockJS(GLOBAL.API + '/new-player');
             stompClient = Stomp.over(socket);
-            // Disables logs from stomp.js (used only for debugging)
-            // stompClient.debug = () => {};
-            stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
-              var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
-              setSessionId(sessionId);
-  
-              // Subscription for game events
-              stompClient.subscribe('/game/gameplay/' + gameId, (game) => {
-                var result = JSON.parse(game.body);
-                setGame(result);
-              });
-  
-              // Subscription for syncing client-side game status with server-side game status
-              stompClient.subscribe('/game/status/' + gameId, (gameStatus) => {
-                var statusResult = JSON.parse(gameStatus.body);
-                setGameStatus(statusResult);
-              });
-
-              // Subscription for exceptions thrown serverside
-              stompClient.subscribe('/game/errors/' + gameId + '/' + sessionId, (backendError) => {
-                setServerError(backendError.body);
-              });
-  
-  
-            }, (error) => console.log(error));
+            var link = GLOBAL.MULTI;
+            reinitializeConnection({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError});
           } else {
             clearInterval(connectTimer.current);
           }
@@ -171,7 +149,7 @@ const MultiGame = ({ gameId, create }) => {
             clearInterval(disconnectTimer.current);
             stompClient.disconnect();
             setDisconnected(true);
-          } else if (localStatus == "READY" && gameStatus.status === "IN_PROGRESS") {
+          } else if (localStatus === "READY" && gameStatus.status === "IN_PROGRESS") {
             return 90;
           } else if (!created && gameStatus.status === "READY") {
             return 90;
