@@ -345,7 +345,6 @@ const MultiGame = ({ gameId, create }) => {
             >
               Click here to copy an invitation to this game and share it with your friends!
             </Typography>
-            <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{JSON.stringify(players)}</Typography>
             {created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
