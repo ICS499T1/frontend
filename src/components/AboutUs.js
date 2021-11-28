@@ -1,4 +1,3 @@
-
 import React from "react";
 import Background from "../components/Background";
 import AboutImg from "../images/about10.png";
@@ -65,7 +64,7 @@ function AboutUs() {
          </Typography>
          <Typography variant="h6" color="common.white">
          <br/>
-         Is it required to sign-up in order to play?
+          Is it required to sign-up in order to play?
          <br/>
          	Yes, this helps us maintain your stats. No email address is required.
          </Typography>

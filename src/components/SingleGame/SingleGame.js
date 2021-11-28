@@ -5,7 +5,8 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { reinitializeConnection } from '../GameCommons';
+import PopUpAlert from '../Alerts/PopUpAlert';
+import { reinitializeConnection, handleKey } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
 import { useStyles } from '../../hooks/useGameStyles'
 
@@ -39,12 +40,11 @@ const SingleGame = ({ gameId }) => {
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
     const disconnectTimer = useRef();
-
     const classes = useStyles();
 
     const startGame = () => {
         if (!stompClient.connected) {
-          alert("Not connected yet");
+          PopUpAlert();
           return;
         }
         setDisconnectSeconds(90);
@@ -69,61 +69,12 @@ const SingleGame = ({ gameId }) => {
     }
 
     const handleKeyDown = event => {
+        var link = '/gameplay/single'
         if (localStatus === "READY" || !stompClient.connected) {
           event.preventDefault();
           return;
         }
-        setDisconnectSeconds(90);
-        var key = event.key;
-        var keyCode = event.keyCode;
-
-        if (keyCode !== 8 && keyCode !== 32 && key.length > 1) {
-          return;
-        }
-        
-
-        if (incorrectCharCount > 5 && keyCode !== 8) {
-          event.preventDefault();
-          setError(true);
-          return;
-        }
-
-        if (incorrectCharCount !== 0) {
-          // Backspace
-          if (keyCode === 8) {
-            stompClient.send("/app/gameplay/single/" + gameId + '/' + sessionId, {}, backspace);
-            setIncorrectCharCount(incorrectCharCount - 1);
-            setTextField(textField.slice(0, -1));            
-            setError(false);
-          } else {
-            stompClient.send("/app/gameplay/single/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-            setIncorrectCharCount(incorrectCharCount + 1);
-            setTextField(textField + key);
-          }
-        } else if (keyCode === 8) {
-          event.preventDefault();
-        } else if (gameText[localPosition] === key) {
-          stompClient.send("/app/gameplay/single/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-          setLocalPosition(localPosition + 1);
-
-          if (gameText.length - 1 === localPosition) {
-            setLocalStatus("READY");
-            setTextField('');
-            setLocalPosition(0);
-            setIncorrectCharCount(0);
-            return;
-          }
-          // Spacebar
-          if (keyCode === 32) {
-            setTextField('');
-          } else {
-            setTextField(textField + key);
-          }
-        } else {
-          stompClient.send("/app/gameplay/single/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-          setIncorrectCharCount(incorrectCharCount + 1);
-          setTextField(textField + key);
-        }
+        handleKey({event, link, backspace, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
     }
 
     useEffect(() => {
@@ -201,6 +152,7 @@ const SingleGame = ({ gameId }) => {
       }
 
       const position = game.player.position;
+
       if (idx < position) {
         styles['backgroundColor'] = "#5fb6e2";
       } else if (idx >= position && idx < position + game.player.incorrectCharacters.length) {
@@ -224,10 +176,10 @@ const SingleGame = ({ gameId }) => {
                   <CardContent>                    
                       {gameText && 
                       <Typography>
-                          {gameText.map((char, idx) => {
-                              return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
-                          })}
-                      </Typography>}
+                        {gameText.map((char, idx) => {
+                            return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
+                        })}
+                    </Typography>}
                   </CardContent>
               </Card>
             </Grid>
@@ -243,7 +195,12 @@ const SingleGame = ({ gameId }) => {
             </Grid>
             <Grid item>
               {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography>}
-              {<Grid item><Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!</Button></Grid>}
+              {stompClient.connected ? 
+                <Grid item>
+                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!
+                  </Button>
+                </Grid> : 
+                <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
             </Grid>
             {game.player && 
             <Grid container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">

@@ -4,16 +4,14 @@ import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
-import { makeStyles } from "@material-ui/core";
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { reinitializeConnection } from '../GameCommons';
+import { reinitializeConnection, handleKey } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
 import GLOBAL from '../../resources/Global';
 
 var socket = new SockJS(GLOBAL.API + '/new-player');
 var stompClient = Stomp.over(socket);
-
 
 const MultiGame = ({ gameId, create }) => {
     const [created, setCreated] = useState(false);
@@ -46,72 +44,22 @@ const MultiGame = ({ gameId, create }) => {
     const countdownTimer = useRef();
     const disconnectTimer = useRef();
    
-
     const startGame = () => {
-        if (!stompClient.connected) {
-          alert("Not connected yet");
-          return;
-        }
-        stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
-        setDisconnectSeconds(90);
+      if(!stompClient.connected) {
+        return;
+      }
+      stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
+      setDisconnectSeconds(90);
     }
     const classes = useStyles();
 
     const handleKeyDown = event => {
+      var link = '/gameplay/'
       if (localStatus !== "IN_PROGRESS" || !stompClient.connected) {
         event.preventDefault();
         return;
       }
-      setDisconnectSeconds(90);
-      var key = event.key;
-      var keyCode = event.keyCode;
-
-      if (keyCode !== 8 && keyCode !== 32 && key.length > 1) {
-        return;
-      }
-      
-      if (incorrectCharCount > 5 && keyCode !== 8) {
-        event.preventDefault();
-        setError(true);
-        return;
-      }
-
-      if (incorrectCharCount !== 0) {
-        if (keyCode === 8) {
-          stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, backspace);
-          setIncorrectCharCount(incorrectCharCount - 1);
-          setTextField(textField.slice(0, -1));            
-          setError(false);
-        } else {
-          stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-          setIncorrectCharCount(incorrectCharCount + 1);
-          setTextField(textField + key);
-        }
-      } else if (keyCode === 8) {
-        event.preventDefault();
-      } else if (gameText[localPosition] === key) {
-        stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-        setLocalPosition(localPosition + 1);
-
-        if (gameText.length - 1 === localPosition) {
-          setLocalStatus("READY");
-          setTextField('');
-          setLocalPosition(0);
-          setIncorrectCharCount(0);
-          return;
-        }
-
-        // Spacebar
-        if (keyCode === 32) {
-          setTextField('');
-        } else {
-          setTextField(textField + key);
-        }
-      } else {
-        stompClient.send("/app/gameplay/" + gameId + '/' + sessionId, {}, JSON.stringify(key));
-        setIncorrectCharCount(incorrectCharCount + 1);
-        setTextField(textField + key);
-      }
+      handleKey({event, link, backspace, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
     }
 
     useEffect(() => {
@@ -240,7 +188,6 @@ const MultiGame = ({ gameId, create }) => {
       setCreated(create);
     }, [create])
 
-
     const gameplayIndicator = (idx) => {
       // TODO uncomment to make text unselectable
       const styles = {
@@ -264,21 +211,20 @@ const MultiGame = ({ gameId, create }) => {
       return styles;
     }
 
-
     const playerListIndicator = (idx) => {
       const returnVal = {};
       if (idx === 1) {
-        returnVal['borderTop'] = "5px solid red";
+        returnVal['borderBottom'] = "5px solid red";
       } else if (idx === 2) {
         returnVal['borderBottom'] = "5px solid blue"; 
       } else if (idx === 3) {
-        returnVal['borderLeft'] = "5px solid green";
+        returnVal['borderBottom'] = "5px solid green";
       } else if (idx === 4) {
-        returnVal['borderRight'] = "5px solid brown";
+        returnVal['borderBottom'] = "5px solid brown";
       }
       return returnVal;
     }
-    
+
     return (
         <React.Fragment>
             <Grid item>
@@ -308,16 +254,17 @@ const MultiGame = ({ gameId, create }) => {
             <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
             <Grid item>
-            <Typography sx={{cursor: 'pointer'}} 
+            {(gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") &&
+            <Button sx={{cursor: 'pointer'}} 
                         onClick={() => {
                           navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
                           setLinkCopied(true);
                         }} 
-                        variant="h5" 
-                        color="common.white"
+                        variant="contained" 
+                        size="large"
             >
-              Click here to copy an invitation to this game and share it with your friends!
-            </Typography>
+              Copy invitation
+            </Button>}
             {created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Card sx={{ maxWidth: 700 }}>
@@ -343,14 +290,16 @@ const MultiGame = ({ gameId, create }) => {
             </Grid>
             <Grid item padding='20px'>
               {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{seconds ? seconds : "GO!"}</Typography></Grid>}
-              {created && 
+              {created && stompClient.connected &&
               <Grid item>
                 <Button variant="contained" 
                         disabled={gameStatus.status !== "READY"} 
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
+              {!stompClient.connected &&
+              <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
               {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Waiting for another player!</Typography>}
-              {!created && (gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+              {!created && gameStatus.status === "READY" && <Typography variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
             </Grid>
             {players && players.map((player, idx) => {
               if (player) {
