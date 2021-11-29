@@ -41,6 +41,7 @@ const MultiGame = ({ gameId, create }) => {
     const [localPosition, setLocalPosition] = useState(0);
     const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [disconnected, setDisconnected] = useState(false);
+    const connectionAttempts = useRef(GLOBAL.CONNECTION_ATTEMPTS);
     const countdownTimer = useRef();
     const disconnectTimer = useRef();
    
@@ -65,11 +66,12 @@ const MultiGame = ({ gameId, create }) => {
     useEffect(() => {
       if (gameId) {
         connectTimer.current = setInterval(() => {
-          if (!stompClient.connected) {
+          if (!stompClient.connected && connectionAttempts.current > 0) {
             socket = new SockJS(GLOBAL.API + '/new-player');
             stompClient = Stomp.over(socket);
             var link = GLOBAL.MULTI;
             reinitializeConnection({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError});
+            connectionAttempts.current = connectionAttempts.current - 1;
           } else {
             clearInterval(connectTimer.current);
           }
@@ -202,6 +204,14 @@ const MultiGame = ({ gameId, create }) => {
       }
     }
 
+    const calculateLiveSpeed = (player, startTime) => {
+      if (player.endTime === 0) {
+        return calculateSpeed(Date.now(), startTime, player.position);
+      } else {
+        return calculateSpeed(player.endTime, startTime, player.position);
+      }
+    }
+
     const calculateSpeed = (endTime, startTime, currentPosition) => {
       var totalTime = (endTime - startTime) / 60000;
       var lastWord = currentPosition % 5 > 0 ? 1 : 0;
@@ -211,6 +221,9 @@ const MultiGame = ({ gameId, create }) => {
     }
 
     const calculateAccuracy = (failedChars, currentPosition) => {
+      if (currentPosition === 0) {
+        return 0;
+      }
       var successRate = (((currentPosition - failedChars)/ currentPosition) * 100).toFixed(2);
       return successRate;
     }
@@ -315,10 +328,10 @@ const MultiGame = ({ gameId, create }) => {
                     <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white">  </Typography>
+                    <Typography color="common.white">Speed: {game.players && game.players[player[1]] && calculateLiveSpeed(game.players[player[1]], game.startTime)} </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography color="common.white">Errors: {game.players && game.players[player[1]] && game.players[player[1]].failedCharacters.length} </Typography>
+                    <Typography color="common.white">Accuracy: {game.players && game.players[player[1]] && calculateAccuracy(game.players[player[1]].failedCharacters.length, game.players[player[1]].position)} </Typography>
                   </Grid>
                   <Grid item>
                     <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText ? gameStatus.gameText.length : 1} />

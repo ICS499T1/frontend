@@ -33,6 +33,7 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
       // Subscription for exceptions thrown serverside
       stompClient.subscribe(link + '/errors/' + gameId + '/' + sessionId, (backendError) => {
         setServerError(backendError.body);
+        stompClient.disconnect();
       });
 
     }, (error) => console.log(error));
