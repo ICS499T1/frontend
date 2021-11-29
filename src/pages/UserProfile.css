@@ -18,7 +18,7 @@
   padding-left: 65px;
   padding-right: 65px;
   padding-top: 60px;
-  color: #F2F2F2;
+  color: white;
   margin: 0;
 }
 
@@ -31,21 +31,21 @@
 .card {
   border-radius: 25px;
   box-shadow: 2px 2px rgb(235, 233, 233);
-  background-color: white;
 }
 
 .cardcontent {
     padding: 30px;
+    background-color: #2E2F43;
 }
 
 .textstats{
-  color:black;
+  color:white;
   font-size: x-large;
   text-align: center;
 }
 
 .subtitles{
-  color:black;
+  color:white;
   font-size: large;
   text-align: center;
 }

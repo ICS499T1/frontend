@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Key.css";
 import { Tooltip } from "@mui/material";
+import SpaceBarIcon from '@mui/icons-material/SpaceBar';
 
 const Spacebar = ({user}) => {
     const [spaceAccuracy, setSpaceAccuracy] = useState('');
@@ -16,7 +17,8 @@ const Spacebar = ({user}) => {
     return (
         <React.Fragment>
             <Tooltip title={spaceAccuracy} arrow>
-                <div className="key key__spacebar">
+                <div className="key key__spacebar key__mui">
+                    <SpaceBarIcon/>
                 </div>
             </Tooltip>
         </React.Fragment>

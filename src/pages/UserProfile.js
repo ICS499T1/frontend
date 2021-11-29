@@ -1,16 +1,12 @@
 import React from "react";
-import "react-simple-keyboard/build/css/index.css";
 import "./UserProfile.css";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import BackgroundLetterAvatars from "../components/Avatar.js";
 import { useEffect, useState } from "react";
 import { useAuthorization } from '../hooks/useAuthorization';
 import Background from "../components/Background";
 import Backimage from "../images/astronaut-aesth2.jpeg";
 import KeyboardLayout from "../components/KeyboardLayout/KeyboardLayout";
+import { Grid, Box, Card, CardContent } from "@mui/material";
 
 function UserProfile() {
   let { instance } = useAuthorization(); 
@@ -47,6 +43,7 @@ function UserProfile() {
   return (
     <React.Fragment>
       <Background imgPath={Backimage}>
+          {/* <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">Welcome back, {user.username}!</Typography> */}
           <h1 className="title"> Welcome back, {user.username}!</h1>
         <Box className="boxuser">
           <Card className="card">
@@ -60,7 +57,7 @@ function UserProfile() {
                 <Grid item xs={12} sm container>
                   <Grid item>
                     <div>
-                      <p>Username: {user.username} </p>
+                      <p className="subtitles">Username: {user.username} </p>
                     </div>
                   </Grid>
                 </Grid>
@@ -112,7 +109,7 @@ function UserProfile() {
             </Grid>
           </Grid>
           <KeyboardLayout user={user} />               
-        </Box>   
+        </Box>
     </Background>
     </React.Fragment>
   );

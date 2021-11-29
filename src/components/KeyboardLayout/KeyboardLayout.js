@@ -13,6 +13,7 @@ import LShift from "./LShift";
 import RShift from "./RShift";
 import BottomFunctionKey from "./BottomFunctionKey";
 import Spacebar from "./Spacebar";
+import { BsOption, BsChevronUp, BsXDiamondFill, BsMenuButtonWideFill } from 'react-icons/bs';
 
 const KeyboardLayout = ({user}) => {
 
@@ -82,14 +83,14 @@ const KeyboardLayout = ({user}) => {
                     <RShift />
                 </Box>
                 <Box display="flex" justifyContent="center" alignItems="center" sx={{height: 48, mt: .5}} >
-                    <BottomFunctionKey keyType={"CTRL"} />
-                    <BottomFunctionKey keyType={"WIN"} />
-                    <BottomFunctionKey keyType={"ALT"} />
+                    <BottomFunctionKey><BsChevronUp/></BottomFunctionKey>
+                    <BottomFunctionKey><BsXDiamondFill/></BottomFunctionKey>
+                    <BottomFunctionKey><BsOption/></BottomFunctionKey>
                     <Spacebar user={user} />
-                    <BottomFunctionKey keyType={"ALT"} />
-                    <BottomFunctionKey keyType={"WIN"} />
-                    <BottomFunctionKey keyType={"RCLCK"} />
-                    <BottomFunctionKey keyType={"CTRL"} />
+                    <BottomFunctionKey><BsOption/></BottomFunctionKey>
+                    <BottomFunctionKey><BsXDiamondFill/></BottomFunctionKey>
+                    <BottomFunctionKey><BsMenuButtonWideFill/></BottomFunctionKey>
+                    <BottomFunctionKey><BsChevronUp/></BottomFunctionKey>
                 </Box>
             </Container>
             </Box>
