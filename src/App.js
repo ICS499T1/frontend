@@ -23,6 +23,19 @@ const theme = createTheme({
     primary: {
       main: '#2E2F43'
     }
+  },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: '#2E2F43',
+          border: '1px solid #dadde9',
+        },
+        arrow: {
+          color: '#f5f5f9',
+        }
+      },
+    },
   }
 });
 
