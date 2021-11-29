@@ -37,17 +37,16 @@ const Login = () => {
     const handleSubmit = async e => {
         e.preventDefault();
         let returnVal = await login(username, password);
-        if (returnVal === 403) {
-            setError(returnVal);
+        if (!returnVal || !returnVal.status) {
+            setServerDown(true);
             return;
-        } else if (returnVal === 200) {
+        } else if (returnVal.status === 403) {
+            setError(returnVal.status);
+            return;
+        } else if (returnVal.status === 200) {
             setServerDown(false);
-        } else if (returnVal) {
+        } else {
             console.log(returnVal);
-            if (!returnVal.status) {
-                setServerDown(true);
-            }
-            return;
         };
         history.push("/");
     }

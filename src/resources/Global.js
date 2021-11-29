@@ -1,6 +1,6 @@
 const defaults = {
-    API: 'https://space-racer-prod.herokuapp.com',
-    DOMAIN: 'https://infallible-snyder-60164a.netlify.app',
+    API: 'http://localhost:8080',
+    DOMAIN: 'http://localhost:3000',
     SINGLE: '/game/single',
     MULTI: '/game',
     DISCONNECT_SECONDS: 90,

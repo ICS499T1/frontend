@@ -29,13 +29,14 @@ const SingleGame = ({ gameId }) => {
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
-    const interval = useRef();
-    const connectInterval = useRef();
-    const [localPosition, setLocalPosition] = useState(0);
-    const [localStatus, setLocalStatus] = useState("READY");
-    const [incorrectCharCount, setIncorrectCharCount] = useState(0);
+    const countdownTimer = useRef();
+    const connectTimer = useRef();
+    const localPosition = useRef(0);
+    const localStatus = useRef("READY");
+    const incorrectCharCount = useRef(0);
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
+    const textFieldRef = useRef();
     const disconnectTimer = useRef();
     const classes = useStyles();
 
@@ -44,17 +45,17 @@ const SingleGame = ({ gameId }) => {
           return;
         }
         setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
-        if (localStatus === "READY") {
+        if (localStatus.current === "READY") {
             stompClient.send("/app/timer/single/" + gameId + '/' + sessionId, {}, gameId);
         }
         setIsCountdown(true);
-        interval.current = setInterval(() => {
+        countdownTimer.current = setInterval(() => {
           setCountdownSeconds((prevSeconds) => {
             if (prevSeconds === 1) {
               setStartGameBool(true);
               return prevSeconds - 1;
             } else if (prevSeconds === 0) {
-              clearInterval(interval.current);
+              clearInterval(countdownTimer.current);
               setIsCountdown(false);
               setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
             } else {
@@ -66,11 +67,13 @@ const SingleGame = ({ gameId }) => {
 
     const handleKeyDown = event => {
         var link = '/gameplay/single'
-        if (localStatus === "READY" || !stompClient.connected) {
+        if (localStatus.current === "READY" || !stompClient.connected) {
           event.preventDefault();
           return;
         }
-        handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
+        handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField});
+        console.log("position: " + localPosition.current);
+        console.log("incorr chars: " + incorrectCharCount.current);
     }
 
     useEffect(() => {
@@ -82,20 +85,20 @@ const SingleGame = ({ gameId }) => {
   
     useEffect(() => {
         if (gameId) {
-          connectInterval.current = setInterval(() => {
+          connectTimer.current = setInterval(() => {
             if (!stompClient.connected) {
               socket = new SockJS(GLOBAL.API + '/new-player');
               stompClient = Stomp.over(socket);
               var link = GLOBAL.SINGLE;
               reinitializeConnection({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError});
             } else {
-              clearInterval(connectInterval.current);
+              clearInterval(connectTimer.current);
             }
           }, 1000)
         }
 
         return async () => {
-          clearInterval(connectInterval.current);
+          clearInterval(connectTimer.current);
         }
     }, [gameId])
 
@@ -107,7 +110,7 @@ const SingleGame = ({ gameId }) => {
 
     useEffect(() => {
       if (gameStatus.status === "IN_PROGRESS") {
-        setLocalStatus("IN_PROGRESS");
+        localStatus.current = "IN_PROGRESS";
       }
       setGameText(gameStatus.gameText);
     }, [gameStatus])
@@ -126,7 +129,7 @@ const SingleGame = ({ gameId }) => {
       }, 1000)
       return async () => {
         clearInterval(disconnectTimer.current);
-        clearInterval(interval.current);
+        clearInterval(countdownTimer.current);
         if (stompClient.connected) {
           stompClient.disconnect();
         }
@@ -164,6 +167,7 @@ const SingleGame = ({ gameId }) => {
             <Grid item>
               <TextField placeholder="Start Typing Here"
                         inputProps={{ spellCheck: 'false' }}
+                        ref={textFieldRef}
                         variant="outlined"
                         error={error}
                         helperText={error && "Fix Mistakes First!"}

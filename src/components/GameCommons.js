@@ -1,3 +1,5 @@
+import GLOBAL from '../resources/Global';
+
 /**
  * Initializes connection with the backend server using websocket. 
  * 
@@ -13,7 +15,7 @@
  */
 export const reinitializeConnection = ({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError}) => {
     // Disables logs from stomp.js (used only for debugging)
-    // stompClient.debug = () => {};
+    stompClient.debug = () => {};
     stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
       var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
       setSessionId(sessionId);
@@ -48,10 +50,9 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
  * @param {string} props.link - the link used to send data to the backend (varies depending on the type of the game)
  * @param {object} props.stompClient - communicates with a stomp server using wss
  * @param {array} props.gameText - an array containing characters of the game text
- * @param {string} props.localPosition - player's position client-side
+ * @param {object} props.localPosition - player's position client-side
  * @param {string} props.gameId - game id
  * @param {string} props.sessionId - player's session id
- * @param {string} props.textField - text field
  * @param {function} props.setDisconnectSeconds - set disconnect timer
  * @param {function} props.setError - sets the error
  * @param {function} props.setIncorrectCharCount - sets incorrect character count
@@ -60,9 +61,9 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
  * @param {function} props.setLocalPosition - sets local position
  * @param {function} props.setLocalStatus - sets text field
  */
-export const handleKey = ({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus}) => {
+export const handleKey = ({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField}) => {
   const backspace = JSON.stringify('\b');
-  setDisconnectSeconds(90);
+  setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
   var key = event.key;
   var keyCode = event.keyCode;
 
@@ -70,35 +71,35 @@ export const handleKey = ({event, link, incorrectCharCount, stompClient, gameTex
     return;
   }
   
-  if (incorrectCharCount > 5 && keyCode !== 8) {
+  if (incorrectCharCount.current > 5 && keyCode !== 8) {
     event.preventDefault();
     setError(true);
     return;
   }
 
-  if (incorrectCharCount !== 0) {
+  if (incorrectCharCount.current !== 0) {
     // Backspace
     if (keyCode === 8) {
       stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, backspace);
-      setIncorrectCharCount(incorrectCharCount - 1);
-      setTextField(textField.slice(0, -1));            
+      incorrectCharCount.current = incorrectCharCount.current - 1;  
+      setTextField(textField.slice(0, -1));      
       setError(false);
     } else {
       stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, JSON.stringify(key));
-      setIncorrectCharCount(incorrectCharCount + 1);
+      incorrectCharCount.current = incorrectCharCount.current + 1;
       setTextField(textField + key);
     }
   } else if (keyCode === 8) {
     event.preventDefault();
-  } else if (gameText[localPosition] === key) {
+  } else if (gameText[localPosition.current] === key) {
     stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, JSON.stringify(key));
-    setLocalPosition(localPosition + 1);
+    localPosition.current = localPosition.current + 1;
 
-    if (gameText.length - 1 === localPosition) {
-      setLocalStatus("READY");
+    if (gameText.length === localPosition.current) {
+      localStatus.current = "READY";
+      localPosition.current = 0;
+      incorrectCharCount.current = 0;
       setTextField('');
-      setLocalPosition(0);
-      setIncorrectCharCount(0);
       return;
     }
     // Spacebar
@@ -109,7 +110,7 @@ export const handleKey = ({event, link, incorrectCharCount, stompClient, gameTex
     }
   } else {
     stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, JSON.stringify(key));
-    setIncorrectCharCount(incorrectCharCount + 1);
+    incorrectCharCount.current = incorrectCharCount.current + 1;
     setTextField(textField + key);
   }
 }

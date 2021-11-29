@@ -55,13 +55,13 @@ const Signup = () => {
     }
     e.preventDefault();
     let returnVal = await signup(username, password);
-    if (returnVal.status === 200) {
-      setSuccess(true);
-    } else if (returnVal.message === 'Request failed with status code 500') {
-      setUsernameExists(true);
-    } else {
+    if (!returnVal || !returnVal.status) {
       setServerDown(true);
-    }
+    } else if (returnVal.status === 200) {
+      setSuccess(true);
+    } else if (returnVal.status === 500) {
+      setUsernameExists(true);
+    };
   };
 
   useEffect(() => {

@@ -25,7 +25,7 @@ export const AuthenticationProvider = ({ children }) => {
 
         return axios(options)
         .then(response => successfulLogin(username, response))
-        .catch(error => error);
+        .catch(error => error.response);
     };
 
     const signup = async (username, password) => {
@@ -39,7 +39,7 @@ export const AuthenticationProvider = ({ children }) => {
 
         return axios(options)
         .then(response => response)
-        .catch(error => error);
+        .catch(error => error.response);
     };
 
 
@@ -50,6 +50,7 @@ export const AuthenticationProvider = ({ children }) => {
             localStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username);
             setAuthed(true);
         }
+        return response;
     };
 
     const logout = () => {

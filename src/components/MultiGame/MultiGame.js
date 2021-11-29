@@ -32,18 +32,18 @@ const MultiGame = ({ gameId, create }) => {
         startTime: 0,
     });
     const [disconnectSeconds, setDisconnectSeconds] = useState(GLOBAL.DISCONNECT_SECONDS);
-    const [localStatus, setLocalStatus] = useState('READY');
     const [gameText, setGameText] = useState([]);
     const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
     const [players, setPlayers] = useState(null);
-    const [localPosition, setLocalPosition] = useState(0);
-    const [incorrectCharCount, setIncorrectCharCount] = useState(0);
     const [disconnected, setDisconnected] = useState(false);
     const connectionAttempts = useRef(GLOBAL.CONNECTION_ATTEMPTS);
     const countdownTimer = useRef();
     const disconnectTimer = useRef();
+    const localPosition = useRef(0);
+    const localStatus = useRef("READY");
+    const incorrectCharCount = useRef(0);
    
     const startGame = () => {
       if(!stompClient.connected) {
@@ -56,11 +56,11 @@ const MultiGame = ({ gameId, create }) => {
 
     const handleKeyDown = event => {
       var link = '/gameplay/'
-      if (localStatus !== "IN_PROGRESS" || !stompClient.connected) {
+      if (localStatus.current !== "IN_PROGRESS" || !stompClient.connected) {
         event.preventDefault();
         return;
       }
-      handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, gameId, sessionId, textField, setDisconnectSeconds, setError, setIncorrectCharCount, setTextField, setLocalPosition, setLocalStatus});
+      handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField});
     }
 
     useEffect(() => {
@@ -83,7 +83,7 @@ const MultiGame = ({ gameId, create }) => {
       }
   }, [gameId])
 
-    // Used to disconnect the client once they leave the gameplay page
+    // Used to maintain the countdown for the disconnect timer
     useEffect(() => {
       if (disconnectTimer.current) {
         clearInterval(disconnectTimer.current);
@@ -94,7 +94,7 @@ const MultiGame = ({ gameId, create }) => {
             clearInterval(disconnectTimer.current);
             stompClient.disconnect();
             setDisconnected(true);
-          } else if (localStatus === "READY" && gameStatus.status === "IN_PROGRESS") {
+          } else if (localStatus.current === "READY" && gameStatus.status === "IN_PROGRESS") {
             return GLOBAL.DISCONNECT_SECONDS;
           } else if (!created && gameStatus.status === "READY") {
             return GLOBAL.DISCONNECT_SECONDS;
@@ -103,7 +103,7 @@ const MultiGame = ({ gameId, create }) => {
           }
         })
       }, 1000)
-    }, [localStatus, gameStatus.status, created])
+    }, [gameStatus.status, created])
 
     useEffect(() => {
       return async () => {
@@ -143,7 +143,7 @@ const MultiGame = ({ gameId, create }) => {
         setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
         setIsCountdown(false);
       } else if (gameStatus.status === "IN_PROGRESS") {
-        setLocalStatus("IN_PROGRESS");
+        localStatus.current = "IN_PROGRESS";
       }
 
       if (gameStatus.players && gameStatus.players[sessionId] && gameStatus.players[sessionId].playerNumber === 1) {
@@ -185,12 +185,6 @@ const MultiGame = ({ gameId, create }) => {
         } ,  1000 );     
       }
     }, [gameStatus])
-
-    // useEffect(() => {
-    //   if (gameStatus.status === "READY" && gameStatus.winner) {
-
-    //   }
-    // }, [])
 
     useEffect(() => {
       setCreated(create);
