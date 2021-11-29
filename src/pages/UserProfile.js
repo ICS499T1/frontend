@@ -31,7 +31,8 @@ function UserProfile() {
                    numMultiGamesCompleted: data.userStats.numMultiGamesCompleted,
                    racesWon: data.userStats.racesWon,
                    bestRaceSpeed: data.userStats.bestRaceSpeed,
-                   lastRaceSpeed: data.userStats.lastRaceSpeed
+                   lastRaceSpeed: data.userStats.lastRaceSpeed,
+                   accuracy: data.userStats.accuracy
                  },
                    allKeys: keyDict
                 });
