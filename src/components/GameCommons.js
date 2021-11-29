@@ -61,7 +61,7 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
  * @param {function} props.setLocalPosition - sets local position
  * @param {function} props.setLocalStatus - sets text field
  */
-export const handleKey = ({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField}) => {
+export const handleKey = ({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError}) => {
   const backspace = JSON.stringify('\b');
   setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
   var key = event.key;
@@ -81,13 +81,11 @@ export const handleKey = ({event, link, incorrectCharCount, stompClient, gameTex
     // Backspace
     if (keyCode === 8) {
       stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, backspace);
-      incorrectCharCount.current = incorrectCharCount.current - 1;  
-      setTextField(textField.slice(0, -1));      
+      incorrectCharCount.current = incorrectCharCount.current - 1;     
       setError(false);
     } else {
       stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, JSON.stringify(key));
       incorrectCharCount.current = incorrectCharCount.current + 1;
-      setTextField(textField + key);
     }
   } else if (keyCode === 8) {
     event.preventDefault();
@@ -99,19 +97,18 @@ export const handleKey = ({event, link, incorrectCharCount, stompClient, gameTex
       localStatus.current = "READY";
       localPosition.current = 0;
       incorrectCharCount.current = 0;
-      setTextField('');
+      textField.current.value = '';
+      event.preventDefault();
       return;
     }
     // Spacebar
     if (keyCode === 32) {
-      setTextField('');
-    } else {
-      setTextField(textField + key);
+      textField.current.value = '';
+      event.preventDefault();
     }
   } else {
     stompClient.send('/app' + link + '/' + gameId + '/' + sessionId, {}, JSON.stringify(key));
     incorrectCharCount.current = incorrectCharCount.current + 1;
-    setTextField(textField + key);
   }
 }
 

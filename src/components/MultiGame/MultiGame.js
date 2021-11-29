@@ -33,7 +33,6 @@ const MultiGame = ({ gameId, create }) => {
     });
     const [disconnectSeconds, setDisconnectSeconds] = useState(GLOBAL.DISCONNECT_SECONDS);
     const [gameText, setGameText] = useState([]);
-    const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
     const [players, setPlayers] = useState(null);
@@ -43,6 +42,7 @@ const MultiGame = ({ gameId, create }) => {
     const disconnectTimer = useRef();
     const localPosition = useRef(0);
     const localStatus = useRef("READY");
+    const textField = useRef();
     const incorrectCharCount = useRef(0);
    
     const startGame = () => {
@@ -51,6 +51,7 @@ const MultiGame = ({ gameId, create }) => {
       }
       stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
       setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
+      textField.current.focus();
     }
     const classes = useStyles();
 
@@ -60,7 +61,7 @@ const MultiGame = ({ gameId, create }) => {
         event.preventDefault();
         return;
       }
-      handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField});
+      handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError});
     }
 
     useEffect(() => {
@@ -143,6 +144,7 @@ const MultiGame = ({ gameId, create }) => {
         setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
         setIsCountdown(false);
       } else if (gameStatus.status === "IN_PROGRESS") {
+        textField.current.focus();
         localStatus.current = "IN_PROGRESS";
       }
 
@@ -270,12 +272,12 @@ const MultiGame = ({ gameId, create }) => {
             <Grid item>
               <TextField placeholder="Start Typing Here"
                         inputProps={{ spellCheck: 'false' }}
+                        inputRef={textField}
                         variant="outlined"
                         error={error}
                         helperText={error && "Fix Mistakes First!"}
                         style={{backgroundColor: "white"}}
-                        onKeyDown={handleKeyDown}
-                        value={textField}/> 
+                        onKeyDown={handleKeyDown}/> 
             </Grid>
             <Grid item padding='20px'>
               {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography></Grid>}

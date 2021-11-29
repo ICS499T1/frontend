@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Collapse,
   Alert,
@@ -32,12 +32,18 @@ const Signup = () => {
   const [invalidUsernameChars, setInvalidUsernameChars] = useState(false);
   const [invalidUsernameLength, setInvalidUsernameLength] = useState(false);
   const [serverDown, setServerDown] = useState(false);
+  const usernameField = useRef();
+
   const handleClickShowPassword = () => setShowPassword(!showPassword);
+
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
+  
   const handleMouseDownConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
+  
   const handleSubmit = async (e) => {
     if (password !== confirmPassword) {
       e.preventDefault();
@@ -73,6 +79,10 @@ const Signup = () => {
     setPasswordError("Error");
     setConfirmPasswordError("Error");
   }, [password, confirmPassword]);
+
+  useEffect(() => {
+    usernameField.current.focus();    
+  }, []);
 
   const handleUsername = (username) => {
     setUserName(username);
@@ -160,6 +170,7 @@ const Signup = () => {
               <Grid item>
                 <TextField
                   required
+                  inputRef={usernameField}
                   label="Username"
                   error={usernameExists || invalidUsernameChars || invalidUsernameLength}
                   helperText={
@@ -191,6 +202,7 @@ const Signup = () => {
                       <InputAdornment position="end">
                         <IconButton
                           size="small"
+                          tabIndex={-1}
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                         >
@@ -220,6 +232,7 @@ const Signup = () => {
                       <InputAdornment position="end">
                         <IconButton
                           size="small"
+                          tabIndex={-1}
                           onClick={handleClickShowConfirmPassword}
                           onMouseDown={handleMouseDownConfirmPassword}
                         >

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Alert, Collapse, Button, Typography, TextField, Grid, InputAdornment, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -20,6 +20,7 @@ const Login = ({ location }) => {
     const [error, setError] = useState(null);
     const [serverDown, setServerDown] = useState(false);
     const { login, authed } = useAuthentication();
+    const usernameField = useRef();
 
     const history = useHistory();
 
@@ -55,6 +56,10 @@ const Login = ({ location }) => {
             history.push("/");
         }
     }
+
+    useEffect(() => {
+        usernameField.current.focus();    
+      }, []);
 
     return(
         <React.Fragment>
@@ -98,6 +103,7 @@ const Login = ({ location }) => {
                         <Grid item>
                             <TextField required={true} 
                                         label="Username" 
+                                        inputRef={usernameField}
                                         error={error === 403} 
                                         helperText={error === 403 && "Incorrect credentials"}
                                         variant="filled" 
@@ -114,7 +120,7 @@ const Login = ({ location }) => {
                                         onChange={handlePasswordChange} 
                                         InputProps={{endAdornment: (
                                         <InputAdornment position="end">
-                                        <IconButton size="small" onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
+                                        <IconButton size="small" tabIndex={-1} onClick={handleClickShowPassword}onMouseDown={handleMouseDownPassword}> {showPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
                                         </InputAdornment>)
                             }}/>
                         </Grid>

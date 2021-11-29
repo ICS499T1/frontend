@@ -26,7 +26,6 @@ const SingleGame = ({ gameId }) => {
     });
     const [disconnectSeconds, setDisconnectSeconds] = useState(GLOBAL.DISCONNECT_SECONDS);
     const [gameText, setGameText] = useState([]);
-    const [textField, setTextField] = useState('');
     const [serverError, setServerError] = useState('');
     const [error, setError] = useState(false);
     const countdownTimer = useRef();
@@ -36,7 +35,7 @@ const SingleGame = ({ gameId }) => {
     const incorrectCharCount = useRef(0);
     const [startGameBool, setStartGameBool] = useState(false);
     const [disconnected, setDisconnected] = useState(false);
-    const textFieldRef = useRef();
+    const textField = useRef();
     const disconnectTimer = useRef();
     const classes = useStyles();
 
@@ -63,6 +62,7 @@ const SingleGame = ({ gameId }) => {
             }
           });
         } ,  1000 );
+        textField.current.focus();
     }
 
     const handleKeyDown = event => {
@@ -71,7 +71,7 @@ const SingleGame = ({ gameId }) => {
           event.preventDefault();
           return;
         }
-        handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField});
+        handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError});
     }
 
     useEffect(() => {
@@ -165,13 +165,12 @@ const SingleGame = ({ gameId }) => {
             <Grid item>
               <TextField placeholder="Start Typing Here"
                         inputProps={{ spellCheck: 'false' }}
-                        ref={textFieldRef}
+                        inputRef={textField}
                         variant="outlined"
                         error={error}
                         helperText={error && "Fix Mistakes First!"}
                         style={{backgroundColor: "white"}}
-                        onKeyDown={handleKeyDown}
-                        value={textField}/> 
+                        onKeyDown={handleKeyDown}/> 
             </Grid>
             <Grid item padding='20px'>
               {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
