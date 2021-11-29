@@ -6,7 +6,7 @@ import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
+import { calculateLiveSpeed, calculateSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
 import GLOBAL from '../../resources/Global';
 
@@ -196,30 +196,6 @@ const MultiGame = ({ gameId, create }) => {
         var player = game.players[sessionId];
         return positionIndicator({idx, gameStatus, player});
       }
-    }
-
-    const calculateLiveSpeed = (player, startTime) => {
-      if (player.endTime === 0) {
-        return calculateSpeed(Date.now(), startTime, player.position);
-      } else {
-        return calculateSpeed(player.endTime, startTime, player.position);
-      }
-    }
-
-    const calculateSpeed = (endTime, startTime, currentPosition) => {
-      var totalTime = (endTime - startTime) / 60000;
-      var lastWord = currentPosition % 5 > 0 ? 1 : 0;
-      var words = (currentPosition / 5) + lastWord;
-      var currentRaceSpeed = (words / totalTime).toFixed(2);
-      return currentRaceSpeed;
-    }
-
-    const calculateAccuracy = (failedChars, currentPosition) => {
-      if (currentPosition === 0) {
-        return 0;
-      }
-      var successRate = (((currentPosition - failedChars)/ currentPosition) * 100).toFixed(2);
-      return successRate;
     }
 
     const playerListIndicator = (idx) => {

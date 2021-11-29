@@ -144,3 +144,27 @@ export const positionIndicator = ({idx, gameStatus, player}) => {
   }
   return styles;
 }
+
+export const calculateLiveSpeed = (player, startTime) => {
+  if (player.endTime === 0) {
+    return calculateSpeed(Date.now(), startTime, player.position);
+  } else {
+    return calculateSpeed(player.endTime, startTime, player.position);
+  }
+}
+
+export const calculateSpeed = (endTime, startTime, currentPosition) => {
+  var totalTime = (endTime - startTime) / 60000;
+  var lastWord = currentPosition % 5 > 0 ? 1 : 0;
+  var words = (currentPosition / 5) + lastWord;
+  var currentRaceSpeed = (words / totalTime).toFixed(2);
+  return currentRaceSpeed;
+}
+
+export const calculateAccuracy = (failedChars, currentPosition) => {
+  if (currentPosition === 0) {
+    return 0;
+  }
+  var successRate = (((currentPosition - failedChars)/ currentPosition) * 100).toFixed(2);
+  return successRate;
+}

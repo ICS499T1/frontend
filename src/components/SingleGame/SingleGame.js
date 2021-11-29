@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
+import { calculateLiveSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import GLOBAL from '../../resources/Global';
 import { useStyles } from '../../hooks/useGameStyles'
 
@@ -72,8 +72,6 @@ const SingleGame = ({ gameId }) => {
           return;
         }
         handleKey({event, link, incorrectCharCount, stompClient, gameText, localPosition, localStatus, textField, gameId, sessionId, setDisconnectSeconds, setError, setTextField});
-        console.log("position: " + localPosition.current);
-        console.log("incorr chars: " + incorrectCharCount.current);
     }
 
     useEffect(() => {
@@ -175,29 +173,30 @@ const SingleGame = ({ gameId }) => {
                         onKeyDown={handleKeyDown}
                         value={textField}/> 
             </Grid>
-            <Grid item>
+            <Grid item padding='20px'>
               {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
               {stompClient.connected ? 
                 <Grid item>
-                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>Start Game!
+                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>
+                    Start Game!
                   </Button>
                 </Grid> : 
                 <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
             </Grid>
             {game.player && 
-            <Grid container sx={{padding: '3px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-                <Grid item>
-                    <Typography variant="p" color="common.white">{game.player.username}</Typography>
-                </Grid>
-                <Grid item>
-                    <Typography color="common.white"> Average Speed </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography color="common.white">Errors: {game.player.failedCharacters.length} </Typography>
-                  </Grid>
-                <Grid item>
-                    <ProgressBar playerPosition={gameStatus.status === "IN_PROGRESS" ? game.player.position : 0} lastPosition={gameStatus.gameText.length} />
-                </Grid>
+            <Grid className={classes.color} container sx={{padding: '10px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+              <Grid item>
+                <Typography variant="p" color="common.white">{game.player.username}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="common.white">Speed: {game.player && calculateLiveSpeed(game.player, game.startTime)} </Typography>
+              </Grid>
+              <Grid item>
+                <Typography color="common.white">Accuracy: {game.player && calculateAccuracy(game.player.failedCharacters.length, game.player.position)} </Typography>
+              </Grid>
+              <Grid item>
+                <ProgressBar playerPosition={gameStatus.status === "IN_PROGRESS" ? game.player.position : 0} lastPosition={gameStatus.gameText.length} />
+              </Grid>
             </Grid>
             }
         </React.Fragment>

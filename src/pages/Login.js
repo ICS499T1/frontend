@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 
-const Login = () => {
+const Login = ({ location }) => {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [showPassword, setShowPassword] = useState(false);
@@ -48,7 +48,12 @@ const Login = () => {
         } else {
             console.log(returnVal);
         };
-        history.push("/");
+
+        if (location.state) {
+            history.push(location.state.from)
+        } else {
+            history.push("/");
+        }
     }
 
     return(
