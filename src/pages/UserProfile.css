@@ -8,10 +8,10 @@
 }
 
 .boxkeyboard {
-  width: 100%;
+  padding-left: 85px;
+  padding-right: 90px;
+  padding-top: 100px;
   height: fit-content;
-  background-color: white;
-  /* padding: 70px; */
 }
 
 .title {
