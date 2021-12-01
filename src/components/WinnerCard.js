@@ -6,7 +6,7 @@ const WinnerCard = ({username, speed, accuracy}) => {
     const styles = useStyles();
 
     return(
-        <Grid container className={styles.color} justify="center" rowSpacing={2} direction="column">
+        <Grid container padding="10px" className={styles.color} justify="center" rowSpacing={2} direction="column">
             <Grid item sx={{textAlign: 'center'}}>
                 <Typography variant="h4" color="common.white">{username + " is the winner!"}</Typography>
             </Grid>

@@ -4,7 +4,7 @@ import Login from "./pages/Login.js";
 import Signup from "./pages/Signup.js";
 import Body from "./pages/Body.js";
 import Tutorials from "./components/Tutorial";
-import AboutUs from "./components/AboutUs";
+import AboutUs from "./pages/AboutUs";
 import Layout from './components/Layout'
 import UserProfile from "./pages/UserProfile";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -39,18 +39,6 @@ const theme = createTheme({
 });
 
 class App extends Component {
- // state = {
-  //     users: []
-  // }
-
-  // componentDidMount() {
-  //     fetch('http://localhost:8080/user/getusers')
-  //     .then(res => res.json())
-  //     .then((data) => {
-  //     this.setState({ users: data })
-  //     })
-  //     .catch(console.log)
-  // }
 
   render() {
     return (

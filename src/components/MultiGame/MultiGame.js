@@ -2,9 +2,8 @@ import React from "react";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
-import { Box, Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
+import { Box, Grid, TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
-import CloseIcon from '@mui/icons-material/Close';
 import WinnerCard from '../WinnerCard';
 import InvitationButton from '../CopyInvitationButton';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
@@ -24,8 +23,6 @@ const MultiGame = ({ gameId, create }) => {
   const [countdownSeconds, setCountdownSeconds] = useState(GLOBAL.COUNTDOWN_SECONDS);
   // Used to see if the countdown is in progress
   const [isCountdown, setIsCountdown] = useState(false);
-  // Used to see if the invite link was copied
-  const [linkCopied, setLinkCopied] = useState(false);
   // Used for syncing client-side game status with server-side game status
   const [gameStatus, setGameStatus] = useState({
     gameText: [],
