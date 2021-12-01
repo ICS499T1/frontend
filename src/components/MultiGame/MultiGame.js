@@ -2,10 +2,11 @@ import React from "react";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useEffect, useState, useRef } from 'react';
-import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
+import { Box, Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
 import WinnerCard from '../WinnerCard';
+import InvitationButton from '../CopyInvitationButton';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import { calculateLiveSpeed, calculateSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
@@ -49,6 +50,8 @@ const MultiGame = ({ gameId, create }) => {
   const [error, setError] = useState(false);
   // Used to set game players
   const [players, setPlayers] = useState(null);
+  // Used to store winner's speed
+  const [winnerSpeed, setWinnerSpeed] = useState(0);
   // Used to set disconnected status once the disconnect countdown is over
   const [disconnected, setDisconnected] = useState(false);
   // Used to track the number of connection attempts
@@ -245,6 +248,15 @@ const MultiGame = ({ gameId, create }) => {
   }, [gameStatus])
 
   /**
+   * Sets winner's final speed.
+   */
+  useEffect(() => {
+    if(game.winner) {
+      setWinnerSpeed(calculateSpeed(game.winner.endTime, game.startTime, game.winner.position));
+    }
+  }, [game])
+
+  /**
    * Sets created value to true if the player is the host.
    */
   useEffect(() => {
@@ -310,38 +322,31 @@ const MultiGame = ({ gameId, create }) => {
               </Alert>
             </Collapse>
           </Grid>
-          <Grid item>
-          <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
+          <Grid item padding="20px">
+              <InvitationButton gameId={gameId} gameStatus={gameStatus} />
           </Grid>
           <Grid item>
-            {(gameStatus.status !== "IN_PROGRESS" && gameStatus.status !== "COUNTDOWN") &&
-            <Button sx={{cursor: 'pointer'}} 
-                        onClick={() => {
-                          navigator.clipboard.writeText(GLOBAL.DOMAIN + '/multiplayer/' + gameId);
-                          setLinkCopied(true);
-                        }} 
-                        variant="contained" 
-                        size="large"
-            >
-              Click to copy invitation
-            </Button>}
+            <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
           </Grid>
-          <Grid item>
-          {created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
-          {disconnectSeconds < 11 && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
-          <Card sx={{ maxWidth: 700 }}>
-              <CardContent>                    
-                  {gameText && 
-                  <Typography>
+          <Grid container className={classes.color} alignItems="center" justifyContent="center" direction="column" rowSpacing={3} padding='20px'>
+            <Grid item>
+              {created && gameStatus.status === "READY" && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+              {disconnectSeconds < 11 && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
+              <Card sx={{ maxWidth: 900 }}>
+                <CardContent>                   
+                    {gameText && 
+                    <Typography 
+                    sx={{minWidth:'80vh'}}
+                    >
                       {gameText.map((char, idx) => {
                           return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
                       })}
                   </Typography>}
-              </CardContent>
-          </Card>
-          </Grid>
-          <Grid item>
-            <TextField placeholder="Start Typing Here"
+                </CardContent>
+            </Card>
+            </Grid>
+            <Grid item>
+              <TextField placeholder="Start Typing Here"
                       inputProps={{ spellCheck: 'false' }}
                       inputRef={textField}
                       variant="outlined"
@@ -349,52 +354,57 @@ const MultiGame = ({ gameId, create }) => {
                       helperText={error && "Fix Mistakes First!"}
                       style={{backgroundColor: "white"}}
                       onKeyDown={handleKeyDown}/> 
-          </Grid>
-          <Grid item padding='20px'>
-            {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography></Grid>}
-            {created && stompClient.connected &&
+            </Grid>
             <Grid item>
-              <Button variant="contained" 
-                      disabled={gameStatus.status !== "READY"} 
-                      onClick={startGame}>Start Game!</Button>
-            </Grid>}
-            {!stompClient.connected &&
-            <CustomTextAlert inputText={"Not connected"} severityType="info"/>}
-            {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Waiting for another player!</Typography>}
-            {!created && gameStatus.status === "READY" && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
-          </Grid>
-          {players && players.map((player, idx) => {
-            if (player) {
+              {gameStatus.status === "WAITING_FOR_ANOTHER_PLAYER" && <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">Waiting for another player!</Typography>}
+              {!created && gameStatus.status === "READY" && <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">Please wait for the host to start the game!</Typography>}
+            </Grid>
+            <Grid item>
+              {isCountdown && <Grid item><Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography></Grid>}
+            </Grid>
+            <Grid item padding='20px'>
+              {created && stompClient.connected &&
+              <Grid item>
+                <Button variant="contained" 
+                        disabled={gameStatus.status !== "READY"} 
+                        onClick={startGame}>Start Game!</Button>
+              </Grid>}
+              {!stompClient.connected &&
+              <CustomTextAlert inputText={"Not connected"} severityType="info"/>}
+            </Grid>
+              {players && players.map((player, idx) => {
+              if (player) {
+                return (
+                <Grid key={idx} container direction="row" columnSpacing={3} justifyContent="center" alignItems="center" padding="20px">
+                  <Grid item>
+                    <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography color="common.white">Speed: {game.players && game.players[player[1]] && calculateLiveSpeed(game.players[player[1]], game.startTime)} </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography color="common.white">Accuracy: {game.players && game.players[player[1]] && calculateAccuracy(game.players[player[1]].failedCharacters.length, game.players[player[1]].position)} </Typography>
+                  </Grid>
+                  <Grid item>
+                    <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText ? gameStatus.gameText.length : 1} />
+                  </Grid>
+                </Grid>
+                )
+              }
               return (
-              <Grid className={classes.color} key={idx} container sx={{padding: '10px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-                <Grid item>
-                  <Typography sx={playerListIndicator(idx)} variant="p" color="common.white">{player[0]}</Typography>
-                </Grid>
-                <Grid item>
-                  <Typography color="common.white">Speed: {game.players && game.players[player[1]] && calculateLiveSpeed(game.players[player[1]], game.startTime)} </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography color="common.white">Accuracy: {game.players && game.players[player[1]] && calculateAccuracy(game.players[player[1]].failedCharacters.length, game.players[player[1]].position)} </Typography>
-                </Grid>
-                <Grid item>
-                  <ProgressBar playerPosition={(game.players && game.players[player[1]] && gameStatus.status === "IN_PROGRESS") ? game.players[player[1]].position : 0} lastPosition={gameStatus.gameText ? gameStatus.gameText.length : 1} />
-                </Grid>
+              <Grid className={classes.color} key={idx} container sx={{padding: '5px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+                
               </Grid>
               )
-            }
-            return (
-            <Grid className={classes.color} key={idx} container sx={{padding: '5px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-              
-            </Grid>
-            )
-          })}
-          <Card>
+            })}
+          </Grid>
+          <Box mt={5}>
             {game.winner && 
             <WinnerCard 
             username={game.winner.username} 
-            speed={calculateSpeed(game.winner.endTime, game.startTime, game.winner.position)} 
+            speed={winnerSpeed} 
             accuracy={calculateAccuracy(game.winner.failedCharacters.length, game.winner.position)}/>}
-          </Card>
+          </Box>
       </React.Fragment>
     );
   };

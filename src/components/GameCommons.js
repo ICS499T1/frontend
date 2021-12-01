@@ -15,7 +15,7 @@ import GLOBAL from '../resources/Global';
  */
 export const reinitializeConnection = ({gameId, link, stompClient, socket, setSessionId, setGame, setGameStatus, setServerError}) => {
     // Disables logs from stomp.js (used only for debugging)
-    stompClient.debug = () => {};
+    //stompClient.debug = () => {};
     stompClient.connect({ 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, () => {
       var sessionId = /\/([^/]+)\/websocket/.exec(socket._transport.url)[1];
       setSessionId(sessionId);

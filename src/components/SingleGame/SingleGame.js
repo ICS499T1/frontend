@@ -197,13 +197,16 @@ const SingleGame = ({ gameId }) => {
           <Grid item>
             <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
           </Grid>
-          <Grid item>
-            {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+          <Grid container className={classes.color} alignItems="center" justifyContent="center" direction="column" rowSpacing={3} padding='20px'>
+            {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography variant="h5" className={classes.color} sx={{textAlign: 'center'}} color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
-            <Card sx={{ maxWidth: 700 }}>
-                <CardContent>                    
+            <Grid item>
+            <Card sx={{ maxWidth: 900 }}>
+                <CardContent>                   
                     {gameText && 
-                    <Typography>
+                    <Typography 
+                    sx={{minWidth:'80vh'}}
+                    >
                       {gameText.map((char, idx) => {
                           return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
                       })}
@@ -221,18 +224,18 @@ const SingleGame = ({ gameId }) => {
                       style={{backgroundColor: "white"}}
                       onKeyDown={handleKeyDown}/> 
           </Grid>
-          <Grid item padding='20px'>
-            {isCountdown && <Typography className={classes.color} sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
-            {stompClient.connected ? 
-              <Grid item>
-                <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>
-                  Start Game!
-                </Button>
-              </Grid> : 
-              <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
-          </Grid>
+            <Grid item>
+              {isCountdown && <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
+              {stompClient.connected ? 
+                <Grid item>
+                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>
+                    Start Game!
+                  </Button>
+                </Grid> : 
+                <CustomTextAlert inputText={"Not connected"} severityType="error"/>}
+            </Grid>
           {game.player && 
-          <Grid className={classes.color} container sx={{padding: '10px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
+          <Grid container sx={{padding: '10px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
             <Grid item>
               <Typography variant="p" color="common.white">{game.player.username}</Typography>
             </Grid>
@@ -247,6 +250,7 @@ const SingleGame = ({ gameId }) => {
             </Grid>
           </Grid>
           }
+          </Grid>
       </React.Fragment>
     );
   };
