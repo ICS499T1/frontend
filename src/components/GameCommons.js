@@ -41,7 +41,6 @@ export const reinitializeConnection = ({gameId, link, stompClient, socket, setSe
     }, (error) => console.log(error));
 }
 
-
 /**
  * Processes each key typed by the player.  
  * 
@@ -116,7 +115,7 @@ export const handleKey = ({event, link, incorrectCharCount, stompClient, gameTex
  * Highlights each character based on whether it has already been successfully typed or whether it has been typed incorrectly. 
  * 
  * @param {object} props - Component props
- * @param {integer} props.idx - player's position
+ * @param {number} props.idx - player's position
  * @param {object} props.gameStatus - stores game information and is updated only when game status is updated
  * @param {object} props.player - player
  */
@@ -142,6 +141,13 @@ export const positionIndicator = ({idx, gameStatus, player}) => {
   return styles;
 }
 
+/**
+ * Calculates speed while the game is going.
+ * 
+ * @param {object} props - Component props
+ * @param {object} props.player - player
+ * @param {number} props.startTime - game start time
+ */
 export const calculateLiveSpeed = (player, startTime) => {
   if (player.endTime === 0) {
     return calculateSpeed(Date.now(), startTime, player.position);
@@ -150,6 +156,14 @@ export const calculateLiveSpeed = (player, startTime) => {
   }
 }
 
+/**
+ * Calculates final speed when the game is over.
+ * 
+ * @param {object} props - Component props
+ * @param {object} props.player - player
+ * @param {number} props.startTime - game start time
+ * @param {number} props.currentPosition - player's position
+ */
 export const calculateSpeed = (endTime, startTime, currentPosition) => {
   var totalTime = (endTime - startTime) / 60000;
   var lastWord = currentPosition % 5 > 0 ? 1 : 0;
@@ -158,6 +172,13 @@ export const calculateSpeed = (endTime, startTime, currentPosition) => {
   return currentRaceSpeed;
 }
 
+/**
+ * Calculates accuracy of the player.
+ * 
+ * @param {object} props - Component props
+ * @param {array} props.failedChars - failed characters
+ * @param {number} props.currentPosition - player's position
+ */
 export const calculateAccuracy = (failedChars, currentPosition) => {
   if (currentPosition === 0) {
     return 0;

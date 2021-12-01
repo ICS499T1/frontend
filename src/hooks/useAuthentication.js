@@ -5,7 +5,6 @@ import GLOBAL from '../resources/Global';
 
 const AuthenticationContext = createContext(null);
 
-
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'username';
 export const ACCESS_TOKEN_ATTRIBUTE = 'accessToken';
 export const REFRESH_TOKEN_ATTRIBUTE = 'refreshToken';
@@ -69,5 +68,5 @@ export const AuthenticationProvider = ({ children }) => {
    );
 };
 
-// Finally creating the custom hook 
+//  creating the custom hook 
 export const useAuthentication = () => useContext(AuthenticationContext);
