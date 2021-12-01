@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import Login from "./pages/Login.js";
 import Signup from "./pages/Signup.js";
 import Body from "./pages/Body.js";
-import Terms from "./components/Terms";
 import Tutorials from "./components/Tutorial";
 import AboutUs from "./components/AboutUs";
 import Layout from './components/Layout'
@@ -64,7 +63,6 @@ class App extends Component {
               <Route path="/" exact component={Body} />
               <Route path="/login" component={Login} />
               <Route path="/signup" component={Signup} />
-              <Route path="/termsandconditions" component={Terms} />
               <Route path="/tutorials" component={Tutorials} />
               <Route path="/aboutus" component={AboutUs} />
               <ProtectedRoute path="/multiplayer/:gameId" component={MultiplayerJoin} />

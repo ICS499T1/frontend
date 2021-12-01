@@ -11,7 +11,6 @@ const Navbar = () => {
   const { logout, authed } = useAuthentication();
 
   return (
-    // <Box sx={{ flexGrow: 1}}>
     <Grid container>
       <AppBar position="static">
         <CssBaseline />
@@ -22,7 +21,7 @@ const Navbar = () => {
           }}>
             <Logo />
           </SvgIcon>
-          <Typography variant="h4">
+          <Typography sx={{cursor: 'pointer'}} onClick={event =>  window.location.href='/'} variant="h4">
             Space Racer
           </Typography>
           <section className={classes.rightToolbar}>
@@ -34,49 +33,11 @@ const Navbar = () => {
                 {authed && <Button component={Link} to="/myprofile" variant="text" color="inherit">{localStorage.getItem('username')}</Button>}
                 {authed && <Button component={Link} to="/" onClick={logout} variant="text" color="inherit">Logout</Button>}
               </ButtonGroup>
-              {/* <Link to="/">
-                Home
-              </Link>
-              <Link to="/signUp">
-                Sign up
-              </Link>
-              <Link to="/login">
-                Login
-              </Link>
-              <Link to="/faq">
-                FAQ
-              </Link> */}
             </Container>
           </section>
         </Toolbar>
       </AppBar>
     </Grid>
-    // </Box>
-
-
-    // <nav className="header">
-    //   <div className="nav-wrapper">
-    //     <a className="logo" href="/">
-    //       StartTyper
-    //     </a>
-    //     <input className="menu-btn" type="checkbox" id="menu-btn" />
-    //     <label className="menu-icon" htmlFor="menu-btn">
-    //       <span className="navicon"></span>
-    //     </label>
-
-    //     <ul className="menu">
-    //       <li>
-    //         <Link to="/">Home</Link>
-    //       </li>
-    //       <li>
-    //         <Link to="/signUp">Sign up</Link>
-    //       </li>
-    //       <li>
-    //         <Link to="/login">Log in</Link>
-    //       </li>
-    //     </ul>
-    //   </div>
-    // </nav>
   );
 };
 

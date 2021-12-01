@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Grid, TextField, Button, Typography, Card, CardContent, Collapse, Alert, IconButton } from "@mui/material";
 import ProgressBar from "../ProgressBar/ProgressBar";
 import CloseIcon from '@mui/icons-material/Close';
+import WinnerCard from '../WinnerCard';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
 import { calculateLiveSpeed, calculateSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
@@ -389,11 +390,10 @@ const MultiGame = ({ gameId, create }) => {
           })}
           <Card>
             {game.winner && 
-            <Grid item className={classes.color}>
-              <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">{"Winner: " + game.winner.username}</Typography>
-              <Typography sx={{textAlign: 'center'}} variant="p" color="common.white">{"Speed: " + calculateSpeed(game.winner.endTime, game.startTime, game.winner.position)} </Typography>
-              <Typography sx={{textAlign: 'center'}} variant="p" color="common.white">{"Accuracy: " + calculateAccuracy(game.winner.failedCharacters.length, game.winner.position)}</Typography>
-            </Grid>}
+            <WinnerCard 
+            username={game.winner.username} 
+            speed={calculateSpeed(game.winner.endTime, game.startTime, game.winner.position)} 
+            accuracy={calculateAccuracy(game.winner.failedCharacters.length, game.winner.position)}/>}
           </Card>
       </React.Fragment>
     );
