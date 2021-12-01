@@ -302,26 +302,6 @@ const MultiGame = ({ gameId, create }) => {
           <Grid item>
             <CustomTextAlert inputText={serverError} severityType="error"/>
           </Grid>
-          <Grid item>
-            <Collapse in={linkCopied}>
-              <Alert
-                severity="success"
-                action={
-                <IconButton
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setLinkCopied(false);
-                  }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-                }
-              sx={{ mb: 2 }}>
-                {"Link copied!"}
-              </Alert>
-            </Collapse>
-          </Grid>
           <Grid item padding="20px">
               <InvitationButton gameId={gameId} gameStatus={gameStatus} />
           </Grid>
