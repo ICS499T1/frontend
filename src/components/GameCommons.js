@@ -142,7 +142,7 @@ export const positionIndicator = ({idx, gameStatus, player}) => {
 }
 
 /**
- * Calculates speed while the game is going.
+ * Calculates speed while the player is going and when they are done.
  * 
  * @param {object} props - Component props
  * @param {object} props.player - player
@@ -157,7 +157,7 @@ export const calculateLiveSpeed = (player, startTime) => {
 }
 
 /**
- * Calculates final speed when the game is over.
+ * Helper method to calculate player's speed.
  * 
  * @param {object} props - Component props
  * @param {object} props.player - player

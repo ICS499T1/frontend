@@ -47,8 +47,6 @@ const MultiGame = ({ gameId, create }) => {
   const [error, setError] = useState(false);
   // Used to set game players
   const [players, setPlayers] = useState(null);
-  // Used to store winner's speed
-  const [winnerSpeed, setWinnerSpeed] = useState(0);
   // Used to set disconnected status once the disconnect countdown is over
   const [disconnected, setDisconnected] = useState(false);
   // Used to track the number of connection attempts
@@ -245,15 +243,6 @@ const MultiGame = ({ gameId, create }) => {
   }, [gameStatus])
 
   /**
-   * Sets winner's final speed.
-   */
-  useEffect(() => {
-    if(game.winner) {
-      setWinnerSpeed(calculateSpeed(game.winner.endTime, game.startTime, game.winner.position));
-    }
-  }, [game])
-
-  /**
    * Sets created value to true if the player is the host.
    */
   useEffect(() => {
@@ -379,7 +368,7 @@ const MultiGame = ({ gameId, create }) => {
             {game.winner && 
             <WinnerCard 
             username={game.winner.username} 
-            speed={winnerSpeed} 
+            speed={calculateLiveSpeed(game.winner, game.startTime)}
             accuracy={calculateAccuracy(game.winner.failedCharacters.length, game.winner.position)}/>}
           </Box>
       </React.Fragment>
