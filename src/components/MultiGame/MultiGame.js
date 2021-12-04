@@ -49,6 +49,8 @@ const MultiGame = ({ gameId, create }) => {
   const [players, setPlayers] = useState(null);
   // Used to set disconnected status once the disconnect countdown is over
   const [disconnected, setDisconnected] = useState(false);
+  // Used to disable start button upon clicking it
+  const [startClicked, setStartClicked] = useState(false);
   // Used to track the number of connection attempts
   const connectionAttempts = useRef(GLOBAL.CONNECTION_ATTEMPTS);
   // Used to reinitialize connection at a specified interval
@@ -75,6 +77,7 @@ const MultiGame = ({ gameId, create }) => {
     if(!stompClient.connected) {
       return;
     }
+    setStartClicked(true);
     stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
     setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
   }
@@ -155,6 +158,17 @@ const MultiGame = ({ gameId, create }) => {
       }
     }
   }, [])
+
+  /**
+   * Resets start game button when game status changes to READY
+   */
+  useEffect(() => {
+    if (gameStatus.status === "READY") {
+      setStartClicked(false);
+    } else {
+      setStartClicked(true);
+    }
+  }, [gameStatus.status])
 
   /**
    * If the client that connected is the host, creates a game. Otherwise, allows the client
@@ -332,7 +346,7 @@ const MultiGame = ({ gameId, create }) => {
               {created && stompClient.connected &&
               <Grid item>
                 <Button variant="contained" 
-                        disabled={gameStatus.status !== "READY"} 
+                        disabled={startClicked} 
                         onClick={startGame}>Start Game!</Button>
               </Grid>}
               {!stompClient.connected &&

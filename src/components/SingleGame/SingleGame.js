@@ -42,7 +42,7 @@ const SingleGame = ({ gameId }) => {
   // Used to set the error once the user made 5 or more mistakes while typing
   const [error, setError] = useState(false);
    // Used to reinitialize connection at a specified interval
-  const countdownTimer = useRef();
+  const countdownTimer = useRef(null);
   // Used for reconnection time interval attempts
   const connectTimer = useRef();
   // Used to track the position of the player locally
@@ -77,6 +77,7 @@ const SingleGame = ({ gameId }) => {
             return prevSeconds - 1;
           } else if (prevSeconds === 0) {
             clearInterval(countdownTimer.current);
+            countdownTimer.current = null;
             setIsCountdown(false);
             setCountdownSeconds(GLOBAL.COUNTDOWN_SECONDS);
           } else {
@@ -228,7 +229,7 @@ const SingleGame = ({ gameId }) => {
               {isCountdown && <Typography sx={{textAlign: 'center'}} variant="h4" color="common.white">{countdownSeconds ? countdownSeconds : "GO!"}</Typography>}
               {stompClient.connected ? 
                 <Grid item>
-                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === ''} onClick={startGame}>
+                  <Button variant="contained" disabled={gameStatus.status === "IN_PROGRESS" || gameStatus.status === '' || countdownTimer.current !== null} onClick={startGame}>
                     Start Game!
                   </Button>
                 </Grid> : 
