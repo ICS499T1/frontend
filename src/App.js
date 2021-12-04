@@ -1,8 +1,7 @@
-import "./App.css";
 import React, { Component } from "react";
 import Login from "./pages/Login.js";
 import Signup from "./pages/Signup.js";
-import Body from "./pages/Body.js";
+import Body from "./pages/MainPage.js";
 import Tutorials from "./components/Tutorial";
 import AboutUs from "./pages/AboutUs";
 import Layout from './components/Layout'

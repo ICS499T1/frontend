@@ -101,10 +101,3 @@ header{
     cursor: pointer;
     border-radius: 5px;
 }
-
-/* 48em = 768px */
-@media (min-width: 48em) {
-    .header button {
-
-    }
-}
