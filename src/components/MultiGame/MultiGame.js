@@ -77,7 +77,6 @@ const MultiGame = ({ gameId, create }) => {
     }
     stompClient.send("/app/timer/" + gameId + '/' + sessionId, {}, gameId);
     setDisconnectSeconds(GLOBAL.DISCONNECT_SECONDS);
-    textField.current.focus();
   }
 
   /**
@@ -223,6 +222,7 @@ const MultiGame = ({ gameId, create }) => {
    */
   useEffect(() => {    
     if (gameStatus.status === "COUNTDOWN") {
+      textField.current.focus();
       clearInterval(countdownTimer.current);
       setIsCountdown(true);
       countdownTimer.current = setInterval(() => {
@@ -288,13 +288,13 @@ const MultiGame = ({ gameId, create }) => {
           <Grid item>
             <CustomTextAlert inputText={serverError} severityType="error"/>
           </Grid>
-          <Grid item padding="20px">
-              <InvitationButton gameId={gameId} gameStatus={gameStatus} />
-          </Grid>
-          <Grid item>
-            <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
-          </Grid>
           <Grid container className={classes.color} alignItems="center" justifyContent="center" direction="column" rowSpacing={3} padding='20px'>
+            <Grid item padding="20px">
+                <InvitationButton gameId={gameId} gameStatus={gameStatus} />
+            </Grid>
+            <Grid item>
+              <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
+            </Grid>
             <Grid item>
               {created && gameStatus.status === "READY" && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
               {disconnectSeconds < 11 && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
