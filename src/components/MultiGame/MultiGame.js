@@ -7,7 +7,7 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import WinnerCard from '../WinnerCard';
 import InvitationButton from '../CopyInvitationButton';
 import { CustomTextAlert, CustomBoolAlert } from '../Alerts/CustomAlert';
-import { calculateLiveSpeed, calculateSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
+import { calculateLiveSpeed, calculateAccuracy, reinitializeConnection, handleKey, positionIndicator } from '../GameCommons';
 import { useStyles } from '../../hooks/useGameStyles'
 import GLOBAL from '../../resources/Global';
 
