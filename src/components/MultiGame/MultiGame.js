@@ -285,10 +285,10 @@ const MultiGame = ({ gameId, create }) => {
 
   return (
       <React.Fragment>
-          <Grid item>
-            <CustomTextAlert inputText={serverError} severityType="error"/>
-          </Grid>
           <Grid container className={classes.color} alignItems="center" justifyContent="center" direction="column" rowSpacing={3} padding='20px'>
+            <Grid item>
+              <CustomTextAlert inputText={serverError} severityType="error"/>
+            </Grid>
             <Grid item padding="20px">
                 <InvitationButton gameId={gameId} gameStatus={gameStatus} />
             </Grid>

@@ -191,13 +191,13 @@ const SingleGame = ({ gameId }) => {
 
   return (
       <React.Fragment>
-          <Grid item>
-            <CustomTextAlert inputText={serverError} severityType="error"/>
-          </Grid>
-          <Grid item>
-            <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
-          </Grid>
           <Grid container className={classes.color} alignItems="center" justifyContent="center" direction="column" rowSpacing={3} padding='20px'>
+            <Grid item>
+              <CustomTextAlert inputText={serverError} severityType="error"/>
+            </Grid>
+            <Grid item>
+              <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
+            </Grid>
             {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography variant="h5" className={classes.color} sx={{textAlign: 'center'}} color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
             <Grid item>
