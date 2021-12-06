@@ -33,7 +33,7 @@ const Body = () => {
           <Box className="boxone">
             <Grid container columnSpacing={5} justify="flex-start">
               <Grid item xs={12} sm={12} md={4} lg={4} textAlign="center">
-                <p className="textBar">2+ Users</p>
+                <p className="textBar">20+ Users</p>
               </Grid>
               <Grid
                 item
