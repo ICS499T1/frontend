@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Tab, Box, Tabs  } from '@mui/material';
 import LeaderboardTable from './LeaderboardTable.js';
 import GLOBAL from '../../resources/Global';
+import axios from 'axios';
 
 const TabPanel = props => {
   const { children, value, index, ...other } = props;
@@ -33,18 +34,28 @@ const Leaderboard = () => {
   };
 
   useEffect(() => {
-    const fetchInit = {
-      method: 'GET',
-      mode: 'cors'
+    const cancelTokenSource = axios.CancelToken.source();
+
+    const fetchLeaderboard = async () => {
+      const options = {
+          method: 'GET',
+          cancelToken: cancelTokenSource.token,
+          url: `${GLOBAL.API}/leaderboard`
+      };
+
+      return axios(options)
+      .then(response => {
+        setFastestRaces(response.data.fastestRaces);
+        setFastestUsers(response.data.fastestPlayers);
+      })
+      .catch(error => error);
     };
 
-    fetch(GLOBAL.API + '/leaderboard', fetchInit)
-      .then(response => response.json())
-      .then(data => {
-        setFastestUsers(data.fastestPlayers);
-        setFastestRaces(data.fastestRaces);
-      })
-      .catch(err => console.log('fetching error : ', err))
+    fetchLeaderboard();
+
+    return () => {
+      cancelTokenSource.cancel();
+    }
   }, []);
 
   return (

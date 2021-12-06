@@ -5,7 +5,7 @@ const defaults = {
     DOMAIN: 'https://space-racer.netlify.app',
     SINGLE: '/game/single',
     MULTI: '/game',
-    DISCONNECT_SECONDS: 90,
+    DISCONNECT_SECONDS: 120,
     COUNTDOWN_SECONDS: 5,
     CONNECTION_ATTEMPTS: 3
 };
