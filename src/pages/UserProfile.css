@@ -1,0 +1,75 @@
+
+.simple-keyboard {
+  max-width: 850px;
+}
+
+.bigbox{
+  background-color: #F2F2F2;
+}
+
+.boxkeyboard {
+  padding-left: 85px;
+  padding-right: 90px;
+  padding-top: 100px;
+  height: fit-content;
+}
+
+.title {
+  padding-left: 65px;
+  padding-right: 65px;
+  padding-top: 60px;
+  color: white;
+  margin: 0;
+}
+
+.boxuser {
+  padding-left: 85px;
+  padding-right: 85px;
+  padding-bottom: 30px;
+}
+
+.card {
+  border-radius: 25px;
+  box-shadow: 2px 2px rgb(235, 233, 233);
+}
+
+.cardcontent {
+    padding: 30px;
+    background-color: #2E2F43;
+}
+
+.textstats{
+  color:white;
+  font-size: x-large;
+  text-align: center;
+}
+
+.subtitles{
+  color:white;
+  font-size: large;
+  text-align: center;
+}
+
+.boxstats{
+  padding-left: 85px;
+  padding-right: 90px;
+  padding-bottom: 30px;
+  height: fit-content;
+}
+
+.textone {
+  color: #555;
+  height: auto;
+  font-size: large;
+}
+
+.cardtwo {
+  /* border-radius: 25px; */
+  /* box-shadow: 2px 2px rgb(235, 233, 233); */
+  background-color: white;
+  /* border: grey; */
+}
+
+.cardcontenttwo {
+    padding: 30px;
+}

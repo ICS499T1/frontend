@@ -1,18 +1,14 @@
 import React from "react";
 
 import Footer from "./Footer"
-import Menu from "./Menu";
+import Navbar from "./Navbar/Navbar";
 import './Layout.css'
 
-const Layout = (props) => {
+const Layout = ({ children }) => {
         return (
             <React.Fragment>
-                <Menu />
-
-                <main className="main-content">
-                    {props.children}
-                </main>
-
+                <Navbar />
+                {children}
                 <Footer />
             </React.Fragment>
         );

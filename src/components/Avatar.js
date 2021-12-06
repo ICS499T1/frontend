@@ -36,6 +36,7 @@ function stringAvatar(name) {
 function BackgroundLetterAvatars(username) {
   return (
     <Stack direction="row" spacing={2}>
+      {/* TODO: Ask Gina why there are three dots in front of the stringAvatar function */}
       <Avatar {...stringAvatar(username)} />
     </Stack>
   );
