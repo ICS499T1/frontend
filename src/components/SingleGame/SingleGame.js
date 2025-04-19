@@ -57,7 +57,7 @@ const SingleGame = ({ gameId }) => {
   const disconnectTimer = useRef();
   // Used for styling
   const classes = useStyles();
-
+  
   /**
    * Starts the countdown after start button is clicked.
    */
@@ -201,17 +201,18 @@ const SingleGame = ({ gameId }) => {
             </Grid>
             {gameStatus.status && gameStatus.status === "READY" && !isCountdown && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
             {disconnectSeconds < 11 && <Typography variant="h5" className={classes.color} sx={{textAlign: 'center'}} color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
-            <Grid item>
-            <Card sx={{ maxWidth: 900 }}>
-                <CardContent>                   
-                    {gameText && 
-                    <Typography 
-                    sx={{minWidth:'80vh'}}
-                    >
-                      {gameText.map((char, idx) => {
+            <Grid item sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Card sx={{ maxWidth: 900, width: '100%' }}>
+                <CardContent>
+                  <Typography sx={{width: '100%', minHeight: '1em', wordWrap: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal'}}>
+                    {gameText.length ? (
+                      gameText.map((char, idx) => {
                           return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
-                      })}
-                  </Typography>}
+                      })
+                    ) : (
+                      <span></span> // Placeholder for empty state
+                    )}
+                  </Typography>
                 </CardContent>
             </Card>
           </Grid>
