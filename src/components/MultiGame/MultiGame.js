@@ -309,19 +309,20 @@ const MultiGame = ({ gameId, create }) => {
             <Grid item>
               <CustomBoolAlert input={disconnected} severityType="error" text="You have been disconnected due to inactivity." />
             </Grid>
-            <Grid item>
-              {created && gameStatus.status === "READY" && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
-              {disconnectSeconds < 11 && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
-              <Card sx={{ maxWidth: 900 }}>
-                <CardContent>                   
-                    {gameText && 
-                    <Typography 
-                    sx={{minWidth:'80vh'}}
-                    >
-                      {gameText.map((char, idx) => {
+            {created && gameStatus.status === "READY" && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">Click START GAME! to begin playing!</Typography>}
+            {disconnectSeconds < 11 && <Typography sx={{textAlign: 'center'}} variant="h5" color="common.white">{"You will be disconnected in " + disconnectSeconds + " seconds due to inactivity."}</Typography>}
+            <Grid item sx={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
+              <Card sx={{ maxWidth: 900, width: '100%' }}>
+                <CardContent>
+                  <Typography sx={{ width: '100%', minHeight: '1em', wordWrap: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal'}}>
+                    {gameText.length ? (
+                      gameText.map((char, idx) => {
                           return <span key={idx} style={gameplayIndicator(idx)}>{char}</span>;
-                      })}
-                  </Typography>}
+                      })
+                    ) : (
+                      <span></span> // Placeholder for empty state
+                    )}
+                  </Typography>
                 </CardContent>
             </Card>
             </Grid>
@@ -373,7 +374,7 @@ const MultiGame = ({ gameId, create }) => {
               }
               return (
               <Grid className={classes.color} key={idx} container sx={{padding: '5px'}} direction="row" columnSpacing={3} justifyContent="center" alignItems="center">
-                
+
               </Grid>
               )
             })}
